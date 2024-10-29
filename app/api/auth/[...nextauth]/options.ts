@@ -98,7 +98,6 @@ export const authOptions: NextAuthOptions = {
         token.number = user.number;
         token.role = user.role;
       }
-      console.log(token);
 
       return token;
     },

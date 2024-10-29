@@ -31,7 +31,7 @@ export default function Login() {
 
   const handleSignOut = async () => {
     setIsLoading(true);
-    await signOut({ callbackUrl: "/", redirect: false });
+    await signOut({ callbackUrl: "/", redirect: true });
     setIsLoading(false);
   };
 
