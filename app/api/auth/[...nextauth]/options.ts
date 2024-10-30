@@ -1,9 +1,9 @@
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import prisma from "@/prisma/prismaClient";
+import { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 
-const accessTokenSecret = process.env.ACCESS_TOKEN_JWT_SECRET;
+import prisma from "@/prisma/prismaClient";
 
 export const authOptions: NextAuthOptions = {
   // pages: {
@@ -30,9 +30,13 @@ export const authOptions: NextAuthOptions = {
     maxAge: 24 * 60 * 60, // 24 hours maxAge for JWT specifically
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
     CredentialsProvider({
-      id: "Credentials",
-      name: "Credentials",
+      id: "credentials",
+      name: "credentials",
       credentials: {
         email: { label: "Email", type: "text", placeholder: "Email" },
         password: {
@@ -56,16 +60,14 @@ export const authOptions: NextAuthOptions = {
             throw new Error("No user found with this email");
           }
 
+          if (!user.password) {
+            throw new Error("Password not set for this user");
+          }
+
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password,
             user.password
           );
-
-          if (!accessTokenSecret) {
-            throw new Error(
-              "ACCESS_TOKEN_JWT_SECRET is not defined in the environment variables."
-            );
-          }
 
           if (isPasswordCorrect) {
             const { id, email, name, number, role } = user;
@@ -74,7 +76,7 @@ export const authOptions: NextAuthOptions = {
               id,
               email,
               name,
-              number,
+              number: number ?? undefined,
               role,
             };
           } else {
@@ -90,6 +92,14 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ account, user }) {
+      if (account?.provider === "google") {
+        console.log(user);
+      } else if (account?.provider === "credentials") {
+        console.log(user);
+      }
+      return true;
+    },
     async jwt({ user, token }) {
       if (user) {
         token.id = user.id?.toString();
