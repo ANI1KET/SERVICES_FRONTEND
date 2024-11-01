@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import prisma from "@/prisma/prismaClient";
+import { loginSchema } from "./Schema";
 
 export const authOptions: NextAuthOptions = {
   // pages: {
@@ -94,10 +95,32 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ account, user }) {
       if (account?.provider === "google") {
-        console.log(user);
-      } else if (account?.provider === "credentials") {
-        console.log(user);
+        try {
+          // Validate required fields
+          loginSchema.parse({
+            name: user.name,
+            email: user.email,
+            image: user.image,
+          });
+
+          // Use `upsert` to handle creation or no action if user exists
+          await prisma.user.upsert({
+            where: { email: user.email! },
+            update: {},
+            create: {
+              name: user.name!,
+              email: user.email!,
+              image: user.image,
+            },
+          });
+
+          console.log("User sign-in or creation handled successfully:", user);
+        } catch (error) {
+          console.error("Error signing in user:", error);
+          return false; // Return `false` on validation or database error
+        }
       }
+
       return true;
     },
     async jwt({ user, token }) {

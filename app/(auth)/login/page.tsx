@@ -17,13 +17,14 @@ export default function Login() {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "john.doe@example.com",
+      password: "hashedpassword123",
+    },
   });
 
   const handleSignInCredentials = async (data: LoginFormInputs) => {
     setIsLoading(true);
-
-    // Simulating a delay for the loading effect
-    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const result = await signIn("credentials", {
       callbackUrl: "/",
@@ -46,7 +47,7 @@ export default function Login() {
 
   const handleSignInGoogle = async () => {
     setIsLoading(true);
-    await signIn("google", { callbackUrl: "/", redirect: false });
+    await signIn("google", { redirect: false, callbackUrl: "/" });
     setIsLoading(false);
   };
 
