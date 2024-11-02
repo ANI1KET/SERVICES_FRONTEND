@@ -21,18 +21,21 @@ enum Role {
 }
 
 model User {
-  id        String       @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  email     String       @unique
-  image     String?
-  number    String?      @unique
-  password  String?
-  role      Role         @default(USER)
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String        @unique
+  image        String?
+  number       String?       @unique
+  password     String?
+  // ENUM
+  role         Role          @default(USER)
+  // RELATIONSHIP
+  reviews      RoomReview[]  @relation("RoomReviews")
+  // RELATIONSHIP
+  roomsForRent RoomForRent[] @relation("UserRooms")
   // 
-  reviews   RoomReview[] @relation("RoomReviews")
-  // 
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   @@map("Users")
 }
@@ -66,16 +69,20 @@ model RoomForRent {
   mincapacity      Int // Constraint to ensure valid capacity
   maxcapacity      Int // Maximum number of people allowed
   verified         Boolean
-  // 
+  // ENUM
   roomtype         RoomTypeEnum
   furnishingStatus FurnishingStatusEnum
   aminities        Aminities[]
-  // 
+  // RELATIONSHIP
   reviews          RoomReview[]         @relation("RoomReviews")
+  // RELATIONSHIP
+  user             User                 @relation(fields: [userId], references: [id], name: "UserRooms")
+  userId           String               @db.ObjectId
   // 
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
 
+  @@index([userId])
   @@map("Rooms_For_Rent")
 }
 
@@ -83,10 +90,10 @@ model RoomReview {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
   rating        Float
   comment       String
-  // 
+  // RELATIONSHIP 
   roomForRent   RoomForRent @relation(fields: [roomForRentId], references: [id], name: "RoomReviews")
   roomForRentId String      @db.ObjectId
-  // 
+  // RELATIONSHIP 
   user          User        @relation(fields: [userId], references: [id], name: "RoomReviews")
   userId        String      @db.ObjectId
   // 

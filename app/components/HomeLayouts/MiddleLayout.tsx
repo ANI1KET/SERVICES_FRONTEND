@@ -1,11 +1,73 @@
-const MiddleLayout = () => {
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
+import UpperSearchBox from "@/app/components/HomeLayouts/MiddleLayout/UpperSearchBox";
+import LowerSearchBox from "@/app/components/HomeLayouts/MiddleLayout/LowerSearchBox";
+import SearchBox from "./MiddleLayout/SearchBox";
+
+const MiddleLayout: React.FC = () => {
+  const { scrollYProgress } = useScroll();
+  const [visible, setVisible] = useState<boolean>(false);
+
+  // Update visibility based on scroll position
+  const updateVisibility = useCallback(
+    (current: number) => {
+      const direction = current - scrollYProgress.getPrevious()!;
+      const threshold = window.innerHeight * 0.44;
+
+      setVisible(window.scrollY < threshold || direction < 0);
+    },
+    [scrollYProgress]
+  );
+
+  useMotionValueEvent(scrollYProgress, "change", updateVisibility);
+
+  // Set initial visibility state with a delay
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 100);
+    return () => clearTimeout(timer); // Clean up the timer on unmount
+  }, []);
+
+  // Define motion animation properties
+  const animationProps = {
+    initial: { y: -20, opacity: 0 },
+    animate: { y: visible ? 0 : -40, opacity: visible ? 1 : 0 },
+    exit: { y: -40, opacity: 0 },
+    transition: {
+      duration: 0.6,
+      delay: 0.1,
+      ease: "easeOut",
+    },
+  };
+
   return (
-    <div className="bg-green-500 h-[10vh] w-3/4 mx-auto rounded-3xl shadow-2xl drop-shadow-xl sticky top-0 ">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque
-      repudiandae quia dicta explicabo inventore, porro iure molestiae nulla
-      corrupti omnis fugiat illum magni ullam dolorem necessitatibus similique
-      laudantium unde alias consequuntur voluptatem id hic? Ipsa quo maiores
-    </div>
+    <>
+      <AnimatePresence mode="wait">
+        {visible && (
+          <motion.div
+            {...animationProps}
+            className="bloack max-sm:hidden bg-green-500 h-[10vh] w-3/5 mx-auto rounded-xl shadow-2xl drop-shadow-xl sticky top-[7vh] mt-[-6vh] mb-[-6vh]"
+          >
+            <UpperSearchBox />
+            <hr />
+            <LowerSearchBox />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence mode="wait">
+        {visible && (
+          <motion.div {...animationProps} className="hidden max-sm:block ">
+            <SearchBox />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
