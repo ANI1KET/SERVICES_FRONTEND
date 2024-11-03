@@ -4,7 +4,7 @@ import "./globals.css";
 import StoreProvider from "@/app/providers/storeProvider";
 import AuthProvider from "./providers/authProvider";
 import Header from "./header";
-import MobileNavBar from "./MobileNavBar";
+import BottomNavBar from "./BottomNavBar";
 import Footer from "./footer";
 
 export const metadata: Metadata = {
@@ -26,7 +26,7 @@ export default function RootLayout({
             <Header />
             {children}
             <Footer />
-            <MobileNavBar />
+            <BottomNavBar />
           </AuthProvider>
         </StoreProvider>
       </body>

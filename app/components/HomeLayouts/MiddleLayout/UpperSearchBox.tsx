@@ -1,11 +1,14 @@
+import SlideTabs from "@/app/utils/tabNavigation";
+import { SearchBoxTabs } from "@/app/utils/tabs";
+
 const UpperSearchBox = () => {
   return (
-    <div className="h-1/2 flex justify-around items-center">
-      <div className="">Rent</div>
-      <div className="">Hostel</div>
-      <div className="">Car</div>
-      <div className="">Book</div>
-    </div>
+    <SlideTabs
+      tabs={SearchBoxTabs}
+      componentId="SearchBar"
+      className="h-1/2 flex justify-around items-center "
+      sliderClass="h-[4.5vh] rounded-full bg-black"
+    />
   );
 };
 
@@ -18,11 +21,6 @@ export default UpperSearchBox;
 //   isTriggered = false,
 // }) => {
 //   return (
-//     <div className="h-12 flex justify-around items-center">
-//       <div className="">Rent</div>
-//       <div className="">Hostel</div>
-//       <div className="">Car</div>
-//       <div className="">Book</div>
 //     </div>
 //   );
 // };
@@ -31,12 +29,6 @@ export default UpperSearchBox;
 //   isTriggered = false,
 // }) => {
 //   return (
-//     <div className="h-12 flex justify-around items-center">
-//       <div className="">Rent</div>
-//       <div className="">Hostel</div>
-//       <div className="">Car</div>
-//       <div className="">Book</div>
-//     </div>
 //   );
 // };
 

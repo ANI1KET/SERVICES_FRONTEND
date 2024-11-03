@@ -9,7 +9,6 @@ import {
 } from "framer-motion";
 import UpperSearchBox from "@/app/components/HomeLayouts/MiddleLayout/UpperSearchBox";
 import LowerSearchBox from "@/app/components/HomeLayouts/MiddleLayout/LowerSearchBox";
-import SearchBox from "./MiddleLayout/SearchBox";
 
 const MiddleLayout: React.FC = () => {
   const { scrollYProgress } = useScroll();
@@ -57,13 +56,6 @@ const MiddleLayout: React.FC = () => {
             <UpperSearchBox />
             <hr />
             <LowerSearchBox />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <AnimatePresence mode="wait">
-        {visible && (
-          <motion.div {...animationProps} className="hidden max-sm:block ">
-            <SearchBox />
           </motion.div>
         )}
       </AnimatePresence>
