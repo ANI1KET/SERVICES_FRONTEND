@@ -3,9 +3,10 @@ import "./globals.css";
 
 import StoreProvider from "@/app/providers/storeProvider";
 import AuthProvider from "./providers/authProvider";
-import Header from "./header";
-import BottomNavBar from "./BottomNavBar";
-import Footer from "./footer";
+import Header from "./components/HeaderNavigationBar/header";
+import BottomNavBar from "./components/BottomNavigationBar/BottomNavBar";
+import Footer from "./components/Footer/footer";
+import SideNavBar from "./components/SideNavigationBar/SideNavBar";
 
 export const metadata: Metadata = {
   title: "ROOM RENTAL",
@@ -24,6 +25,7 @@ export default function RootLayout({
         <StoreProvider>
           <AuthProvider>
             <Header />
+            <SideNavBar />
             {children}
             <Footer />
             <BottomNavBar />

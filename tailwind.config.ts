@@ -13,7 +13,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       screens: {
-        "max-sm": { max: "680px" }, // Max width of 640px (sm breakpoint)
+        "max-sm": { max: "768px" }, // Max width (sm breakpoint)
       },
       keyframes: {
         fadeIn: {

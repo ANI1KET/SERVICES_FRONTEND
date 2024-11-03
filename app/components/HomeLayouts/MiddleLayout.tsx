@@ -37,7 +37,7 @@ const MiddleLayout: React.FC = () => {
   const animationProps = {
     initial: { y: -20, opacity: 0 },
     animate: { y: visible ? 0 : -40, opacity: visible ? 1 : 0 },
-    exit: { y: -40, opacity: 0 },
+    exit: { y: -20, opacity: 0 },
     transition: {
       duration: 0.6,
       delay: 0.1,
@@ -51,7 +51,8 @@ const MiddleLayout: React.FC = () => {
         {visible && (
           <motion.div
             {...animationProps}
-            className="bloack max-sm:hidden bg-green-500 h-[10vh] w-3/5 mx-auto rounded-xl shadow-2xl drop-shadow-xl sticky top-[7vh] mt-[-6vh] mb-[-6vh]"
+            // className="block max-sm:hidden h-[12vh] w-[60vw] mx-auto rounded-xl shadow-2xl drop-shadow-xl sticky top-[5.4vh] mt-[-6vh] mb-[-6vh] backdrop-blur-3xl "
+            className="block max-sm:hidden h-[12vh] w-[71vw] mx-auto rounded-xl shadow-2xl drop-shadow-xl sticky top-[5.4vh] mt-[-6vh] mb-[-6vh] bg-green-500 "
           >
             <UpperSearchBox />
             <hr />

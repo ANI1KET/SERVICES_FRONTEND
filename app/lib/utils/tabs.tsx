@@ -1,6 +1,21 @@
-export const NavBarTabs = ["Home", "Pricing", "Features", "Docs", "Blog"];
+export const NavBarTabs = [
+  "For Owners",
+  "For Buyers",
+  "For Tenants",
+  "For Shoppers",
+  "For Dealers",
+  "For Clients",
+];
 
-export const SearchBoxTabs = ["Rent", "Hostel", "Car", "Book"];
+export const SearchBoxTabs = [
+  "Room",
+  "FLat",
+  "Hostel",
+  "Restaurant",
+  "Land",
+  "Book",
+  "Car",
+];
 
 export const BottomTabs = [
   <svg

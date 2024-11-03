@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { setActiveTab } from "@/app/store/slices/tabSlice";
-import { useAppDispatch, useAppSelector } from "../store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 
 interface Position {
   left: number;
@@ -38,7 +38,7 @@ const Tab: React.FC<TabProps> = ({
       ref={ref}
       onMouseEnter={() => handleInteraction(onMouseEnter)}
       onClick={() => handleInteraction(onClick)}
-      className={`cursor-pointer px-3 z-10 text-base uppercase ${
+      className={`cursor-pointer px-3 z-10 text-sm lg:text-base uppercase ${
         isActive ? "text-white scale-110" : "text-white"
       }`}
     >
