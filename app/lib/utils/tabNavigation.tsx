@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { setActiveTab } from "@/app/store/slices/tabSlice";
+import { useRouter } from "next/navigation";
+import React, { useRef, useState } from "react";
+
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { setActiveTab, setCursorPosition } from "@/app/store/slices/tabSlice";
 
 interface Position {
   left: number;
@@ -59,7 +61,7 @@ const Cursor: React.FC<{ position: Position; sliderClass?: string }> = ({
 
 interface SlideTabsProps {
   componentId: string;
-  tabs?: React.ReactNode[]; // Accept React nodes
+  tabs?: [string, React.ReactNode?][];
   className?: string;
   sliderClass?: string;
 }
@@ -71,8 +73,12 @@ const SlideTabs: React.FC<SlideTabsProps> = ({
   sliderClass,
 }) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const activeTab = useAppSelector(
     (state) => state.tabs.activeTabs[componentId]
+  );
+  const activeTabPosition = useAppSelector(
+    (state) => state.tabs.cursorPosition[componentId]
   );
 
   const [hoveredPosition, setHoveredPosition] = useState<Position>({
@@ -81,45 +87,38 @@ const SlideTabs: React.FC<SlideTabsProps> = ({
     opacity: 0,
   });
 
-  const [activeTabPosition, setActiveTabPosition] = useState<Position>({
-    left: 0,
-    width: 0,
-    opacity: 1,
-  });
-
   const handleTabHover = (position: Position) => setHoveredPosition(position);
-  const handleTabClick = (tab: React.ReactNode, position: Position) => {
-    dispatch(setActiveTab({ componentId, activeTab: String(tab) })); // Convert to string if needed
-    setActiveTabPosition(position);
+  const handleTabClick = (label: string, position: Position) => {
+    dispatch(setActiveTab({ componentId, activeTab: label }));
+    dispatch(setCursorPosition({ [componentId]: position }));
+    if (componentId !== "SearchTab") router.push(`/${label}`);
   };
 
   const cursorPosition =
     hoveredPosition.opacity > 0 ? hoveredPosition : activeTabPosition;
 
   return (
-    <>
-      <ul
-        onMouseEnter={() =>
-          setHoveredPosition((prev) => ({ ...prev, opacity: 1 }))
-        }
-        onMouseLeave={() =>
-          setHoveredPosition((prev) => ({ ...prev, opacity: 0 }))
-        }
-        className={`relative ${className}`}
-      >
-        {tabs?.map((tab, index) => (
-          <Tab
-            key={index}
-            isActive={activeTab === String(tab)} // Convert to string for comparison
-            onMouseEnter={handleTabHover}
-            onClick={(position) => handleTabClick(tab, position)}
-          >
-            {tab}
-          </Tab>
-        ))}
-        <Cursor position={cursorPosition} sliderClass={`${sliderClass}`} />
-      </ul>
-    </>
+    <ul
+      onMouseEnter={() =>
+        setHoveredPosition((prev) => ({ ...prev, opacity: 1 }))
+      }
+      onMouseLeave={() =>
+        setHoveredPosition((prev) => ({ ...prev, opacity: 0 }))
+      }
+      className={`relative ${className}`}
+    >
+      {tabs?.map(([label, content], index) => (
+        <Tab
+          key={index}
+          isActive={activeTab === label}
+          onMouseEnter={handleTabHover}
+          onClick={(position) => handleTabClick(label, position)}
+        >
+          {content}
+        </Tab>
+      ))}
+      <Cursor position={cursorPosition} sliderClass={sliderClass} />
+    </ul>
   );
 };
 

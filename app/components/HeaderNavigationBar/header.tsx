@@ -2,14 +2,27 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+
+import { HeaderTabs } from "../../lib/utils/tabs";
 import SlideTabs from "../../lib/utils/tabNavigation";
-import { NavBarTabs } from "../../lib/utils/tabs";
+import { useAppDispatch } from "@/app/store/hooks/hooks";
+import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
 
 const Header: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
   return (
     <div className="max-sm:hidden text-xl flex items-start h-[8vh] w-full fixed left-0 right-0 ">
       {/* <div className="h-[8vh] w-[15vw] flex justify-center items-center rounded-br-2xl backdrop-blur-3xl "> */}
-      <div className="h-[8vh] w-[15vw] flex justify-center items-center rounded-br-2xl bg-green-500 ">
+      <div
+        className="h-[8vh] w-[15vw] flex justify-center items-center rounded-br-2xl cursor-pointer bg-green-500 "
+        onClick={() => {
+          router.push("/");
+          dispatch(RemoveActiveTab("HeaderTab"));
+        }}
+      >
         {"AfnoSansar".split("").map((char, index) => (
           <motion.span
             key={index}
@@ -22,8 +35,8 @@ const Header: React.FC = () => {
         ))}
       </div>
       <SlideTabs
-        tabs={NavBarTabs}
-        componentId="NavBar"
+        tabs={HeaderTabs}
+        componentId="HeaderTab"
         // className="h-[5.5vh] w-[70vw] flex items-center justify-around backdrop-blur-3xl "
         className="h-[5.5vh] w-[70vw] flex items-center justify-around bg-green-500 "
         sliderClass="h-[3.8vh] rounded-full bg-black"

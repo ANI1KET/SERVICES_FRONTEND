@@ -5,7 +5,7 @@ const UpperSearchBox = () => {
   return (
     <SlideTabs
       tabs={SearchBoxTabs}
-      componentId="SearchBar"
+      componentId="SearchTab"
       className="h-1/2 flex justify-around items-center "
       sliderClass="h-[4.5vh] rounded-full bg-black"
     />
