@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 import { HeaderTabs } from "../../lib/utils/tabs";
-import SlideTabs from "../../lib/utils/tabNavigation";
+import SlideTabs from "../../lib/ui/tabNavigation";
 import { useAppDispatch } from "@/app/store/hooks/hooks";
 import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
 

@@ -1,4 +1,4 @@
-import SlideTabs from "@/app/lib/utils/tabNavigation";
+import SlideTabs from "@/app/lib/ui/tabNavigation";
 import { SearchBoxTabs } from "@/app/lib/utils/tabs";
 
 const UpperSearchBox = () => {

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import StoreProvider from "@/app/providers/storeProvider";
-import AuthProvider from "./providers/authProvider";
-import Header from "./components/HeaderNavigationBar/header";
-import BottomNavBar from "./components/BottomNavigationBar/BottomNavBar";
 import Footer from "./components/Footer/footer";
+import AuthProvider from "./providers/authProvider";
+import StoreProvider from "@/app/providers/storeProvider";
+import Header from "./components/HeaderNavigationBar/header";
 import SideNavBar from "./components/SideNavigationBar/SideNavBar";
+import BottomNavBar from "./components/BottomNavigationBar/BottomNavBar";
 
 export const metadata: Metadata = {
   title: "ROOM RENTAL",
@@ -26,7 +26,7 @@ export default function RootLayout({
           <AuthProvider>
             <Header />
             <SideNavBar />
-            {children}
+            <div className="pt-[8vh] max-sm:pt-[0vh]">{children}</div>
             <Footer />
             <BottomNavBar />
           </AuthProvider>
