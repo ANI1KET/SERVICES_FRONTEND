@@ -31,3 +31,7 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+input:focus {
+  outline: none;
+}

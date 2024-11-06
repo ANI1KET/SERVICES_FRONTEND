@@ -4,7 +4,7 @@ import MiddleLayout from "./components/HomeLayouts/MiddleLayout";
 
 const Home: React.FC = () => {
   return (
-    <main>
+    <main className="">
       <UpperLayout />
       <MiddleLayout />
       <LowerLayout />

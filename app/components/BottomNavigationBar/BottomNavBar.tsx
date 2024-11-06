@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
+import SearchPanel from "./PanelComponent/panel";
 import { BottomTabs } from "../../lib/utils/tabs";
 import SlideTabs from "../../lib/ui/tabNavigation";
 
@@ -22,7 +23,94 @@ const BottomNavBar = () => {
     >
       <AnimatePresence>
         {isPanelOpen && (
-          <AnimatedComponent setIsPanelOpen={setIsPanelOpen} index={5} />
+          <motion.div
+            initial={{
+              y: "0vh",
+              x: "85vw",
+              width: "15vw",
+              height: "6vh",
+              rotate: -45,
+              borderRadius: "60%",
+            }}
+            animate={{
+              y: ["-2vh", "-5vh", "-9vh", "-10vh", 0],
+              x: ["80vw", "75vw", "45vw", "30vw", 0],
+              width: ["15vw", "20vw", "35vw", "45vw", "100vw"],
+              height: ["15vh", "12vh", "28vh", "35vh", "70vh"],
+              rotate: [-45, -40, -15, -5, 0],
+              borderRadius: ["50%", "50%", "50%", "50%", "1.5rem 1.5rem 0 0"],
+            }}
+            transition={{
+              duration: 0.3,
+              ease: [0.42, 0, 0.58, 1],
+              opacity: { duration: 0.6 },
+            }}
+            exit={{
+              y: ["0", "-10vh", "-5vh", "-3vh", "-2vh", "-1vh", "0vh"],
+              x: ["0", "35vw", "55vw", "65vw", "80vw", "85vw", "85vw"],
+              width: ["100vw", "35vw", "25vw", "20vw", "15vw", "10vw", "10vw"],
+              height: ["50vh", "25vh", "20vh", "15vh", "10vh", "8vh", "5vh"],
+              rotate: [0, -5, -15, -25, -40, -45, -45],
+              borderRadius: ["0%", "50%", "50%", "50%", "50%", "50%", "50%"],
+              opacity: 0,
+              transition: {
+                duration: 0.5,
+                ease: [0.42, 0, 0.58, 1],
+                opacity: { duration: 0.8 },
+              },
+            }}
+            className="fixed bottom-[7.9vh] left-0 right-0 flex flex-col items-center bg-white "
+          >
+            <motion.div
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0 } }}
+              transition={{
+                type: "spring",
+                stiffness: 70,
+                damping: 15,
+                duration: 0.2,
+                delay: 0.4,
+              }}
+              className="h-[70vh] rounded-t-3xl w-full p-2 overflow-y-scroll border-2 border-b-0 border-black "
+            >
+              <SearchPanel />
+            </motion.div>
+
+            <motion.div
+              initial={{ scale: 0.85, y: 15, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{
+                opacity: 0,
+                transition: { duration: 0 },
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 60,
+                damping: 20,
+                duration: 0.2,
+                delay: 0.4,
+              }}
+              className="cursor-pointer rounded-full p-[0.3rem] backdrop-blur-3xl border-2 border-black absolute bottom-[0.8vh] right-1 bg-white "
+              onClick={() => setIsPanelOpen(false)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="34"
+                height="34"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentcolor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-x"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -31,26 +119,25 @@ const BottomNavBar = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.4 } }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
             transition={{ duration: 0.3, delay: 0.2 }}
-            className="fixed bottom-[6.6vh] left-1/2 -translate-x-1/2 z-20 cursor-pointer rounded-t-2xl p-1 bg-green-500"
+            className="fixed bottom-[8.5vh] right-1 z-20 cursor-pointer rounded-full p-[0.3rem] border-2 border-black bg-white "
             onClick={() => setIsPanelOpen(true)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
+              width="34"
+              height="34"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="white"
-              strokeWidth="2"
+              stroke="currentcolor"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="lucide lucide-arrow-up-from-line"
+              className="lucide lucide-search"
             >
-              <path d="m18 9-6-6-6 6" />
-              <path d="M12 3v14" />
-              <path d="M5 21h14" />
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
             </svg>
           </motion.div>
         )}
@@ -61,7 +148,7 @@ const BottomNavBar = () => {
         tabs={BottomTabs}
         className={`max-sm:flex max-sm:items-center max-sm:justify-around max-sm:h-[8vh] z-10 max-sm:fixed max-sm:bottom-[-1px] max-sm:w-full ${
           isPanelOpen ? "max-sm:rounded-t-none" : "max-sm:rounded-t-3xl"
-        } backdrop-blur-3xl bg-green-500 `}
+        } border-2 border-black bg-white `}
         sliderClass="h-[6vh] rounded-full bg-black"
       />
     </motion.div>
@@ -69,320 +156,3 @@ const BottomNavBar = () => {
 };
 
 export default BottomNavBar;
-
-interface Props {
-  setIsPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  index: number;
-}
-
-const AnimatedComponent: React.FC<Props> = ({ setIsPanelOpen, index }) => {
-  if (index === 0)
-    return (
-      <motion.div
-        initial={{ y: "100vh", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: "100vh", opacity: 0 }}
-        transition={{
-          duration: 0.6,
-          ease: "easeInOut",
-        }}
-        className="fixed bottom-[7.5vh] left-0 right-0 z-0 w-full flex flex-col items-center"
-      >
-        <motion.div
-          initial={{ y: 20 }}
-          animate={{ y: 0 }}
-          exit={{ y: 20 }}
-          transition={{ type: "spring", stiffness: 100, damping: 15 }}
-          className="cursor-pointer rounded-t-2xl p-1 bg-green-500 -mt-1 "
-          onClick={() => setIsPanelOpen(false)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-arrow-up-from-line"
-          >
-            <path d="m18 9-6-6-6 6" />
-            <path d="M12 3v14" />
-            <path d="M5 21h14" />
-          </svg>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 20 }}
-          animate={{ y: 0 }}
-          exit={{ y: 20 }}
-          transition={{ type: "spring", stiffness: 100, damping: 15 }}
-          className="w-full h-[50vh] bg-green-500 rounded-t-3xl p-4"
-        ></motion.div>
-      </motion.div>
-    );
-  else if (index === 1)
-    return (
-      <motion.div
-        initial={{ y: "100vh", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: "100vh", opacity: 0 }}
-        transition={{
-          duration: 0.5,
-          ease: "easeInOut",
-        }}
-        className="fixed bottom-[7.9vh] left-0 right-0 z-0 w-full flex flex-col items-center"
-      >
-        <motion.div
-          initial={{ y: 20 }}
-          animate={{ y: 0 }}
-          transition={{ delay: 0.1, type: "spring", stiffness: 100 }}
-          className="cursor-pointer rounded-t-2xl p-1 bg-green-500 -mt-1 "
-          onClick={() => setIsPanelOpen(false)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-arrow-up-from-line"
-          >
-            <path d="m18 9-6-6-6 6" />
-            <path d="M12 3v14" />
-            <path d="M5 21h14" />
-          </svg>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 20 }}
-          animate={{ y: 0 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
-          className="w-full h-[50vh] bg-green-500 rounded-t-3xl p-4"
-        ></motion.div>
-      </motion.div>
-    );
-  else if (index === 2) {
-    return (
-      <motion.div
-        initial={{ y: 30 }}
-        animate={{ y: 0 }}
-        exit={{ y: 30, transition: { duration: 0.2 } }}
-        transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="fixed bottom-[7vh] left-0 right-0 w-full flex flex-col items-center"
-      >
-        <motion.div
-          initial={{ scale: 0.9, y: 20 }}
-          animate={{ scale: 1, y: 0 }}
-          exit={{ scale: 0.9, y: 20, transition: { duration: 0.2 } }}
-          transition={{ type: "spring", stiffness: 80, damping: 18 }}
-          className="cursor-pointer rounded-t-2xl p-1 bg-green-500 -mt-1 "
-          onClick={() => setIsPanelOpen(false)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="m18 9-6-6-6 6" />
-            <path d="M12 3v14" />
-            <path d="M5 21h14" />
-          </svg>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 20 }}
-          animate={{ y: 0 }}
-          exit={{ y: 20, transition: { duration: 0.2 } }}
-          transition={{ type: "spring", stiffness: 90, damping: 15 }}
-          className="w-full h-[50vh] bg-green-500 rounded-t-3xl p-4"
-        />
-      </motion.div>
-    );
-  } else if (index === 3) {
-    return (
-      <motion.div
-        initial={{ y: "100vh", scale: 0.9, opacity: 0 }}
-        animate={{ y: 0, scale: 1, opacity: 1 }}
-        exit={{ y: "100vh", scale: 0.9, opacity: 0 }}
-        transition={{
-          duration: 0.8,
-          ease: [0.68, -0.55, 0.27, 1.55],
-        }}
-        className="fixed bottom-[7.9vh] left-0 right-0 z-0 w-full flex flex-col items-center"
-      >
-        <motion.div
-          initial={{ y: 30, rotate: -15, opacity: 0 }}
-          animate={{ y: 0, rotate: 0, opacity: 1 }}
-          exit={{ y: 30, rotate: -15, opacity: 0 }}
-          transition={{
-            type: "spring",
-            stiffness: 120,
-            damping: 18,
-            delay: 0.2,
-          }}
-          className="cursor-pointer rounded-t-2xl p-1 bg-green-500 -mt-1 "
-          onClick={() => setIsPanelOpen(false)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-arrow-up-from-line"
-          >
-            <path d="m18 9-6-6-6 6" />
-            <path d="M12 3v14" />
-            <path d="M5 21h14" />
-          </svg>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 30, scale: 0.95, opacity: 0 }}
-          animate={{ y: 0, scale: 1, opacity: 1 }}
-          exit={{ y: 30, scale: 0.95, opacity: 0 }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            delay: 0.4,
-          }}
-          className="w-full h-[50vh] bg-green-500 rounded-t-3xl p-4"
-        ></motion.div>
-      </motion.div>
-    );
-  } else if (index === 4) {
-    return (
-      <motion.div
-        initial={{ y: "100vh", scale: 0.9, opacity: 0.7 }}
-        animate={{ y: 0, scale: 1, opacity: 1 }}
-        exit={{ y: "100vh", scale: 0.9, opacity: 0.7 }}
-        transition={{
-          duration: 1.2,
-          ease: [0.6, -0.05, 0.01, 0.99],
-        }}
-        className="fixed bottom-[7.9vh] left-0 right-0 z-0 w-full flex flex-col items-center"
-      >
-        <motion.div
-          initial={{ y: 30, rotate: -5, opacity: 0.8 }}
-          animate={{ y: 0, rotate: 0, opacity: 1, backgroundColor: "#4ade80" }}
-          exit={{ y: 30, rotate: -5, opacity: 0.8 }}
-          transition={{
-            type: "spring",
-            stiffness: 90,
-            damping: 20,
-            delay: 0.3,
-            duration: 0.8,
-          }}
-          className="cursor-pointer rounded-t-2xl p-1 bg-green-500 -mt-1 "
-          onClick={() => setIsPanelOpen(false)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-arrow-up-from-line"
-          >
-            <path d="m18 9-6-6-6 6" />
-            <path d="M12 3v14" />
-            <path d="M5 21h14" />
-          </svg>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 40, scale: 0.95, opacity: 0.7 }}
-          animate={{ y: 0, scale: 1, opacity: 1 }}
-          exit={{ y: 40, scale: 0.95, opacity: 0.7 }}
-          transition={{
-            type: "spring",
-            stiffness: 80,
-            damping: 18,
-            delay: 0.5,
-            duration: 1,
-          }}
-          className="w-full h-[50vh] bg-gradient-to-b from-green-500 to-green-400 rounded-t-3xl p-4 shadow-xl"
-        ></motion.div>
-      </motion.div>
-    );
-  } else {
-    return (
-      <motion.div
-        initial={{ y: "110vh", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: "110vh", opacity: 0, transition: { duration: 1 } }}
-        transition={{
-          duration: 0.8,
-          ease: [0.25, 0.8, 0.5, 1],
-          opacity: { duration: 0.6 },
-        }}
-        className="fixed bottom-[7vh] left-0 right-0 w-full flex flex-col items-center"
-      >
-        <motion.div
-          initial={{ scale: 0.85, y: 15, opacity: 0 }}
-          animate={{ scale: 1, y: 0, opacity: 1 }}
-          exit={{
-            scale: 0.85,
-            y: 15,
-            opacity: 0,
-            transition: { duration: 0.8 },
-          }}
-          transition={{ type: "spring", stiffness: 60, damping: 20 }}
-          className="cursor-pointer rounded-t-2xl p-1 bg-green-500 -mb-1"
-          onClick={() => setIsPanelOpen(false)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="m18 9-6-6-6 6" />
-            <path d="M12 3v14" />
-            <path d="M5 21h14" />
-          </svg>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 30, opacity: 0.8 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 30, opacity: 0.8, transition: { duration: 1 } }}
-          transition={{
-            type: "spring",
-            stiffness: 70,
-            damping: 15,
-            duration: 0.8,
-          }}
-          className="w-full h-[60vh] bg-green-500 rounded-t-3xl p-4"
-        />
-      </motion.div>
-    );
-  }
-};

@@ -15,9 +15,8 @@ const Header: React.FC = () => {
 
   return (
     <div className="max-sm:hidden text-xl flex items-start h-[8vh] w-full fixed left-0 right-0 ">
-      {/* <div className="h-[8vh] w-[15vw] flex justify-center items-center rounded-br-2xl backdrop-blur-3xl "> */}
       <div
-        className="h-[8vh] w-[15vw] flex justify-center items-center rounded-br-2xl cursor-pointer bg-green-500 "
+        className="h-[8vh] w-[15vw] flex justify-center items-center rounded-br-2xl cursor-pointer border-b-2 border-r-2 border-black bg-white "
         onClick={() => {
           router.push("/");
           dispatch(RemoveActiveTab("HeaderTab"));
@@ -37,12 +36,10 @@ const Header: React.FC = () => {
       <SlideTabs
         tabs={HeaderTabs}
         componentId="HeaderTab"
-        // className="h-[5.5vh] w-[70vw] flex items-center justify-around backdrop-blur-3xl "
-        className="h-[5.5vh] w-[70vw] flex items-center justify-around bg-green-500 "
-        sliderClass="h-[3.8vh] rounded-full bg-black"
+        className="h-[5.5vh] w-[70vw] flex items-center justify-around border-b-2 border-black bg-white "
+        sliderClass="h-[85%] rounded-full bg-black"
       />
-      {/* <div className="h-[8vh] w-[15vw] flex justify-center items-center flex-row-reverse rounded-bl-2xl backdrop-blur-3xl "> */}
-      <div className="h-[8vh] w-[15vw] flex justify-center items-center flex-row-reverse rounded-bl-2xl bg-green-500 ">
+      <div className="h-[8vh] w-[15vw] flex justify-center items-center flex-row-reverse rounded-bl-2xl border-b-2 border-l-2 border-black bg-white ">
         <div>B</div>
         <div>A</div>
       </div>

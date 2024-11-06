@@ -1,6 +1,6 @@
 const LowerLayout = () => {
   return (
-    <section className="max-sm:pt-[0] pt-[7vh] bg-yellow-500 ">
+    <section className="max-sm:pt-[0] pt-[7vh] ">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quod
       numquam perspiciatis laborum recusandae quasi fuga iure itaque quis
       adipisci vitae, assumenda deleniti quisquam nesciunt doloribus eos magnam

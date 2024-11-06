@@ -61,7 +61,9 @@ model RoomForRent {
   id               String               @id @default(auto()) @map("_id") @db.ObjectId
   name             String
   city             String
+  direction        String
   location         String // Location of Room
+  postedBy         String
   photos           String[] // Array of photo URLs/paths
   videos           String? // video URLs/paths
   price            Float // Price of Room
