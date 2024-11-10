@@ -70,7 +70,7 @@ const BottomNavBar = () => {
                 stiffness: 70,
                 damping: 15,
                 duration: 0.2,
-                delay: 0.4,
+                delay: 0.3,
               }}
               className="h-[70vh] rounded-t-3xl w-full p-2 overflow-y-scroll border-2 border-b-0 border-black "
             >
@@ -89,7 +89,7 @@ const BottomNavBar = () => {
                 stiffness: 60,
                 damping: 20,
                 duration: 0.2,
-                delay: 0.4,
+                delay: 0.3,
               }}
               className="cursor-pointer rounded-full p-[0.3rem] backdrop-blur-3xl border-2 border-black absolute bottom-[0.8vh] right-1 bg-white "
               onClick={() => setIsPanelOpen(false)}

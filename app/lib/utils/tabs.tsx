@@ -8,13 +8,13 @@ export const HeaderTabs: [string, string][] = [
 ];
 
 export const SearchBoxTabs: [string, React.ReactNode?][] = [
-  ["Room", "Room"],
-  ["Store", "Store"],
-  ["Hostel", "Hostel"],
-  ["Restaurant", "Restaurant"],
-  ["Land", "Land"],
-  ["Book", "Book"],
-  ["Car", "Car"],
+  ["room", "Room"],
+  ["store", "Store"],
+  ["hostel", "Hostel"],
+  ["restaurant", "Restaurant"],
+  ["land", "Land"],
+  ["book", "Book"],
+  ["car", "Car"],
 ];
 
 export const BottomTabs: [string, React.ReactNode][] = [

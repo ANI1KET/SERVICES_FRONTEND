@@ -131,7 +131,7 @@ import { useRouter } from "next/navigation";
 import React, { useRef, useState, useCallback } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { setActiveTab, setCursorPosition } from "@/app/store/slices/tabSlice";
+import { setActiveTab } from "@/app/store/slices/tabSlice";
 
 interface Position {
   left: number;
@@ -146,6 +146,7 @@ interface TabProps {
   onMouseEnter: (position: Position) => void;
   onMouseLeave: () => void;
   onClick: (position: Position) => void;
+  className: String;
 }
 
 const Tab: React.FC<TabProps> = ({
@@ -155,18 +156,16 @@ const Tab: React.FC<TabProps> = ({
   onMouseEnter,
   onMouseLeave,
   onClick,
+  className,
 }) => {
   const ref = useRef<HTMLLIElement>(null);
 
-  const handleInteraction = useCallback(
-    (callback: (position: Position) => void) => {
-      if (ref.current) {
-        const { offsetLeft, clientWidth } = ref.current;
-        callback({ left: offsetLeft, width: clientWidth, opacity: 1 });
-      }
-    },
-    []
-  );
+  const handleInteraction = (callback: (position: Position) => void) => {
+    if (ref.current) {
+      const { offsetLeft, clientWidth } = ref.current;
+      callback({ left: offsetLeft, width: clientWidth, opacity: 1 });
+    }
+  };
 
   return (
     <li
@@ -175,7 +174,11 @@ const Tab: React.FC<TabProps> = ({
       onMouseLeave={onMouseLeave}
       onClick={() => handleInteraction(onClick)}
       className={`cursor-pointer px-3 z-10 text-sm lg:text-base uppercase transition-colors ${
-        isActive || isHovered ? "text-white scale-110" : "text-black"
+        isActive
+          ? `text-white ${className}`
+          : isHovered
+          ? "text-white"
+          : "text-black"
       }`}
     >
       {children}
@@ -211,9 +214,6 @@ const SlideTabs: React.FC<SlideTabsProps> = ({
   const activeTab = useAppSelector(
     (state) => state.tabs.activeTabs[componentId]
   );
-  const activeTabPosition = useAppSelector(
-    (state) => state.tabs.cursorPosition[componentId]
-  );
 
   const [hoveredPosition, setHoveredPosition] = useState<Position>({
     left: 0,
@@ -233,16 +233,14 @@ const SlideTabs: React.FC<SlideTabsProps> = ({
   }, []);
 
   const handleTabClick = useCallback(
-    (label: string, position: Position) => {
+    (label: string) => {
       dispatch(setActiveTab({ componentId, activeTab: label }));
-      dispatch(setCursorPosition({ [componentId]: position }));
       if (componentId !== "SearchTab") router.push(`/${label}`);
     },
     [componentId, dispatch, router]
   );
 
-  const cursorPosition =
-    hoveredPosition.opacity > 0 ? hoveredPosition : activeTabPosition;
+  const cursorPosition = hoveredPosition;
 
   return (
     <ul
@@ -259,7 +257,8 @@ const SlideTabs: React.FC<SlideTabsProps> = ({
           isHovered={hoveredTab === label}
           onMouseEnter={(position) => handleTabHover(label, position)}
           onMouseLeave={handleTabLeave}
-          onClick={(position) => handleTabClick(label, position)}
+          onClick={() => handleTabClick(label)}
+          className={sliderClass}
         >
           {content}
         </Tab>

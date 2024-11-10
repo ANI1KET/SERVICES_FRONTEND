@@ -8,13 +8,14 @@ import {
   useMotionValueEvent,
 } from "framer-motion";
 
-import { useAppDispatch } from "@/app/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks/hooks";
 import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
 import UpperSearchBox from "@/app/components/HomeLayouts/MiddleLayout/UpperSearchBox";
 import LowerSearchBox from "@/app/components/HomeLayouts/MiddleLayout/LowerSearchBox";
 
 const MiddleLayout: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { SearchTab } = useAppSelector((state) => state.tabs.activeTabs);
 
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState<boolean>(true);
@@ -43,7 +44,12 @@ const MiddleLayout: React.FC = () => {
 
   useEffect(() => {
     dispatch(RemoveActiveTab("HeaderTab"));
-  });
+  }, []);
+
+  useEffect(() => {
+    console.log(SearchTab);
+    // API
+  }, [SearchTab]);
   return (
     <>
       <AnimatePresence mode="wait">
