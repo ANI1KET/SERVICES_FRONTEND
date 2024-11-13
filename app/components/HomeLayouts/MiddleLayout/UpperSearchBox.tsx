@@ -1,35 +1,14 @@
-import SlideTabs from "@/app/lib/ui/tabNavigation";
+import CategoryTabs from "@/app/lib/ui/CategoryTabs";
 import { SearchBoxTabs } from "@/app/lib/utils/tabs";
 
 const UpperSearchBox = () => {
   return (
-    <SlideTabs
+    <CategoryTabs
       tabs={SearchBoxTabs}
-      componentId="SearchTab"
-      className="h-1/2 flex justify-around items-center "
-      sliderClass="h-[4.5vh] rounded-full bg-black"
+      componentId={`SearchTab`}
+      className={`h-1/2 grid grid-flow-col place-items-center`}
     />
   );
 };
 
 export default UpperSearchBox;
-
-// interface UpperSearchBoxProps {
-//   isTriggered?: boolean;
-// }
-// const UpperSearchBox: React.FC<UpperSearchBoxProps> = ({
-//   isTriggered = false,
-// }) => {
-//   return (
-//     </div>
-//   );
-// };
-
-// const UpperSearchBox: React.FC<{ isTriggered?: boolean }> = ({
-//   isTriggered = false,
-// }) => {
-//   return (
-//   );
-// };
-
-// export default UpperSearchBox;

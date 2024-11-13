@@ -1,14 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import userSlice from "./slices/userSlice";
+import apiSlice from "./apiSlice";
 import tabSlice from "./slices/tabSlice";
+import userSlice from "./slices/userSlice";
 
 export const store = () => {
   return configureStore({
     reducer: {
       user: userSlice,
       tabs: tabSlice,
+      [apiSlice.reducerPath]: apiSlice.reducer,
     },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(apiSlice.middleware),
   });
 };
 

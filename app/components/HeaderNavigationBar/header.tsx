@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 import { HeaderTabs } from "../../lib/utils/tabs";
-import SlideTabs from "../../lib/ui/tabNavigation";
+import NavigationTabs from "../../lib/ui/NavigationTabs";
 import { useAppDispatch } from "@/app/store/hooks/hooks";
 import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
 
@@ -33,12 +33,13 @@ const Header: React.FC = () => {
           </motion.span>
         ))}
       </div>
-      <SlideTabs
+
+      <NavigationTabs
         tabs={HeaderTabs}
         componentId="HeaderTab"
         className="h-[5.5vh] w-[70vw] flex items-center justify-around border-b-2 border-black bg-white "
-        sliderClass="h-[85%] rounded-full bg-black"
       />
+
       <div className="h-[8vh] w-[15vw] flex justify-center items-center flex-row-reverse rounded-bl-2xl border-b-2 border-l-2 border-black bg-white ">
         <div>B</div>
         <div>A</div>

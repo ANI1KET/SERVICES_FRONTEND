@@ -1,20 +1,11 @@
-export const HeaderTabs: [string, string][] = [
+// Navigation Tabs
+export const HeaderTabs: [string, React.ReactNode][] = [
   ["buyer", "For Buyer"],
   ["renter", "For Renter"],
   ["traveler", "For Traveler"],
   ["shopper", "For Shopper"],
   ["foodie", "For Foodies"],
   ["client", "For client"],
-];
-
-export const SearchBoxTabs: [string, React.ReactNode?][] = [
-  ["room", "Room"],
-  ["store", "Store"],
-  ["hostel", "Hostel"],
-  ["restaurant", "Restaurant"],
-  ["land", "Land"],
-  ["book", "Book"],
-  ["car", "Car"],
 ];
 
 export const BottomTabs: [string, React.ReactNode][] = [
@@ -111,4 +102,15 @@ export const BottomTabs: [string, React.ReactNode][] = [
       <circle cx="12" cy="12" r="10" />
     </svg>,
   ],
+];
+
+// Category Tabs
+export const SearchBoxTabs: [string, React.ReactNode][] = [
+  ["room", "Room"],
+  ["store", "Store"],
+  ["hostel", "Hostel"],
+  ["restaurant", "Restaurant"],
+  ["land", "Land"],
+  ["book", "Book"],
+  ["car", "Car"],
 ];

@@ -1,95 +1,10 @@
-// "use client";
-
-// import { useCallback } from "react";
-
-// import { SearchBoxTabs } from "@/app/lib/utils/tabs";
-// import { setActiveTab } from "@/app/store/slices/tabSlice";
-// import { useAppDispatch, useAppSelector } from "@/app/store/hooks/hooks";
-
-// const cities: Set<string> = new Set([
-//   "Biratnagar",
-//   "Kathmandu",
-//   "Pokhara",
-//   "Janakpur",
-//   "Birjung",
-// ]);
-// const locations: Set<string> = new Set([
-//   "abjbjbjbbjjbbjjbjjjjjbjbjjjjbjjjj4f34f4f34c",
-//   "bjjjjjjjjjjjjjjjjbcdef43f4f4f34f4f34f4f34",
-//   "efgaf344g4t4t34t4gt43t4tf4f3f4f34f4f4f43f43f",
-//   "ghf344f443f44f4f43f4f 4r4r4r3 r34ri",
-//   "jkl",
-// ]);
-
-// const SearchPanel = () => {
-//   const dispatch = useAppDispatch();
-//   const activeTab = useAppSelector(
-//     (state) => state.tabs.activeTabs["SearchTab"]
-//   );
-
-//   const handleTabClick = useCallback(
-//     (label: string) => {
-//       dispatch(setActiveTab({ componentId: "SearchTab", activeTab: label }));
-//     },
-//     [dispatch]
-//   );
-//   return (
-//     <div className="flex flex-col gap-2">
-//       <section className="h-[16vh] grid grid-cols-3 place-items-center uppercase rounded-3xl border-2 border-black ">
-//         {SearchBoxTabs?.map(([label, content], index) => (
-//           <div
-//             key={index}
-//             className={`cursor-pointer ${
-//               activeTab === label
-//                 ? "text-white rounded-full p-1 bg-black "
-//                 : "text-black"
-//             }`}
-//             onClick={() => handleTabClick(label)}
-//           >
-//             {label}
-//           </div>
-//         ))}
-//       </section>
-
-//       <form className="w-full flex flex-row gap-1 border-2 border-black rounded-3xl ">
-//         <div className="ml-1 p-2 border-r-2 border-black ">
-//           <input type="text" list="Cities" />
-//           <datalist id="Cities">
-//             {[...cities].map((city, index) => (
-//               <option key={index} value={city} />
-//             ))}
-//           </datalist>
-//         </div>
-
-//         <div className="flex flex-row justify-between w-full ">
-//           <input type="text" list="Locations" className={`w-full `} />
-//           <datalist id="Locations">
-//             {[...locations].map((location, index) => (
-//               <option key={index} value={location} />
-//             ))}
-//           </datalist>
-
-//           <button
-//             type="submit"
-//             className="text-xl text-white rounded-lg bg-black m-1 mr-2"
-//           >
-//             Search
-//           </button>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default SearchPanel;
-
 "use client";
 
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks/hooks";
-import { setActiveTab } from "@/app/store/slices/tabSlice";
+
 import { SearchBoxTabs } from "@/app/lib/utils/tabs";
+import CategoryTabs from "@/app/lib/ui/CategoryTabs";
 
 const cities: Set<string> = new Set([
   "Biratnagar",
@@ -107,11 +22,6 @@ const locations: Set<string> = new Set([
 ]);
 
 const SearchPanel = () => {
-  const dispatch = useAppDispatch();
-  const activeTab = useAppSelector(
-    (state) => state.tabs.activeTabs["SearchTab"]
-  );
-
   const {
     formState: { errors },
     register,
@@ -127,13 +37,6 @@ const SearchPanel = () => {
 
   const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
   const selectedCity = watch("city");
-
-  const handleTabClick = useCallback(
-    (label: string) => {
-      dispatch(setActiveTab({ componentId: "SearchTab", activeTab: label }));
-    },
-    [dispatch]
-  );
 
   const handleError = useCallback(
     (field: "city" | "location", message: string) => {
@@ -200,21 +103,11 @@ const SearchPanel = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <section className="h-[16vh] grid grid-cols-3 place-items-center uppercase rounded-3xl border-2 border-black ">
-        {SearchBoxTabs?.map(([label, content], index) => (
-          <div
-            key={index}
-            className={`cursor-pointer ${
-              activeTab === label
-                ? "text-white rounded-full p-1 bg-black "
-                : "text-black"
-            }`}
-            onClick={() => handleTabClick(label)}
-          >
-            {label}
-          </div>
-        ))}
-      </section>
+      <CategoryTabs
+        tabs={SearchBoxTabs}
+        componentId={`SearchTab`}
+        className={`h-[16vh] grid grid-cols-3 place-items-center `}
+      />
 
       <form
         className="w-full flex flex-col gap-1 "
