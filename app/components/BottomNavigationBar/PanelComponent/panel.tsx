@@ -166,3 +166,24 @@ const SearchPanel = () => {
 };
 
 export default SearchPanel;
+
+// import React from "react";
+
+// import SearchForm from "@/app/lib/ui/SearchForm";
+// import CategoryTabs from "@/app/lib/ui/CategoryTabs";
+// import { SearchBoxTabs } from "@/app/lib/utils/tabs";
+
+// const SearchPanel = () => {
+//   return (
+//     <div className="grid gap-2">
+//       <CategoryTabs
+//         tabs={SearchBoxTabs}
+//         componentId={`SearchTab`}
+//         className={`h-[16vh] grid grid-cols-3 place-items-center border-2 border-black rounded-2xl `}
+//       />
+//       <SearchForm />
+//     </div>
+//   );
+// };
+
+// export default SearchPanel;

@@ -34,7 +34,7 @@ interface TabsProps {
 const NavigationTabs: React.FC<TabsProps> = ({
   tabs,
   componentId,
-  className = "",
+  className,
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();

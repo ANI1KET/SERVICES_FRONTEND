@@ -12,13 +12,13 @@ const BottomNavBar = () => {
   return (
     <div className="hidden max-sm:flex">
       {isPanelOpen && (
-        <div className="fixed bottom-[7.9vh] left-0 right-0 flex flex-col items-center bg-white ">
+        <div className="fixed bottom-[7.8vh] left-0 right-0 flex flex-col items-center bg-white ">
           <div className="h-[70vh] rounded-t-3xl w-full p-2 overflow-y-scroll border-2 border-b-0 border-black ">
             <SearchPanel />
           </div>
 
           <div
-            className="cursor-pointer rounded-full p-[0.3rem] backdrop-blur-3xl border-2 border-black absolute bottom-[0.8vh] right-1 bg-white "
+            className="cursor-pointer rounded-full p-1 backdrop-blur-3xl border-2 border-black absolute bottom-[0.8vh] right-1 bg-white "
             onClick={() => setIsPanelOpen(false)}
           >
             <svg
@@ -42,7 +42,7 @@ const BottomNavBar = () => {
 
       {!isPanelOpen && (
         <div
-          className="fixed bottom-[8.5vh] right-1 z-20 cursor-pointer rounded-full p-[0.3rem] border-2 border-black bg-white "
+          className="fixed bottom-[8.5vh] right-1 cursor-pointer rounded-full p-1 border-2 border-black bg-white "
           onClick={() => setIsPanelOpen(true)}
         >
           <svg
@@ -66,8 +66,8 @@ const BottomNavBar = () => {
       <NavigationTabs
         componentId="BottomTab"
         tabs={BottomTabs}
-        className={`max-sm:flex max-sm:items-center max-sm:justify-around max-sm:h-[8vh] max-sm:fixed max-sm:bottom-[-1px] max-sm:w-full ${
-          isPanelOpen ? "max-sm:rounded-t-none" : "max-sm:rounded-t-3xl"
+        className={`flex items-center justify-around h-[8vh] fixed bottom-[-1px] w-full ${
+          isPanelOpen ? "rounded-t-none" : "rounded-t-3xl"
         } border-2 border-black bg-white `}
       />
     </div>

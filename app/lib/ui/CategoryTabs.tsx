@@ -1,7 +1,13 @@
+"use client";
+
 import React, { useCallback } from "react";
 
 import { setActiveTab } from "@/app/store/slices/tabSlice";
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useLazyGetRoomLocationsQuery,
+} from "@/app/store/hooks/hooks";
 
 interface TabProps {
   children: React.ReactNode;
@@ -33,14 +39,17 @@ const CategoryTabs: React.FC<TabsProps> = ({
   tabs,
   className,
 }) => {
+  const dispatch = useAppDispatch();
   const activeTab = useAppSelector(
     (state) => state.tabs.activeTabs[componentId]
   );
-  const dispatch = useAppDispatch();
+  const [triggerGetRoomLocations, { data, isLoading, error }] =
+    useLazyGetRoomLocationsQuery();
 
   const handleTabClick = useCallback(
     (label: string) => {
       dispatch(setActiveTab({ componentId, activeTab: label }));
+      triggerGetRoomLocations({ category: label });
     },
     [componentId, dispatch]
   );
