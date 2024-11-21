@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
@@ -10,10 +10,10 @@ import {
 
 import { useAppDispatch } from "@/app/store/hooks/hooks";
 import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
-import UpperSearchBox from "@/app/components/HomeLayouts/MiddleLayout/UpperSearchBox";
-import LowerSearchBox from "@/app/components/HomeLayouts/MiddleLayout/LowerSearchBox";
 
-const MiddleLayout: React.FC = () => {
+const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const dispatch = useAppDispatch();
 
   const { scrollYProgress } = useScroll();
@@ -49,11 +49,9 @@ const MiddleLayout: React.FC = () => {
       <AnimatePresence mode="wait">
         <motion.div
           {...animationProps}
-          className="block max-sm:hidden h-[12vh] w-[71vw] mx-auto rounded-xl shadow-2xl sticky top-[5.2vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-white "
+          className="h-[12vh] w-[71vw] mx-auto rounded-xl shadow-2xl sticky top-[5.2vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-white "
         >
-          <UpperSearchBox />
-          <hr className="border-black" />
-          <LowerSearchBox />
+          {children}
         </motion.div>
       </AnimatePresence>
     </>

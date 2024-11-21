@@ -1,12 +1,22 @@
 import UpperLayout from "./components/HomeLayouts/UpperLayout";
 import LowerLayout from "./components/HomeLayouts/LowerLayout";
-import MiddleLayout from "./components/HomeLayouts/MiddleLayout";
+import UpperSearchBox from "./components/HomeLayouts/MiddleLayout/UpperSearchBox";
+import LowerSearchBox from "./components/HomeLayouts/MiddleLayout/LowerSearchBox";
+import ResponsiveMiddleLayout from "./components/HomeLayouts/ResponsiveMiddleLayout";
 
-const Home: React.FC = () => {
+const Home = () => {
   return (
     <main>
       <UpperLayout />
-      <MiddleLayout />
+      <ResponsiveMiddleLayout>
+        <UpperSearchBox />
+        <hr className="border-black" />
+        <LowerSearchBox />
+      </ResponsiveMiddleLayout>
+      {/* <ResponsiveMiddleLayout
+        upperComponent={<UpperSearchBox />}
+        lowerComponent={<LowerSearchBox />}
+      />  */}
       <LowerLayout />
     </main>
   );

@@ -107,3 +107,45 @@ model RoomReview {
   // @@index([roomForRentId])
   @@map("Rooms_Review")
 }
+
+model Store {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  city      String
+  direction String?
+  location  String
+}
+
+model Hostel {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  city      String
+  direction String?
+  location  String
+}
+
+model Restaurant {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  city      String
+  direction String?
+  location  String
+}
+
+model Land {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  city      String
+  direction String?
+  location  String
+}
+
+model Book {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  city      String
+  direction String?
+  location  String
+}
+
+model Car {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  city      String
+  direction String?
+  location  String
+}

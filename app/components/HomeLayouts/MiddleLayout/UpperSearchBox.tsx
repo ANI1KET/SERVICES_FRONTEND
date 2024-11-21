@@ -1,7 +1,9 @@
+"use server";
+
 import CategoryTabs from "@/app/lib/ui/CategoryTabs";
 import { SearchBoxTabs } from "@/app/lib/utils/tabs";
 
-const UpperSearchBox = () => {
+const UpperSearchBox = async () => {
   return (
     <CategoryTabs
       tabs={SearchBoxTabs}

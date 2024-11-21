@@ -1,41 +1,68 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   useAppSelector,
+  useLazyGetRoomCityLocationsQuery,
   useLazyGetRoomLocationsQuery,
 } from "@/app/store/hooks/hooks";
+import RoomApi from "@/app/store/slices/roomApiSlice";
 
-const SearchForm = () => {
+const SearchForm: React.FC = () => {
   const activeTab = useAppSelector((state) => state.tabs.activeTabs.SearchTab);
-  const [triggerGetRoomLocations, { data, error, isLoading }] =
-    useLazyGetRoomLocationsQuery();
-  console.log("! ", { data, error, isLoading });
+  const cachedData = useAppSelector(
+    (state: any) =>
+      RoomApi.endpoints.getRoomLocations.select({ category: activeTab })(state)
+        .data
+  );
 
+  const [
+    triggerGetRoomLocations,
+    {
+      data: roomLocationsData,
+      error: roomLocationsError,
+      isLoading: roomLocationsLoading,
+    },
+  ] = useLazyGetRoomLocationsQuery();
   useEffect(() => {
-    triggerGetRoomLocations({ category: activeTab });
-  }, []);
+    if (!cachedData) {
+      triggerGetRoomLocations({ category: activeTab });
+    }
+  }, [activeTab]);
+
+  const [
+    triggerGetRoomCityLocations,
+    {
+      data: roomCityLocationsData,
+      error: roomCityLocationsError,
+      isLoading: roomCityLocationsLoading,
+    },
+  ] = useLazyGetRoomCityLocationsQuery();
 
   const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
   const [isLocationPanelOpen, setIsLocationPanelOpen] = useState<boolean>(true);
-
   const {
     formState: { errors },
+    watch,
     register,
-    handleSubmit,
     setValue,
+    setFocus,
     setError,
     clearErrors,
-    watch,
-    setFocus,
+    handleSubmit,
   } = useForm<{ city: string; location: string }>({
     defaultValues: {
       city: "",
       location: "",
     },
   });
+
+  useEffect(() => {
+    setValue("city", cachedData?.city ?? "");
+    setValue("location", "");
+  }, [cachedData]);
 
   const selectedCity = watch("city");
 
@@ -46,12 +73,15 @@ const SearchForm = () => {
     [setError]
   );
 
-  const removeLocation = (indexToRemove: number) => {
-    setSelectedLocation((prevLocations) =>
-      prevLocations.filter((_, index) => index !== indexToRemove)
-    );
-    setFocus("location");
-  };
+  const removeLocation = useCallback(
+    (indexToRemove: number) => {
+      setSelectedLocation((prevLocations) =>
+        prevLocations.filter((_, index) => index !== indexToRemove)
+      );
+      setFocus("location");
+    },
+    [setFocus]
+  );
 
   const handleCityKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -63,14 +93,24 @@ const SearchForm = () => {
       if (!selectedCity) {
         clearErrors("city");
       } else if (
-        data !== undefined &&
-        Object.keys(data[activeTab]).includes(capitalizedCity)
+        cachedData !== undefined &&
+        cachedData[activeTab].hasOwnProperty(capitalizedCity)
+        // capitalizedCity in cachedData[activeTab]
       ) {
-        setValue("city", capitalizedCity);
-        clearErrors("city");
-        setFocus("location");
+        if (
+          (cachedData[activeTab] as { [key: string]: string[] | [] })[
+            capitalizedCity
+          ].length === 0
+        ) {
+          triggerGetRoomCityLocations({
+            category: activeTab,
+            city: capitalizedCity,
+          });
+        }
 
-        // triggerGetRoomLocations(activeTab);
+        setValue("city", capitalizedCity);
+        setFocus("location");
+        clearErrors("city");
       } else {
         handleError("city", "Currently, service is not available in the city.");
       }
@@ -79,29 +119,29 @@ const SearchForm = () => {
     }
   };
 
-  // const handleLocationKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault();
-  //     const location = e.currentTarget.value;
-  //     if (locations.has(location)) {
-  //       e.currentTarget.value = "";
-  //       setSelectedLocation((prevSelectedLocations) => {
-  //         if (!prevSelectedLocations.includes(location)) {
-  //           return [...prevSelectedLocations, location];
-  //         }
-  //         return prevSelectedLocations;
-  //       });
-  //       clearErrors("location");
-  //     } else if (location) {
-  //       handleError(
-  //         "location",
-  //         "Service not available in this location right now."
-  //       );
-  //     } else {
-  //       clearErrors("location");
-  //     }
-  //   }
-  // };
+  const handleLocationKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    //   if (e.key === "Enter") {
+    //     e.preventDefault();
+    //     const location = e.currentTarget.value;
+    //     if (locations.has(location)) {
+    //       e.currentTarget.value = "";
+    //       setSelectedLocation((prevSelectedLocations) => {
+    //         if (!prevSelectedLocations.includes(location)) {
+    //           return [...prevSelectedLocations, location];
+    //         }
+    //         return prevSelectedLocations;
+    //       });
+    //       clearErrors("location");
+    //     } else if (location) {
+    //       handleError(
+    //         "location",
+    //         "Service not available in this location right now."
+    //       );
+    //     } else {
+    //       clearErrors("location");
+    //     }
+    //   }
+  };
 
   const onSubmit = (data: { city: string; location: string }) => {
     // if (!data.city) {
@@ -143,17 +183,21 @@ const SearchForm = () => {
         <input
           type="text"
           list="Cities"
+          value={selectedCity}
           {...register("city")}
           onKeyDown={handleCityKeyDown}
-          className="w-full h-full text-xl"
+          className="w-full h-full text-lg"
         />
         <datalist id="Cities">
-          {data &&
-            Object.keys(data[activeTab])?.map((city, index) => (
-              <option key={index} value={city}>
-                {city}
-              </option>
-            ))}
+          {cachedData &&
+            cachedData[activeTab] &&
+            Object.keys(cachedData[activeTab]).map((city, index) => {
+              return (
+                <option key={index} value={city}>
+                  {city}
+                </option>
+              );
+            })}
         </datalist>
       </div>
 
@@ -162,13 +206,19 @@ const SearchForm = () => {
           type="text"
           list="Locations"
           {...register("location")}
-          // onKeyDown={handleLocationKeyDown}
-          // disabled={!cities.has(selectedCity)}
-          className={`w-full h-full text-xl`}
+          onKeyDown={handleLocationKeyDown}
+          disabled={
+            cachedData !== undefined &&
+            !cachedData[activeTab].hasOwnProperty(selectedCity)
+          }
+          className={`w-full h-full text-lg`}
         />
         <datalist id="Locations">
-          {data &&
-            data[activeTab]?.[selectedCity]?.map((location, index) => {
+          {cachedData &&
+            cachedData[activeTab] &&
+            (cachedData[activeTab] as { [key: string]: string[] | [] })[
+              selectedCity
+            ]?.map((location, index) => {
               return <option key={index} value={location} />;
             })}
         </datalist>
@@ -179,12 +229,12 @@ const SearchForm = () => {
       </div>
 
       <div className="col-span-1 max-sm:col-span-2 place-content-center text-center bg-black max-sm:rounded-lg rounded-br-lg">
-        <button type="submit" className={`text-white text-2xl`}>
+        <button type="submit" className={`text-white text-xl`}>
           Search
         </button>
       </div>
 
-      <div className="max-sm:hidden absolute top-full left-1/2 -translate-x-1/2 w-[calc(100%+0.6rem)] col-span-7 col-start-2 place-content-center p-1 bg-white border-b-2 border-r-2 border-l-2 border-black rounded-b-xl">
+      <div className="max-sm:hidden absolute top-full left-1/2 -translate-x-1/2 w-[calc(100%+0.64rem)] col-span-7 col-start-2 place-content-center p-1 bg-white border-b-2 border-r-2 border-l-2 border-black rounded-b-xl">
         <p className={`text-black text-xl`}>Search</p>
       </div>
     </form>

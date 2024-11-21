@@ -7,6 +7,7 @@ import StoreProvider from "@/app/providers/storeProvider";
 import Header from "./components/HeaderNavigationBar/header";
 import SideNavBar from "./components/SideNavigationBar/SideNavBar";
 import BottomNavBar from "./components/BottomNavigationBar/BottomNavBar";
+import DisableInteractions from "./lib/utils/DisableInteractions";
 
 export const metadata: Metadata = {
   title: "ROOM RENTAL",
@@ -24,8 +25,9 @@ export default function RootLayout({
       <body>
         <StoreProvider>
           <AuthProvider>
+            {/* <DisableInteractions /> */}
             <Header />
-            <SideNavBar />
+            {/* <SideNavBar /> */}
             <div className="pt-[8vh] max-sm:pt-[0vh]">{children}</div>
             <Footer />
             <BottomNavBar />
