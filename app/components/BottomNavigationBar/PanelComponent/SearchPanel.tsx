@@ -2,9 +2,9 @@
 
 import React, { memo } from "react";
 
+import SearchForm from "@/app/lib/ui/SearchForm";
 import { SearchBoxTabs } from "@/app/lib/utils/tabs";
 import CategoryTabs from "@/app/lib/ui/CategoryTabs";
-import SearchForm from "@/app/lib/ui/SearchForm";
 
 const SearchPanel = memo(() => {
   return (

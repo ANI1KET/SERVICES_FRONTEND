@@ -13,10 +13,36 @@ import RoomApi from "@/app/store/slices/roomApiSlice";
 const SearchForm: React.FC = () => {
   const activeTab = useAppSelector((state) => state.tabs.activeTabs.SearchTab);
   const cachedData = useAppSelector(
-    (state: any) =>
+    (state) =>
       RoomApi.endpoints.getRoomLocations.select({ category: activeTab })(state)
         .data
   );
+
+  useEffect(() => {
+    setValue("city", cachedData?.city ?? "");
+    setValue("location", "");
+  }, [cachedData]);
+
+  const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
+  const [isLocationPanelOpen, setIsLocationPanelOpen] = useState<boolean>(true);
+
+  const {
+    formState: { errors },
+    watch,
+    register,
+    setValue,
+    setFocus,
+    setError,
+    clearErrors,
+    handleSubmit,
+  } = useForm<{ city: string; location: string }>({
+    defaultValues: {
+      city: "",
+      location: "",
+    },
+  });
+
+  const selectedCity = watch("city");
 
   const [
     triggerGetRoomLocations,
@@ -40,32 +66,13 @@ const SearchForm: React.FC = () => {
       isLoading: roomCityLocationsLoading,
     },
   ] = useLazyGetRoomCityLocationsQuery();
-
-  const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
-  const [isLocationPanelOpen, setIsLocationPanelOpen] = useState<boolean>(true);
-  const {
-    formState: { errors },
-    watch,
-    register,
-    setValue,
-    setFocus,
-    setError,
-    clearErrors,
-    handleSubmit,
-  } = useForm<{ city: string; location: string }>({
-    defaultValues: {
-      city: "",
-      location: "",
-    },
-  });
-
   useEffect(() => {
-    setValue("city", cachedData?.city ?? "");
-    setValue("location", "");
-  }, [cachedData]);
+    setFocus("location");
+  }, [roomCityLocationsData]);
 
-  const selectedCity = watch("city");
-
+  const capitalize = (text: string) =>
+    text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  const clearInputErrors = (field: "city" | "location") => clearErrors(field);
   const handleError = useCallback(
     (field: "city" | "location", message: string) => {
       setError(field, { type: "manual", message });
@@ -84,66 +91,67 @@ const SearchForm: React.FC = () => {
   );
 
   const handleCityKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const capitalizedCity =
-        selectedCity.charAt(0).toUpperCase() +
-        selectedCity.slice(1).toLowerCase();
+    if (e.key !== "Enter") return;
 
-      if (!selectedCity) {
-        clearErrors("city");
-      } else if (
-        cachedData !== undefined &&
-        cachedData[activeTab].hasOwnProperty(capitalizedCity)
-        // capitalizedCity in cachedData[activeTab]
+    e.preventDefault();
+    const capitalizedCity = capitalize(selectedCity);
+
+    if (!selectedCity) {
+      clearInputErrors("city");
+    } else if (
+      cachedData !== undefined &&
+      cachedData[activeTab].hasOwnProperty(capitalizedCity)
+      // capitalizedCity in cachedData[activeTab]
+    ) {
+      if (
+        (cachedData[activeTab] as { [key: string]: string[] | [] })[
+          capitalizedCity
+        ].length === 0
       ) {
-        if (
-          (cachedData[activeTab] as { [key: string]: string[] | [] })[
-            capitalizedCity
-          ].length === 0
-        ) {
-          triggerGetRoomCityLocations({
-            category: activeTab,
-            city: capitalizedCity,
-          });
-        }
-
-        setValue("city", capitalizedCity);
-        setFocus("location");
-        clearErrors("city");
-      } else {
-        handleError("city", "Currently, service is not available in the city.");
+        triggerGetRoomCityLocations({
+          category: activeTab,
+          city: capitalizedCity,
+        });
       }
-
-      setSelectedLocation([]);
+      setValue("city", capitalizedCity);
+      setFocus("location");
+      clearErrors("city");
+    } else {
+      handleError("city", "Currently, service is not available in the city.");
     }
+
+    setSelectedLocation([]);
   };
 
   const handleLocationKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    //   if (e.key === "Enter") {
-    //     e.preventDefault();
-    //     const location = e.currentTarget.value;
-    //     if (locations.has(location)) {
-    //       e.currentTarget.value = "";
-    //       setSelectedLocation((prevSelectedLocations) => {
-    //         if (!prevSelectedLocations.includes(location)) {
-    //           return [...prevSelectedLocations, location];
-    //         }
-    //         return prevSelectedLocations;
-    //       });
-    //       clearErrors("location");
-    //     } else if (location) {
-    //       handleError(
-    //         "location",
-    //         "Service not available in this location right now."
-    //       );
-    //     } else {
-    //       clearErrors("location");
-    //     }
-    //   }
+    if (e.key !== "Enter") return;
+
+    e.preventDefault();
+    const location = e.currentTarget.value;
+
+    const locations = (
+      cachedData?.[activeTab] as { [key: string]: string[] | [] }
+    )[selectedCity];
+    if ((locations as string[]).includes(location)) {
+      e.currentTarget.value = "";
+      setSelectedLocation((prevSelectedLocations) =>
+        prevSelectedLocations.includes(location)
+          ? prevSelectedLocations
+          : [...prevSelectedLocations, location]
+      );
+      clearInputErrors("location");
+    } else if (location) {
+      handleError(
+        "location",
+        "Service not available in this location right now."
+      );
+    } else {
+      clearErrors("location");
+    }
   };
 
   const onSubmit = (data: { city: string; location: string }) => {
+    console.log("object");
     // if (!data.city) {
     //   handleError("city", "Please select the city.");
     //   return;
@@ -208,35 +216,150 @@ const SearchForm: React.FC = () => {
           {...register("location")}
           onKeyDown={handleLocationKeyDown}
           disabled={
-            cachedData !== undefined &&
-            !cachedData[activeTab].hasOwnProperty(selectedCity)
+            !(
+              (cachedData?.[activeTab] as { [key: string]: string[] | [] })?.[
+                selectedCity
+              ]?.length > 0
+            )
           }
           className={`w-full h-full text-lg`}
         />
         <datalist id="Locations">
           {cachedData &&
-            cachedData[activeTab] &&
             (cachedData[activeTab] as { [key: string]: string[] | [] })[
               selectedCity
             ]?.map((location, index) => {
+              console.log(location);
               return <option key={index} value={location} />;
             })}
         </datalist>
       </div>
 
-      <div className="hidden max-sm:block col-span-7 place-content-center border-2 border-black rounded-xl">
-        <p className={`text-xl`}>Search</p>
-      </div>
+      {/* {(selectedLocation.length > 0 ||
+        errors.city?.message ||
+        errors.location?.message) && (
+        <div className="hidden max-sm:block col-span-7 place-content-center border-2 border-black rounded-xl">
+          <span className="text-red-500 ">
+            {errors.city?.message || errors.location?.message}
+          </span>
+          {selectedLocation.length > 0 && (
+            <div
+              className={`overflow-scroll absolute right-2  ${
+                isLocationPanelOpen ? "" : "top-1"
+              }`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`lucide lucide-chevron-up cursor-pointer transition-all duration-300 ${
+                  isLocationPanelOpen ? "rotate-180" : ""
+                }`}
+                onClick={() => setIsLocationPanelOpen(!isLocationPanelOpen)}
+              >
+                <path d="m18 15-6-6-6 6" />
+              </svg>
+            </div>
+          )}
+          {selectedLocation.map((location, index) => {
+            return (
+              <span key={index} className="flex gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-x cursor-pointer"
+                  onClick={() => removeLocation(index)}
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+                {location}
+              </span>
+            );
+          })}
+        </div>
+      )} */}
 
-      <div className="col-span-1 max-sm:col-span-2 place-content-center text-center bg-black max-sm:rounded-lg rounded-br-lg">
+      <div className="col-span-1 max-sm:col-span-2 max-sm:col-start-8 place-content-center text-center bg-black max-sm:rounded-lg rounded-br-lg">
         <button type="submit" className={`text-white text-xl`}>
           Search
         </button>
       </div>
 
-      <div className="max-sm:hidden absolute top-full left-1/2 -translate-x-1/2 w-[calc(100%+0.64rem)] col-span-7 col-start-2 place-content-center p-1 bg-white border-b-2 border-r-2 border-l-2 border-black rounded-b-xl">
-        <p className={`text-black text-xl`}>Search</p>
-      </div>
+      {(selectedLocation.length > 0 ||
+        errors.city?.message ||
+        errors.location?.message) && (
+        <div
+          className={`max-sm:hidden absolute top-full left-1/2 -translate-x-1/2 w-[calc(100%+0.64rem)] col-span-7 col-start-2 place-content-center p-1 bg-white border-b-2 border-r-2 border-l-2 border-black rounded-b-xl  ${
+            isLocationPanelOpen ? "" : "h-[4.5vh]"
+          } overflow-hidden`}
+        >
+          <span className="text-red-500 ">
+            {errors.city?.message || errors.location?.message}
+          </span>
+          {selectedLocation.length > 0 && (
+            <div
+              className={`absolute right-2  ${
+                isLocationPanelOpen ? "" : "top-1"
+              }`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`lucide lucide-chevron-up cursor-pointer transition-all duration-300 ${
+                  isLocationPanelOpen ? "rotate-180" : ""
+                }`}
+                onClick={() => setIsLocationPanelOpen(!isLocationPanelOpen)}
+              >
+                <path d="m18 15-6-6-6 6" />
+              </svg>
+            </div>
+          )}
+          {selectedLocation.map((location, index) => {
+            return (
+              <span key={index} className="flex gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-x cursor-pointer"
+                  onClick={() => removeLocation(index)}
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+                {location}
+              </span>
+            );
+          })}
+        </div>
+      )}
     </form>
   );
 };

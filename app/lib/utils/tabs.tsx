@@ -1,11 +1,11 @@
 // Navigation Tabs
 export const HeaderTabs: [string, React.ReactNode][] = [
-  ["buyer", "For Buyer"],
-  ["renter", "For Renter"],
-  ["traveler", "For Traveler"],
-  ["shopper", "For Shopper"],
-  ["foodie", "For Foodies"],
-  ["client", "For client"],
+  ["buyer", "FOR BUYER"],
+  ["renter", "FOR RENTER"],
+  ["repairer", "FOR REPAIRER"],
+  ["shopper", "FOR SHOPPER"],
+  ["foodie", "FOR FOODIES"],
+  ["client", "FOR CLIENT"],
 ];
 
 export const BottomTabs: [string, React.ReactNode][] = [
@@ -106,11 +106,11 @@ export const BottomTabs: [string, React.ReactNode][] = [
 
 // Category Tabs
 export const SearchBoxTabs: [string, React.ReactNode][] = [
-  ["room", "Room"],
-  ["store", "Store"],
-  ["hostel", "Hostel"],
-  ["restaurant", "Restaurant"],
-  ["land", "Land"],
-  ["book", "Book"],
-  ["car", "Car"],
+  ["room", "ROOM"],
+  ["store", "STORE"],
+  ["hostel", "HOSTEL"],
+  ["restaurant", "RESTAURENT"],
+  ["land", "LAND"],
+  ["repair", "REPAIR"],
+  ["rental", "RENTAL"],
 ];

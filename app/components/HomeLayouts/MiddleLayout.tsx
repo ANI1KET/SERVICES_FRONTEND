@@ -11,6 +11,10 @@ import {
 import { useAppDispatch } from "@/app/store/hooks/hooks";
 import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
 
+// const MiddleLayout: React.FC<{
+//   upperComponent: React.ReactNode;
+//   lowerComponent: React.ReactNode;
+// }> = ({ upperComponent, lowerComponent }) => {
 const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -49,9 +53,12 @@ const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
       <AnimatePresence mode="wait">
         <motion.div
           {...animationProps}
-          className="h-[12vh] w-[71vw] mx-auto rounded-xl shadow-2xl sticky top-[5.2vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-white "
+          className="max-sm:hidden h-[12vh] w-[71vw] mx-auto rounded-xl shadow-2xl sticky top-[5.2vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-white "
         >
           {children}
+          {/* {upperComponent}
+          <hr className="border-black" />
+          {lowerComponent} */}
         </motion.div>
       </AnimatePresence>
     </>

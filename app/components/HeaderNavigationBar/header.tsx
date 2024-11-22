@@ -1,19 +1,20 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 import { HeaderTabs } from "../../lib/utils/tabs";
 import NavigationTabs from "../../lib/ui/NavigationTabs";
 import { useAppDispatch } from "@/app/store/hooks/hooks";
+import useBreakpoint from "@/app/lib/utils/useBreakpoint";
 import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  return (
+  const { isMobile } = useBreakpoint();
+  return isMobile ? null : (
     <div className="max-sm:hidden text-xl flex items-start h-[8vh] w-full fixed left-0 right-0 ">
       <div
         className="h-[8vh] w-[15vw] flex justify-center items-center rounded-br-2xl cursor-pointer border-b-2 border-r-2 border-black bg-white "

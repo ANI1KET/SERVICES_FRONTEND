@@ -16,7 +16,7 @@ const BottomNavBar = () => {
   return (
     <div className="hidden max-sm:flex">
       <div
-        className={`fixed bottom-[7.8vh] left-0 right-0 flex flex-col items-center bg-white transition-transform duration-300 ${
+        className={`fixed bottom-[7.8vh] left-0 right-0 flex flex-col items-center rounded-t-3xl bg-white transition-transform duration-300 ${
           isPanelOpen ? "" : "hidden"
         }`}
       >

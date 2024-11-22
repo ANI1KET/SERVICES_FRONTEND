@@ -9,7 +9,7 @@ type ResponseData = {
 type CityData = {
   [key: string]:
     | {
-        [key: string]: string[] | [];
+        [key: string]: string[];
       }
     | string;
   city: string;
