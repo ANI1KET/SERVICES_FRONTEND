@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
 
@@ -11,17 +12,15 @@ import {
 import RoomApi from "@/app/store/slices/roomApiSlice";
 
 const SearchForm: React.FC = () => {
-  const activeTab = useAppSelector((state) => state.tabs.activeTabs.SearchTab);
+  const router = useRouter();
+  const activeTab = useAppSelector(
+    (state) => state.tabs.activeTabs.CategoryTab
+  );
   const cachedData = useAppSelector(
     (state) =>
       RoomApi.endpoints.getRoomLocations.select({ category: activeTab })(state)
         .data
   );
-
-  useEffect(() => {
-    setValue("city", cachedData?.city ?? "");
-    setValue("location", "");
-  }, [cachedData]);
 
   const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
   const [isLocationPanelOpen, setIsLocationPanelOpen] = useState<boolean>(true);
@@ -42,14 +41,21 @@ const SearchForm: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    if (cachedData?.city) {
+      setValue("city", cachedData.city);
+      setValue("location", "");
+    }
+  }, [cachedData, setValue]);
+
   const selectedCity = watch("city");
 
   const [
     triggerGetRoomLocations,
     {
-      data: roomLocationsData,
-      error: roomLocationsError,
-      isLoading: roomLocationsLoading,
+      // data: roomLocationsData,
+      // error: roomLocationsError,
+      // isLoading: roomLocationsLoading,
     },
   ] = useLazyGetRoomLocationsQuery();
   useEffect(() => {
@@ -62,13 +68,13 @@ const SearchForm: React.FC = () => {
     triggerGetRoomCityLocations,
     {
       data: roomCityLocationsData,
-      error: roomCityLocationsError,
-      isLoading: roomCityLocationsLoading,
+      // error: roomCityLocationsError,
+      // isLoading: roomCityLocationsLoading,
     },
   ] = useLazyGetRoomCityLocationsQuery();
   useEffect(() => {
     setFocus("location");
-  }, [roomCityLocationsData]);
+  }, [roomCityLocationsData, setFocus]);
 
   const capitalize = (text: string) =>
     text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
@@ -99,7 +105,7 @@ const SearchForm: React.FC = () => {
     if (!selectedCity) {
       clearInputErrors("city");
     } else if (
-      cachedData !== undefined &&
+      cachedData &&
       cachedData[activeTab].hasOwnProperty(capitalizedCity)
       // capitalizedCity in cachedData[activeTab]
     ) {
@@ -151,15 +157,48 @@ const SearchForm: React.FC = () => {
   };
 
   const onSubmit = (data: { city: string; location: string }) => {
-    console.log("object");
-    // if (!data.city) {
-    //   handleError("city", "Please select the city.");
-    //   return;
-    // } else if (!cities.has(selectedCity)) {
-    //   handleError("city", "Currently, service is not available in the city.");
-    //   return;
-    // }
-    // console.log("Submitted data:", data, selectedLocation);
+    const { city, location } = data;
+
+    if (!city) {
+      return handleError("city", "Please select the city.");
+    }
+
+    if (cachedData && !cachedData[activeTab]?.hasOwnProperty(city)) {
+      return handleError(
+        "city",
+        "Currently, service is not available in the city."
+      );
+    }
+
+    const availableLocations = (
+      cachedData?.[activeTab] as { [key: string]: string[] | [] }
+    )[city] as string[];
+    if (
+      location &&
+      (!availableLocations || !availableLocations.includes(location))
+    ) {
+      return handleError(
+        "location",
+        "Service not available in this location right now."
+      );
+    }
+
+    const encodedCity = btoa(data.city);
+    const encodedLocation = (() => {
+      if (!selectedLocation.length && location) {
+        return btoa(location);
+      }
+
+      let encodedLocations = selectedLocation.join(",");
+      if (location && !selectedLocation.includes(location)) {
+        encodedLocations = [encodedLocations, location].join(",");
+      }
+
+      return btoa(encodedLocations);
+    })();
+
+    const url = `/${activeTab}?city=${encodedCity}&locations=${encodedLocation}`;
+    router.push(url);
   };
   return (
     <form
@@ -229,7 +268,6 @@ const SearchForm: React.FC = () => {
             (cachedData[activeTab] as { [key: string]: string[] | [] })[
               selectedCity
             ]?.map((location, index) => {
-              console.log(location);
               return <option key={index} value={location} />;
             })}
         </datalist>
@@ -294,7 +332,7 @@ const SearchForm: React.FC = () => {
       )} */}
 
       <div className="col-span-1 max-sm:col-span-2 max-sm:col-start-8 place-content-center text-center bg-black max-sm:rounded-lg rounded-br-lg">
-        <button type="submit" className={`text-white text-xl`}>
+        <button type="submit" className={`text-white text-xl w-full`}>
           Search
         </button>
       </div>

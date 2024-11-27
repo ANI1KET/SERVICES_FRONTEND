@@ -105,11 +105,11 @@ export const BottomTabs: [string, React.ReactNode][] = [
 ];
 
 // Category Tabs
-export const SearchBoxTabs: [string, React.ReactNode][] = [
+export const categoryTabs: [string, React.ReactNode][] = [
   ["room", "ROOM"],
   ["store", "STORE"],
   ["hostel", "HOSTEL"],
-  ["restaurant", "RESTAURENT"],
+  ["restaurant", "RESTAURANT"],
   ["land", "LAND"],
   ["repair", "REPAIR"],
   ["rental", "RENTAL"],

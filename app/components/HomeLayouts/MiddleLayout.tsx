@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 
 import { useAppDispatch } from "@/app/store/hooks/hooks";
+import useBreakpoint from "@/app/lib/utils/useBreakpoint";
 import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
 
 // const MiddleLayout: React.FC<{
@@ -19,6 +20,7 @@ const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const dispatch = useAppDispatch();
+  const { isMobile } = useBreakpoint();
 
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState<boolean>(true);
@@ -48,12 +50,13 @@ const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     dispatch(RemoveActiveTab("HeaderTab"));
   }, []);
-  return (
+
+  return isMobile ? null : (
     <>
       <AnimatePresence mode="wait">
         <motion.div
           {...animationProps}
-          className="max-sm:hidden h-[12vh] w-[71vw] mx-auto rounded-xl shadow-2xl sticky top-[5.2vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-white "
+          className="h-[12vh] w-[71vw] mx-[11.5vw] rounded-xl shadow-2xl sticky top-[5vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-white "
         >
           {children}
           {/* {upperComponent}

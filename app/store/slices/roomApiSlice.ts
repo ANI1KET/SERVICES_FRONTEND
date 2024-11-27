@@ -15,10 +15,6 @@ type CityData = {
   city: string;
 };
 
-interface LocationData {
-  location: string;
-}
-
 const RoomApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getRoomLocations: builder.query<CityData, { category: string }>({
@@ -41,7 +37,7 @@ const RoomApi = apiSlice.injectEndpoints({
       keepUnusedDataFor: Infinity,
     }),
     getRoomCityLocations: builder.query<
-      any,
+      { location: string }[],
       { category: string; city: string }
     >({
       query: ({ category, city }) => {
@@ -51,7 +47,7 @@ const RoomApi = apiSlice.injectEndpoints({
       },
       async onQueryStarted(
         arg: { category: string; city: string },
-        { dispatch, queryFulfilled, getState }
+        { dispatch, queryFulfilled }
       ) {
         try {
           const { data: newData } = (await queryFulfilled) as {
@@ -78,7 +74,7 @@ const RoomApi = apiSlice.injectEndpoints({
             )
           );
         } catch (error) {
-          // console.error("Error updating query data:", error);
+          console.error("Error updating query data:", error);
         }
       },
     }),

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 import { setActiveTab } from "@/app/store/slices/tabSlice";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks/hooks";
@@ -35,6 +36,7 @@ const CategoryTabs: React.FC<TabsProps> = ({
   tabs,
   className,
 }) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const activeTab = useAppSelector(
     (state) => state.tabs.activeTabs[componentId]
@@ -43,8 +45,9 @@ const CategoryTabs: React.FC<TabsProps> = ({
   const handleTabClick = useCallback(
     (label: string) => {
       dispatch(setActiveTab({ componentId, activeTab: label }));
+      if (componentId === "ListCategoryTab") router.push(`/list/${label}`);
     },
-    [componentId, dispatch]
+    [componentId, dispatch, router]
   );
 
   return (

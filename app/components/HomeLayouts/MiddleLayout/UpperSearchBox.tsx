@@ -1,13 +1,13 @@
 "use server";
 
 import CategoryTabs from "@/app/lib/ui/CategoryTabs";
-import { SearchBoxTabs } from "@/app/lib/utils/tabs";
+import { categoryTabs } from "@/app/lib/utils/tabs";
 
 const UpperSearchBox = async () => {
   return (
     <CategoryTabs
-      tabs={SearchBoxTabs}
-      componentId={`SearchTab`}
+      tabs={categoryTabs}
+      componentId={`CategoryTab`}
       className={`h-1/2 grid grid-flow-col place-items-center`}
     />
   );

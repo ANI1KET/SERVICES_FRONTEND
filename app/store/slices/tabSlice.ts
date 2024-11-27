@@ -6,7 +6,8 @@ interface TabState {
 
 const initialState: TabState = {
   activeTabs: {
-    SearchTab: "room",
+    CategoryTab: "room",
+    ListCategoryTab: "room",
   },
 };
 

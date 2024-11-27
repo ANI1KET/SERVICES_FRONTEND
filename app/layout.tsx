@@ -28,7 +28,7 @@ export default function RootLayout({
             {/* <DisableInteractions /> */}
             <Header />
             {/* <SideNavBar /> */}
-            <div className="pt-[8vh] max-sm:pt-[0vh]">{children}</div>
+            {children}
             <Footer />
             <BottomNavBar />
           </AuthProvider>

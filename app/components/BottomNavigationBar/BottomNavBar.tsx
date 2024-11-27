@@ -2,19 +2,21 @@
 
 import React, { useState, useCallback } from "react";
 
-import SearchPanel from "./PanelComponent/SearchPanel";
 import { BottomTabs } from "../../lib/utils/tabs";
+import SearchPanel from "./PanelComponent/SearchPanel";
 import NavigationTabs from "../../lib/ui/NavigationTabs";
+import useBreakpoint from "@/app/lib/utils/useBreakpoint";
 
 const BottomNavBar = () => {
+  const { isMobile } = useBreakpoint();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   const togglePanel = useCallback(() => {
     setIsPanelOpen((prev) => !prev);
   }, []);
 
-  return (
-    <div className="hidden max-sm:flex">
+  return isMobile ? (
+    <div className="">
       <div
         className={`fixed bottom-[7.8vh] left-0 right-0 flex flex-col items-center rounded-t-3xl bg-white transition-transform duration-300 ${
           isPanelOpen ? "" : "hidden"
@@ -76,7 +78,7 @@ const BottomNavBar = () => {
         } border-2 border-black bg-white`}
       />
     </div>
-  );
+  ) : null;
 };
 
 export default BottomNavBar;
