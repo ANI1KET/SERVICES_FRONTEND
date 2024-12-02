@@ -26,7 +26,7 @@ model User {
   name      String
   email     String       @unique
   image     String?
-  number    String?      @unique
+  number    String       @unique
   password  String?
   // ENUM
   role      Role         @default(USER)

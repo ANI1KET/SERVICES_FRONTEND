@@ -2,14 +2,12 @@ import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 type Aminities = "PARKING" | "WIFI";
 
-export type Room = {
+type Room = {
   name: string;
   roomNumber: string;
   city: string;
   direction: string | null;
   location: string;
-  photos: File[];
-  videos: File | null;
   price: number;
   ratings: number;
   mincapacity: number;
@@ -17,6 +15,16 @@ export type Room = {
   roomtype: "ONE_BHK" | "TWO_BHK" | "FLAT";
   furnishingStatus: "FURNISHED" | "SEMIFURNISHED" | "UNFURNISHED";
   amenities: Aminities[];
+};
+
+export type RoomWithMedia = Room & {
+  photos: File[];
+  videos: FileList | null;
+};
+
+export type RoomWithMediaUrl = Room & {
+  photos: string[];
+  videos: string | null;
 };
 
 // InputField Component
@@ -152,8 +160,8 @@ export const CheckboxGroup = ({
 // File Input
 type FileInputProps = {
   label: string;
-  id: keyof Room;
-  register: ReturnType<UseFormRegister<Room>>;
+  id: keyof RoomWithMedia;
+  register: ReturnType<UseFormRegister<RoomWithMedia>>;
   multiple?: boolean;
   accept?: string;
   error?: string;

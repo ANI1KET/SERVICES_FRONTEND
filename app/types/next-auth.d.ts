@@ -12,12 +12,16 @@ declare module "next-auth" {
       id?: string;
       number?: string;
       role?: string;
+      refresh_token?: string;
+      access_token?: string;
     } & DefaultSession["user"];
   }
 }
 
-// declare module "next-auth/jwt" {
-//   interface JWT {
-//     id?: string;
-//   }
-// }
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    access_token?: string;
+    refresh_token?: string;
+  }
+}

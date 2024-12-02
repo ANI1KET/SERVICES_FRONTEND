@@ -4,7 +4,6 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import prisma from "@/prisma/prismaClient";
-import { loginSchema } from "./Schema";
 
 export const authOptions: NextAuthOptions = {
   // pages: {
@@ -34,6 +33,15 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      authorization: {
+        params: {
+          scope:
+            // "openid profile email https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/youtube.upload",
+            "openid profile email https://www.googleapis.com/auth/drive.file",
+          access_type: "offline",
+          prompt: "consent",
+        },
+      },
     }),
     CredentialsProvider({
       id: "credentials",
@@ -96,16 +104,9 @@ export const authOptions: NextAuthOptions = {
     async signIn({ account, user }) {
       if (account?.provider === "google") {
         try {
-          // Validate required fields
-          loginSchema.parse({
-            name: user.name,
-            email: user.email,
-            image: user.image,
-          });
-
           // Use `upsert` to handle creation or no action if user exists
           await prisma.user.upsert({
-            where: { email: user.email! },
+            where: { email: user.email as string },
             update: {},
             create: {
               name: user.name!,
@@ -113,8 +114,6 @@ export const authOptions: NextAuthOptions = {
               image: user.image,
             },
           });
-
-          console.log("User sign-in or creation handled successfully:", user);
         } catch (error) {
           console.error("Error signing in user:", error);
           return false; // Return `false` on validation or database error
@@ -123,13 +122,18 @@ export const authOptions: NextAuthOptions = {
 
       return true;
     },
-    async jwt({ user, token }) {
+    async jwt({ account, user, token }) {
       if (user) {
         token.id = user.id?.toString();
         token.email = user.email;
         token.name = user.name;
         token.number = user.number;
         token.role = user.role;
+
+        if (account?.provider === "google") {
+          token.refresh_token = account.refresh_token;
+          token.access_token = account.access_token;
+        }
       }
 
       return token;
@@ -138,6 +142,8 @@ export const authOptions: NextAuthOptions = {
       session.user.id = token.id as string | undefined;
       session.user.number = token.number as string | undefined;
       session.user.role = token.role as string | undefined;
+      session.user.refresh_token = token?.refresh_token;
+      session.user.access_token = token?.access_token;
 
       return session;
     },
