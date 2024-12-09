@@ -314,12 +314,12 @@ const SearchForm: React.FC = () => {
             options={["OWNER", "BROKER", "USER"]}
             register={register("postedby")}
           />
-          <CheckedBox
+          {/* <CheckedBox
             label="Verified"
             value={verified ?? false}
             register={register("verified")}
             onChange={(e) => setValue("verified", e.target.checked)}
-          />
+          /> */}
         </div>
       </div>
 

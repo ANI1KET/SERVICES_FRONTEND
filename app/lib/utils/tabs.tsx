@@ -12,6 +12,7 @@ export const BottomTabs: [string, React.ReactNode][] = [
   [
     "",
     <svg
+      key={""}
       xmlns="http://www.w3.org/2000/svg"
       width="34"
       height="34"
@@ -30,6 +31,7 @@ export const BottomTabs: [string, React.ReactNode][] = [
   [
     "profile",
     <svg
+      key={""}
       xmlns="http://www.w3.org/2000/svg"
       width="34"
       height="34"
@@ -49,6 +51,7 @@ export const BottomTabs: [string, React.ReactNode][] = [
   [
     "",
     <svg
+      key={""}
       xmlns="http://www.w3.org/2000/svg"
       width="34"
       height="34"
@@ -67,6 +70,7 @@ export const BottomTabs: [string, React.ReactNode][] = [
   [
     "profile",
     <svg
+      key={""}
       xmlns="http://www.w3.org/2000/svg"
       width="34"
       height="34"
@@ -86,6 +90,7 @@ export const BottomTabs: [string, React.ReactNode][] = [
   [
     "profile",
     <svg
+      key={""}
       xmlns="http://www.w3.org/2000/svg"
       width="34"
       height="34"

@@ -31,8 +31,8 @@ const getCityLocations = async ({
 }: {
   offset: number;
   category: string;
-  decodedCity: string | null;
-  decodedLocations: string[] | undefined;
+  decodedCity: string;
+  decodedLocations: string[];
   decodedURLQueryFilters: QueryFilters;
 }) => {
   try {
@@ -41,8 +41,8 @@ const getCityLocations = async ({
         offset,
         limit: PAGE_SIZE,
         city: decodedCity,
-        filters: decodedURLQueryFilters,
         locations: decodedLocations,
+        filters: decodedURLQueryFilters,
       },
       headers: { "Cache-Control": "no-cache" },
     });
@@ -57,18 +57,18 @@ const Category = async ({
   params,
   searchParams,
 }: {
-  params: { category: string };
-  searchParams: { place: string; filters: string };
+  params: Promise<{ category: string }>;
+  searchParams: Promise<{ place: string; filters: string }>;
 }) => {
   const { category } = await params;
   const { place, filters } = await searchParams;
 
-  const decodedURLPlaceQuery = place ? decodeURLPlaceQuery(place) : "";
+  const decodedURLPlaceQuery = place ? decodeURLPlaceQuery(place) : null;
   if (!decodedURLPlaceQuery) notFound();
 
   const decodedURLQueryFilters: QueryFilters = filters
     ? decodeURLPlaceQuery(filters)
-    : {};
+    : null;
 
   try {
     const initialCityLocationsData = await getCityLocations({

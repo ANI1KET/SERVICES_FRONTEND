@@ -105,15 +105,16 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === "google") {
         try {
           // Use `upsert` to handle creation or no action if user exists
-          await prisma.user.upsert({
+          const userDetails = await prisma.user.upsert({
             where: { email: user.email as string },
             update: {},
             create: {
-              name: user.name!,
-              email: user.email!,
+              name: user.name as string,
+              email: user.email as string,
               image: user.image,
             },
           });
+          console.log(userDetails);
         } catch (error) {
           console.error("Error signing in user:", error);
           return false; // Return `false` on validation or database error

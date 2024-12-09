@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 import {
-  CustomCheckbox,
+  // CustomCheckbox,
   CustomCheckboxGroup,
 } from "../lib/ui/FormReusableComponent";
 import {
@@ -18,7 +18,7 @@ import {
 } from "../types/types";
 
 type LoadMoreCityLocationsProps = React.PropsWithChildren<{
-  enncodedPlaceURL: string;
+  enncodedPlaceURL?: string;
   initialOffset: number | null;
   URLQueryFilters: QueryFilters;
   loadMoreCityLocationsAction: (params: {
@@ -123,7 +123,7 @@ const LoadMoreCityLocations = ({
       Amenities: amenities,
       furnishingStatus: furnishingstatus,
     }));
-  }, [URLQueryFilters]);
+  }, [URLQueryFilters, initialOffset]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -208,7 +208,8 @@ const LoadMoreCityLocations = ({
             label="Person Capacity"
             className="w-1/2 font-medium"
             onChangeEnd={(capacityRangeValue) => {
-              (queryFilters.capacityValue = capacityRangeValue), updataURL();
+              queryFilters.capacityValue = capacityRangeValue;
+              updataURL();
             }}
           />
         </div>

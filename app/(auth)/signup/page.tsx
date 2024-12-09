@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { SignUpFormData, signUpSchema } from "../Schema";
+import Link from "next/link";
 
 export default function SignUp() {
   const {
@@ -88,9 +89,9 @@ export default function SignUp() {
       </div>
       <p className="text-gray-500 text-sm mt-4">
         Already have an account?{" "}
-        <a href="/login" className="text-blue-400">
+        <Link href="/login" className="text-blue-400">
           Sign in
-        </a>
+        </Link>
       </p>
     </div>
   );
