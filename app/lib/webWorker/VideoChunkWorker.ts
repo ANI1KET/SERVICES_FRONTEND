@@ -11,7 +11,7 @@ interface UploadChunkMessage {
 
 self.onmessage = async function (event: MessageEvent<WorkerEventData>) {
   const { video } = event.data;
-  const chunkSize = 10 * 4 * 262144;
+  const chunkSize = 50 * 4 * 262144;
   let offset = 0;
 
   while (offset < video.size) {

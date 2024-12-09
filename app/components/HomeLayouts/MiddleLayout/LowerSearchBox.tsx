@@ -1,11 +1,9 @@
 "use client";
 
 import SearchForm from "@/app/lib/ui/SearchForm";
-import useBreakpoint from "@/app/lib/utils/useBreakpoint";
 
 const LowerSearchBox: React.FC = () => {
-  const { isMobile } = useBreakpoint();
-  return isMobile ? null : <SearchForm />;
+  return <SearchForm />;
 };
 
 export default LowerSearchBox;

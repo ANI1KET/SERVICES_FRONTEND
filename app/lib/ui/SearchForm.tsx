@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { Slider } from "@nextui-org/slider";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -9,7 +10,9 @@ import {
   useLazyGetRoomCityLocationsQuery,
   useLazyGetRoomLocationsQuery,
 } from "@/app/store/hooks/hooks";
+import { SearchQuery } from "@/app/types/types";
 import RoomApi from "@/app/store/slices/roomApiSlice";
+import { CheckedBox, PlusCheckboxGroup } from "./FormReusableComponent";
 
 const SearchForm: React.FC = () => {
   const router = useRouter();
@@ -23,21 +26,24 @@ const SearchForm: React.FC = () => {
   );
 
   const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
-  const [isLocationPanelOpen, setIsLocationPanelOpen] = useState<boolean>(true);
 
   const {
-    formState: { errors },
+    // formState: { errors },
     watch,
     register,
     setValue,
     setFocus,
-    setError,
-    clearErrors,
+    // setError,
+    // clearErrors,
     handleSubmit,
-  } = useForm<{ city: string; location: string }>({
+  } = useForm<SearchQuery>({
     defaultValues: {
       city: "",
       location: "",
+      postedby: [],
+      roomtype: [],
+      amenities: [],
+      furnishingstatus: [],
     },
   });
 
@@ -49,6 +55,7 @@ const SearchForm: React.FC = () => {
   }, [cachedData, setValue]);
 
   const selectedCity = watch("city");
+  const verified = watch("verified");
 
   const [
     triggerGetRoomLocations,
@@ -78,13 +85,13 @@ const SearchForm: React.FC = () => {
 
   const capitalize = (text: string) =>
     text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-  const clearInputErrors = (field: "city" | "location") => clearErrors(field);
-  const handleError = useCallback(
-    (field: "city" | "location", message: string) => {
-      setError(field, { type: "manual", message });
-    },
-    [setError]
-  );
+  // const clearInputErrors = (field: "city" | "location") => clearErrors(field);
+  // const handleError = useCallback(
+  //   (field: "city" | "location", message: string) => {
+  //     setError(field, { type: "manual", message });
+  //   },
+  //   [setError]
+  // );
 
   const removeLocation = useCallback(
     (indexToRemove: number) => {
@@ -103,7 +110,7 @@ const SearchForm: React.FC = () => {
     const capitalizedCity = capitalize(selectedCity);
 
     if (!selectedCity) {
-      clearInputErrors("city");
+      // clearInputErrors("city");
     } else if (
       cachedData &&
       cachedData[activeTab].hasOwnProperty(capitalizedCity)
@@ -121,10 +128,11 @@ const SearchForm: React.FC = () => {
       }
       setValue("city", capitalizedCity);
       setFocus("location");
-      clearErrors("city");
-    } else {
-      handleError("city", "Currently, service is not available in the city.");
+      // clearErrors("city");
     }
+    // else {
+    //   handleError("city", "Currently, service is not available in the city.");
+    // }
 
     setSelectedLocation([]);
   };
@@ -145,29 +153,32 @@ const SearchForm: React.FC = () => {
           ? prevSelectedLocations
           : [...prevSelectedLocations, location]
       );
-      clearInputErrors("location");
-    } else if (location) {
-      handleError(
-        "location",
-        "Service not available in this location right now."
-      );
-    } else {
-      clearErrors("location");
+      // clearInputErrors("location");
     }
+    // else if (location) {
+    //   handleError(
+    //     "location",
+    //     "Service not available in this location right now."
+    //   );
+    // } else {
+    //   clearErrors("location");
+    // }
   };
 
-  const onSubmit = (data: { city: string; location: string }) => {
+  const onSubmit = (data: SearchQuery) => {
     const { city, location } = data;
 
     if (!city) {
-      return handleError("city", "Please select the city.");
+      return;
+      // handleError("city", "Please select the city.");
     }
 
     if (cachedData && !cachedData[activeTab]?.hasOwnProperty(city)) {
-      return handleError(
-        "city",
-        "Currently, service is not available in the city."
-      );
+      return;
+      // handleError(
+      //   "city",
+      //   "Currently, service is not available in the city."
+      // );
     }
 
     const availableLocations = (
@@ -177,36 +188,55 @@ const SearchForm: React.FC = () => {
       location &&
       (!availableLocations || !availableLocations.includes(location))
     ) {
-      return handleError(
-        "location",
-        "Service not available in this location right now."
-      );
+      return;
+      // handleError(
+      //   "location",
+      //   "Service not available in this location right now."
+      // );
     }
 
-    const encodedCity = btoa(data.city);
-    const encodedLocation = (() => {
+    const locations = (() => {
       if (!selectedLocation.length && location) {
-        return btoa(location);
+        return [location];
       }
 
-      let encodedLocations = selectedLocation.join(",");
       if (location && !selectedLocation.includes(location)) {
-        encodedLocations = [encodedLocations, location].join(",");
+        return [...selectedLocation, location];
       }
 
-      return btoa(encodedLocations);
+      return selectedLocation;
     })();
 
-    const url = `/${activeTab}?city=${encodedCity}&locations=${encodedLocation}`;
+    const compressedURLQuery = btoa(
+      JSON.stringify({
+        city: city,
+        locations: locations,
+      })
+    );
+    const compressedURLQueryFilters = btoa(
+      JSON.stringify({
+        price: data.price,
+        rating: data.rating,
+        capacity: data.capacity,
+        verified: data.verified ? data.verified : undefined,
+        postedby: data.postedby.length ? data.postedby : undefined,
+        roomtype: data.roomtype.length ? data.roomtype : undefined,
+        amenities: data.amenities.length ? data.amenities : undefined,
+        furnishingstatus: data.furnishingstatus.length
+          ? data.furnishingstatus
+          : undefined,
+      })
+    );
+    const url = `/${activeTab}?place=${compressedURLQuery}&filters=${compressedURLQueryFilters}`;
     router.push(url);
   };
   return (
     <form
-      className="grid grid-cols-9 gap-1 w-full h-1/2 max-sm:h-[12vh] relative"
+      className="grid grid-cols-9 gap-1 w-full h-1/2 max-sm:h-full relative"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="max-sm:hidden col-span-1 max-sm:col-span-3 grid grid-flow-col place-content-center place-items-center border-r-[1px] border-black h-full cursor-pointer group ">
-        <p>Type</p>
+        <p>Filter</p>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -221,12 +251,79 @@ const SearchForm: React.FC = () => {
         >
           <path d="m18 15-6-6-6 6" />
         </svg>
-        <div className="w-full h-[40vh] p-2 absolute top-full left-0 right-0 rounded-2xl border-2 border-black bg-white opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300">
-          ANIKET
+        <div className="w-full h-[40vh] overflow-x-scroll flex flex-col gap-2 p-2 absolute top-full left-0 right-0 rounded-2xl border-2 border-black bg-white opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300">
+          <Slider
+            step={500}
+            size="sm"
+            minValue={0}
+            maxValue={100000}
+            color="foreground"
+            label="Price Range"
+            defaultValue={[0, 10000]}
+            className="w-full font-medium"
+            formatOptions={{ style: "currency", currency: "NPR" }}
+            onChangeEnd={(priceRangeValue) => {
+              setValue("price", priceRangeValue);
+            }}
+          />
+          <div className="flex gap-4">
+            <Slider
+              step={1}
+              size="sm"
+              minValue={0}
+              maxValue={5}
+              label="Rating"
+              defaultValue={[0, 5]}
+              color="foreground"
+              className="w-1/2 font-medium"
+              onChangeEnd={(ratingValue) => {
+                setValue("rating", ratingValue);
+              }}
+            />
+            <Slider
+              step={1}
+              size="sm"
+              minValue={2}
+              maxValue={20}
+              defaultValue={[2, 3]}
+              color="foreground"
+              label="Person Capacity"
+              className="w-1/2 font-medium"
+              onChangeEnd={(capacityRangeValue) => {
+                setValue("capacity", capacityRangeValue);
+              }}
+            />
+          </div>
+          <PlusCheckboxGroup
+            label="Amenities"
+            options={["PARKING", "WIFI"]}
+            register={register("amenities")}
+          />
+          <PlusCheckboxGroup
+            label="Room Type"
+            options={["ONE_BHK", "TWO_BHK", "FLAT"]}
+            register={register("roomtype")}
+          />
+          <PlusCheckboxGroup
+            label="Furnishing Status"
+            options={["FURNISHED", "SEMIFURNISHED", "UNFURNISHED"]}
+            register={register("furnishingstatus")}
+          />
+          <PlusCheckboxGroup
+            label="Posted By"
+            options={["OWNER", "BROKER", "USER"]}
+            register={register("postedby")}
+          />
+          <CheckedBox
+            label="Verified"
+            value={verified ?? false}
+            register={register("verified")}
+            onChange={(e) => setValue("verified", e.target.checked)}
+          />
         </div>
       </div>
 
-      <div className="col-span-2 p-1 max-sm:col-span-3 place-content-center max-sm:border-2 max-sm:rounded-xl border-r-[1px] border-black">
+      <div className="max-sm:h-[5vh] col-span-2 p-1 max-sm:col-span-3 place-content-center max-sm:border-2 max-sm:rounded-xl border-r-[1px] border-black">
         <input
           type="text"
           list="Cities"
@@ -248,7 +345,7 @@ const SearchForm: React.FC = () => {
         </datalist>
       </div>
 
-      <div className="col-span-5 p-1 max-sm:col-span-6 place-content-center max-sm:border-2 max-sm:border-black max-sm:rounded-xl ">
+      <div className="max-sm:h-[5vh] col-span-5 p-1 max-sm:col-span-6 place-content-center max-sm:border-2 max-sm:border-black max-sm:rounded-xl ">
         <input
           type="text"
           list="Locations"
@@ -273,45 +370,22 @@ const SearchForm: React.FC = () => {
         </datalist>
       </div>
 
-      {/* {(selectedLocation.length > 0 ||
-        errors.city?.message ||
-        errors.location?.message) && (
-        <div className="hidden max-sm:block col-span-7 place-content-center border-2 border-black rounded-xl">
-          <span className="text-red-500 ">
-            {errors.city?.message || errors.location?.message}
-          </span>
-          {selectedLocation.length > 0 && (
-            <div
-              className={`overflow-scroll absolute right-2  ${
-                isLocationPanelOpen ? "" : "top-1"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={`lucide lucide-chevron-up cursor-pointer transition-all duration-300 ${
-                  isLocationPanelOpen ? "rotate-180" : ""
-                }`}
-                onClick={() => setIsLocationPanelOpen(!isLocationPanelOpen)}
+      {selectedLocation.length > 0 && (
+        <div className="hidden max-sm:block col-span-7 place-content-center border-2 border-black rounded-xl overflow-x-auto whitespace-nowrap">
+          <div className="inline-flex gap-1">
+            {selectedLocation.map((location, index) => (
+              <span
+                key={index}
+                className="inline-flex items-center gap-1 border px-2 rounded bg-gray-100 max-w-[120px] truncate"
+                title={location}
               >
-                <path d="m18 15-6-6-6 6" />
-              </svg>
-            </div>
-          )}
-          {selectedLocation.map((location, index) => {
-            return (
-              <span key={index} className="flex gap-2">
+                {location.length > 10
+                  ? `${location.slice(0, 10)}...`
+                  : location}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="15"
+                  height="15"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -324,80 +398,133 @@ const SearchForm: React.FC = () => {
                   <path d="M18 6 6 18" />
                   <path d="m6 6 12 12" />
                 </svg>
-                {location}
               </span>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      )} */}
+      )}
 
-      <div className="col-span-1 max-sm:col-span-2 max-sm:col-start-8 place-content-center text-center bg-black max-sm:rounded-lg rounded-br-lg">
+      <div className="max-sm:h-[4vh] col-span-1 space-y-3 max-sm:col-span-2 max-sm:col-start-8 place-content-center text-center bg-black max-sm:rounded-lg rounded-br-lg ">
         <button type="submit" className={`text-white text-xl w-full`}>
           Search
         </button>
       </div>
 
-      {(selectedLocation.length > 0 ||
-        errors.city?.message ||
-        errors.location?.message) && (
+      {selectedLocation.length > 0 && (
         <div
-          className={`max-sm:hidden absolute top-full left-1/2 -translate-x-1/2 w-[calc(100%+0.64rem)] col-span-7 col-start-2 place-content-center p-1 bg-white border-b-2 border-r-2 border-l-2 border-black rounded-b-xl  ${
-            isLocationPanelOpen ? "" : "h-[4.5vh]"
-          } overflow-hidden`}
+          className={`max-sm:hidden absolute top-full left-1/2 -translate-x-1/2 w-[calc(100%+0.7rem)] col-span-7 col-start-2 place-content-center p-1 bg-white border-b-2 border-r-2 border-l-2 border-black rounded-b-xl overflow-x-scroll`}
         >
-          <span className="text-red-500 ">
-            {errors.city?.message || errors.location?.message}
-          </span>
-          {selectedLocation.length > 0 && (
-            <div
-              className={`absolute right-2  ${
-                isLocationPanelOpen ? "" : "top-1"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={`lucide lucide-chevron-up cursor-pointer transition-all duration-300 ${
-                  isLocationPanelOpen ? "rotate-180" : ""
-                }`}
-                onClick={() => setIsLocationPanelOpen(!isLocationPanelOpen)}
-              >
-                <path d="m18 15-6-6-6 6" />
-              </svg>
-            </div>
-          )}
-          {selectedLocation.map((location, index) => {
-            return (
-              <span key={index} className="flex gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-x cursor-pointer"
-                  onClick={() => removeLocation(index)}
+          <div className="inline-flex gap-1">
+            {selectedLocation.map((location, index) => {
+              return (
+                <span
+                  key={index}
+                  className="inline-flex items-center gap-1 border px-2 rounded bg-gray-100 max-w-[120px] truncate"
+                  title={location}
                 >
-                  <path d="M18 6 6 18" />
-                  <path d="m6 6 12 12" />
-                </svg>
-                {location}
-              </span>
-            );
-          })}
+                  {location.length > 15
+                    ? `${location.slice(0, 15)}...`
+                    : location}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-x cursor-pointer"
+                    onClick={() => removeLocation(index)}
+                  >
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                  </svg>
+                </span>
+              );
+            })}
+          </div>
         </div>
       )}
+
+      <div className="hidden max-sm:flex flex-col gap-1 h-[52vh] col-span-9 border-2 border-black rounded-2xl p-1 overflow-y-scroll">
+        <Slider
+          step={500}
+          size="sm"
+          minValue={0}
+          maxValue={50000}
+          color="foreground"
+          label="Price Range"
+          defaultValue={[0, 10000]}
+          className="w-full font-medium"
+          formatOptions={{ style: "currency", currency: "NPR" }}
+          onChangeEnd={(priceRangeValue) => {
+            setValue("price", priceRangeValue);
+          }}
+        />
+
+        <div className="flex gap-4">
+          <Slider
+            step={1}
+            size="sm"
+            minValue={0}
+            maxValue={5}
+            label="Rating"
+            defaultValue={[0, 5]}
+            color="foreground"
+            className="w-1/2 font-medium"
+            onChangeEnd={(ratingValue) => {
+              setValue("rating", ratingValue);
+            }}
+          />
+
+          <Slider
+            step={1}
+            size="sm"
+            minValue={2}
+            maxValue={20}
+            defaultValue={[2, 3]}
+            color="foreground"
+            label="Person Capacity"
+            className="w-1/2 font-medium"
+            onChangeEnd={(capacityRangeValue) => {
+              setValue("capacity", capacityRangeValue);
+            }}
+          />
+        </div>
+
+        <PlusCheckboxGroup
+          label="Amenities"
+          options={["PARKING", "WIFI"]}
+          register={register("amenities")}
+        />
+
+        <PlusCheckboxGroup
+          label="Room Type"
+          options={["ONE_BHK", "TWO_BHK", "FLAT"]}
+          register={register("roomtype")}
+        />
+
+        <PlusCheckboxGroup
+          label="Furnishing Status"
+          options={["FURNISHED", "SEMIFURNISHED", "UNFURNISHED"]}
+          register={register("furnishingstatus")}
+        />
+
+        <PlusCheckboxGroup
+          label="Posted By"
+          options={["OWNER", "BROKER", "USER"]}
+          register={register("postedby")}
+        />
+
+        <CheckedBox
+          label="Verified"
+          value={verified ?? false}
+          register={register("verified")}
+          onChange={(e) => setValue("verified", e.target.checked)}
+        />
+      </div>
     </form>
   );
 };

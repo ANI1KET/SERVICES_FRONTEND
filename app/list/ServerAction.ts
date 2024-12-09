@@ -1,5 +1,6 @@
 "use server";
 
+import { Readable } from "stream";
 import { google } from "googleapis";
 // import { getServerSession } from "next-auth";
 
@@ -21,19 +22,46 @@ const drive = google.drive({
   auth: oauth2Client,
 });
 
-const youtube = google.youtube({
-  version: "v3",
-  auth: oauth2Client,
-});
-const authUrl = oauth2Client.generateAuthUrl({
-  access_type: "offline",
-  scope: "https://www.googleapis.com/auth/youtube.upload",
-});
-
 const { credentials } = await oauth2Client.refreshAccessToken();
 const accessToken = credentials.access_token;
 
-export async function uploadImage() {}
+export async function uploadImage({
+  fileName,
+  fileType,
+  file,
+}: {
+  fileName: string;
+  fileType: string;
+  file: File;
+}) {
+  "use server";
+  try {
+    const fileStream = new Readable();
+    fileStream.push(Buffer.from(await file.arrayBuffer()));
+    fileStream.push(null);
+
+    const response = await drive.files.create({
+      requestBody: {
+        name: fileName,
+        mimeType: fileType,
+        parents: ["11X7grkDG1HMGpuyg4VRcbYZjeSg6BBqs"],
+      },
+      media: {
+        mimeType: fileType,
+        body: fileStream,
+      },
+      fields: "id, webViewLink",
+    });
+
+    const { id, webViewLink } = response.data;
+
+    return webViewLink
+      ? webViewLink
+      : `https://drive.google.com/file/d/${id}/view`;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export async function getImageResumableUploadUrl({
   fileName,
@@ -104,6 +132,58 @@ export async function uploadChunkImage({
     }
   } catch (error) {
     console.error("Error uploading chunk:", error);
+    throw error;
+  }
+}
+
+const youtube = google.youtube({
+  version: "v3",
+  auth: oauth2Client,
+});
+// const authUrl = oauth2Client.generateAuthUrl({
+//   access_type: "offline",
+//   scope: "https://www.googleapis.com/auth/youtube.upload",
+// });
+
+export async function uploadVideo({
+  fileName,
+  file,
+}: {
+  fileName: string;
+  file: File;
+}) {
+  "use server";
+  try {
+    const fileStream = new Readable();
+    fileStream.push(Buffer.from(await file.arrayBuffer()));
+    fileStream.push(null);
+
+    const videoMetadata = {
+      snippet: {
+        title: fileName,
+        description: "Video uploaded using YouTube API",
+      },
+      status: {
+        privacyStatus: "public",
+      },
+    };
+
+    const media = {
+      body: fileStream,
+    };
+
+    const res = await youtube.videos.insert({
+      part: ["snippet", "status"],
+      requestBody: videoMetadata,
+      media: media,
+    });
+
+    if (!res.data.id) {
+      throw new Error("Error uploading video");
+    }
+
+    return res.data.id;
+  } catch (error) {
     throw error;
   }
 }

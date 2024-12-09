@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -10,19 +9,11 @@ import {
   CheckboxGroup,
   FileInput,
   RoomWithMedia,
-  RoomWithMediaUrl,
 } from "@/app//lib/ui/FormReusableComponent";
-import {
-  getImageResumableUploadUrl,
-  getvideoResumableUploadUrl,
-  SubmitRoomDetails,
-  uploadChunkImage,
-  uploadChunkVideo,
-} from "./serverAction";
+import { upload_Images, upload_Video } from "../uploadUtils";
+import { SubmitRoomDetails } from "../ServerAction";
 
 const Room = () => {
-  const [listedRoomData, setListedRoomData] = useState<RoomWithMediaUrl[]>();
-
   const {
     watch,
     reset,
@@ -57,92 +48,44 @@ const Room = () => {
   };
 
   const onSubmit = async (data: RoomWithMedia) => {
-    // data.city =
-    //   data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
+    data.city =
+      data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
 
     try {
-      const image = data.photos[0];
-      console.log(image.size / 1024);
-      // const imageUploadResumableUrl = await getImageResumableUploadUrl({
-      //   fileName: image.name,
-      //   fileType: image.type,
-      // });
+      const [uploadImageUrlsResult, uploadVideoUrlResult] =
+        await Promise.allSettled([
+          upload_Images(data.photos),
+          upload_Video(data.videos),
+        ]);
 
-      // const imageWorker = new Worker(
-      //   new URL("@/app/lib/webWorker/ImageChunkWorker.ts", import.meta.url)
-      // );
+      const uploadImageUrls =
+        uploadImageUrlsResult.status === "fulfilled"
+          ? uploadImageUrlsResult.value
+          : [];
+      const uploadVideoUrl =
+        uploadVideoUrlResult.status === "fulfilled"
+          ? uploadVideoUrlResult.value
+          : null;
 
-      // imageWorker.postMessage({ image });
+      const roomDetails = await SubmitRoomDetails({
+        name: data.name,
+        roomNumber: data.roomNumber,
+        city: data.city,
+        direction: data.direction,
+        location: data.location,
+        photos: uploadImageUrls,
+        videos: uploadVideoUrl ?? null,
+        price: data.price,
+        ratings: data.ratings,
+        mincapacity: data.mincapacity,
+        maxcapacity: data.maxcapacity,
+        roomtype: data.roomtype,
+        furnishingStatus: data.furnishingStatus,
+        amenities: data.amenities,
+      });
+      console.log(roomDetails);
 
-      // imageWorker.onmessage = async (event: MessageEvent) => {
-      //   const { type, chunk, offset, totalSize } = event.data;
-
-      //   if (type === "UPLOAD_CHUNK") {
-      //     const uploadImageUrl = await uploadChunkImage({
-      //       chunk,
-      //       offset,
-      //       totalSize,
-      //       resumableUrl: imageUploadResumableUrl,
-      //     });
-      //     console.log(uploadImageUrl);
-
-      //     if (offset + chunk.byteLength >= totalSize) {
-      //       imageWorker.terminate();
-      //     }
-      //   }
-      // };
-
-      // const videoFile = data.videos;
-      // if (videoFile instanceof FileList) {
-      //   const video = videoFile[0];
-      //   const videoUploadResumableUrl = await getvideoResumableUploadUrl({
-      //     fileName: video.name,
-      //   });
-
-      //   const videoWorker = new Worker(
-      //     new URL("@/app/lib/webWorker/VideoChunkWorker.ts", import.meta.url)
-      //   );
-
-      //   videoWorker.postMessage({ video });
-
-      //   videoWorker.onmessage = async (event: MessageEvent) => {
-      //     const { type, chunk, offset, totalSize } = event.data;
-
-      //     if (type === "UPLOAD_CHUNK") {
-      //       const uploadVideoUrl = await uploadChunkVideo({
-      //         chunk,
-      //         offset,
-      //         totalSize,
-      //         resumableUrl: videoUploadResumableUrl,
-      //       });
-      //       console.log(uploadVideoUrl);
-
-      //       if (offset + chunk.byteLength >= totalSize) {
-      //         videoWorker.terminate();
-      //       }
-      //     }
-      //   };
-      // }
-
-      // const roomData = await SubmitRoomDetails({
-      //   name: data.name,
-      //   roomNumber: data.roomNumber,
-      //   city: data.city,
-      //   direction: data.direction,
-      //   location: data.location,
-      //   photos: ["data.photos"],
-      //   videos: "data.videos",
-      //   price: data.price,
-      //   ratings: data.ratings,
-      //   mincapacity: data.mincapacity,
-      //   maxcapacity: data.maxcapacity,
-      //   roomtype: data.roomtype,
-      //   furnishingStatus: data.furnishingStatus,
-      //   amenities: data.amenities,
-      // });
-
-      // setListedRoomData((prev) => (prev ? [...prev, roomData] : [roomData]));
-      // reset();
+      reset();
     } catch (error) {
       alert(
         error instanceof Error ? error.message : "An unknown error occurred"
@@ -158,8 +101,8 @@ const Room = () => {
         onSubmit={handleFormSubmit(onSubmit)}
         className="space-y-6 p-2 border rounded-lg shadow-lg bg-white"
       >
-        {/* <div className="grid max-sm:grid-cols-1 grid-cols-2 gap-1"> */}
-        {/* <InputField
+        <div className="grid max-sm:grid-cols-1 grid-cols-2 gap-1">
+          <InputField
             label="Name"
             id="name"
             register={register("name", {
@@ -277,7 +220,7 @@ const Room = () => {
           })}
           handleEnterPress={handleEnterPress}
           error={errors.furnishingStatus?.message}
-        /> */}
+        />
 
         <FileInput
           label="Photos"
@@ -299,7 +242,7 @@ const Room = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md ${
+          className={`w-full bg-black text-white py-2 px-4 rounded-md ${
             isSubmitting && "opacity-50 cursor-not-allowed"
           }`}
         >

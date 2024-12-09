@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Footer from "./components/Footer/footer";
 import AuthProvider from "./providers/authProvider";
 import StoreProvider from "@/app/providers/storeProvider";
+import NextUIProvider from "@/app/providers/NextUIProvider";
 import Header from "./components/HeaderNavigationBar/header";
 import SideNavBar from "./components/SideNavigationBar/SideNavBar";
 import BottomNavBar from "./components/BottomNavigationBar/BottomNavBar";
@@ -25,12 +26,14 @@ export default function RootLayout({
       <body>
         <StoreProvider>
           <AuthProvider>
-            {/* <DisableInteractions /> */}
-            <Header />
-            {/* <SideNavBar /> */}
-            {children}
-            <Footer />
-            <BottomNavBar />
+            <NextUIProvider>
+              {/* <DisableInteractions /> */}
+              <Header />
+              {/* <SideNavBar /> */}
+              {children}
+              <Footer />
+              <BottomNavBar />
+            </NextUIProvider>
           </AuthProvider>
         </StoreProvider>
       </body>

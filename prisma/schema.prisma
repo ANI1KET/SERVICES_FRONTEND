@@ -15,7 +15,6 @@ datasource db {
 
 enum Role {
   ADMIN
-  ClIENT
   OWNER
   BROKER
   USER
@@ -61,6 +60,7 @@ enum Aminities {
 model Room {
   id               String               @id @default(auto()) @map("_id") @db.ObjectId
   name             String
+  roomNumber       String
   city             String
   direction        String?
   location         String // Location of Room
@@ -77,7 +77,7 @@ model Room {
   furnishingStatus FurnishingStatusEnum
   aminities        Aminities[]          @default([])
   // RELATIONSHIP
-  reviews          RoomReview[]         @relation("RoomReviews")
+  roomReviews      RoomReview[]         @relation("RoomReviews")
   // RELATIONSHIP
   user             User                 @relation(fields: [userId], references: [id], name: "UserRooms")
   userId           String               @db.ObjectId

@@ -2,19 +2,20 @@ import axios from "axios";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { QueryFilters } from "../types/types";
+import CityLocationsData from "./CityLocationsData";
 import axiosInstance from "../lib/utils/axiosInstance";
 import LoadMoreCityLocations from "./LoadMoreCityLocations";
-import CityLocationsData from "./CityLocationsData";
 
-const PAGE_SIZE = 1;
+const PAGE_SIZE = 2;
 
 export const metadata: Metadata = {
   title: "Category Page",
 };
 
-const decodeQueryParam = (param: string) => {
+const decodeURLPlaceQuery = (query: string) => {
   try {
-    return atob(param);
+    return JSON.parse(atob(query));
   } catch (error) {
     console.error("Error decoding query parameter:", error);
     return null;
@@ -23,28 +24,31 @@ const decodeQueryParam = (param: string) => {
 
 const getCityLocations = async ({
   category,
+  offset = 0,
   decodedCity,
   decodedLocations,
-  offset = 0,
+  decodedURLQueryFilters,
 }: {
+  offset: number;
   category: string;
   decodedCity: string | null;
   decodedLocations: string[] | undefined;
-  offset: number;
+  decodedURLQueryFilters: QueryFilters;
 }) => {
   try {
     const response = await axiosInstance.get(`/place/${category}`, {
       params: {
-        city: decodedCity,
-        locations: decodedLocations,
-        limit: PAGE_SIZE,
         offset,
+        limit: PAGE_SIZE,
+        city: decodedCity,
+        filters: decodedURLQueryFilters,
+        locations: decodedLocations,
       },
       headers: { "Cache-Control": "no-cache" },
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching city locations:", error);
+    console.error("Error fetching:", error);
     throw error;
   }
 };
@@ -54,34 +58,37 @@ const Category = async ({
   searchParams,
 }: {
   params: { category: string };
-  searchParams: { city: string; locations?: string };
+  searchParams: { place: string; filters: string };
 }) => {
   const { category } = await params;
-  const { city: encodedCity, locations: encodedLocations } = await searchParams;
+  const { place, filters } = await searchParams;
 
-  if (!encodedCity) notFound();
+  const decodedURLPlaceQuery = place ? decodeURLPlaceQuery(place) : "";
+  if (!decodedURLPlaceQuery) notFound();
 
-  const decodedCity = decodeQueryParam(encodedCity);
-  const decodedLocations = encodedLocations
-    ? decodeQueryParam(encodedLocations)?.split(",")
-    : undefined;
+  const decodedURLQueryFilters: QueryFilters = filters
+    ? decodeURLPlaceQuery(filters)
+    : {};
 
   try {
     const initialCityLocationsData = await getCityLocations({
       category,
-      decodedCity,
-      decodedLocations,
       offset: 0,
+      decodedCity: decodedURLPlaceQuery.city,
+      decodedURLQueryFilters: decodedURLQueryFilters,
+      decodedLocations: decodedURLPlaceQuery.locations,
     });
 
     const loadMoreCityLocations = async ({ offset }: { offset: number }) => {
       "use server";
+
       try {
         const cityLocationsData = await getCityLocations({
-          category,
-          decodedCity,
-          decodedLocations,
           offset,
+          category,
+          decodedCity: decodedURLPlaceQuery.city,
+          decodedURLQueryFilters: decodedURLQueryFilters,
+          decodedLocations: decodedURLPlaceQuery.locations,
         });
 
         const nextOffset =
@@ -106,15 +113,22 @@ const Category = async ({
     };
 
     return (
-      <main>
-        <h1>Properties in {decodedCity}</h1>
+      <section className="">
+        <h1 className="text-center font-medium m-1">
+          {category.toUpperCase()}s in{" "}
+          {decodedURLPlaceQuery.city?.toUpperCase()}
+        </h1>
         <LoadMoreCityLocations
           loadMoreCityLocationsAction={loadMoreCityLocations}
-          initialOffset={PAGE_SIZE}
+          initialOffset={
+            initialCityLocationsData.length >= PAGE_SIZE ? PAGE_SIZE : null
+          }
+          enncodedPlaceURL={place}
+          URLQueryFilters={decodedURLQueryFilters}
         >
           <CityLocationsData cityLocationsData={initialCityLocationsData} />
         </LoadMoreCityLocations>
-      </main>
+      </section>
     );
   } catch (error) {
     notFound();

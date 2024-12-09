@@ -6,7 +6,7 @@ import CategoryTabs from "@/app/lib/ui/CategoryTabs";
 
 const SearchPanel = () => {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 h-full">
       <CategoryTabs
         tabs={categoryTabs}
         componentId={`CategoryTab`}

@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { HeaderTabs } from "../../lib/utils/tabs";
 import NavigationTabs from "../../lib/ui/NavigationTabs";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks/hooks";
-import useBreakpoint from "@/app/lib/utils/useBreakpoint";
 import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
 
 const Header: React.FC = () => {
@@ -16,8 +15,7 @@ const Header: React.FC = () => {
     (state) => state.tabs.activeTabs.ListCategoryTab
   );
 
-  const { isMobile } = useBreakpoint();
-  return isMobile ? null : (
+  return (
     <div className="max-sm:hidden z-10 text-xl flex items-start h-[8vh] w-full sticky top-0 left-0 right-0 ">
       <div
         className="h-[8vh] w-[12vw] flex justify-center items-center rounded-br-2xl cursor-pointer border-b-2 border-r-2 border-black bg-white "
