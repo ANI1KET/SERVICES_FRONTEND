@@ -1,13 +1,15 @@
-"use client";
+'use client';
 
-import { Slider } from "@nextui-org/slider";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 import {
-  // CustomCheckbox,
+  PriceSlider,
+  RatingSlider,
+  CustomCheckbox,
+  CapacitySlider,
   CustomCheckboxGroup,
-} from "../lib/ui/FormReusableComponent";
+} from '../lib/ui/FormReusableComponent';
 import {
   PostedBy,
   RoomType,
@@ -15,7 +17,7 @@ import {
   QueryFilters,
   FurnishingStatus,
   DefaultQueryFilters,
-} from "../types/types";
+} from '../types/types';
 
 type LoadMoreCityLocationsProps = React.PropsWithChildren<{
   enncodedPlaceURL?: string;
@@ -107,10 +109,8 @@ const LoadMoreCityLocations = ({
       furnishingstatus,
     } = URLQueryFilters;
 
-    if (initialOffset) {
-      setOffset(initialOffset);
-      setLocations([]);
-    }
+    setOffset(initialOffset);
+    setLocations([]);
 
     setQueryFilters((prev) => ({
       ...prev,
@@ -134,7 +134,7 @@ const LoadMoreCityLocations = ({
       },
       {
         root: null,
-        rootMargin: "100px",
+        rootMargin: '100px',
         threshold: 0.1,
       }
     );
@@ -148,67 +148,28 @@ const LoadMoreCityLocations = ({
   }, [handleLoadMore]);
   return (
     <div className="grid gap-2 grid-cols-[3fr_5fr] max-sm:grid-cols-[2fr_2fr] max-xsm:grid-cols-[1fr] m-1 mb-6">
-      <div className="h-fit sticky top-[13vh] flex flex-col gap-4 max-xsm:hidden p-1 border-2 border-black rounded-xl ">
-        <Slider
-          step={500}
-          size="sm"
-          minValue={0}
-          maxValue={100000}
-          color="foreground"
-          label="Price Range"
-          defaultValue={[
-            URLQueryFilters.price ? (URLQueryFilters.price as number[])[0] : 0,
-            URLQueryFilters.price
-              ? (URLQueryFilters.price as number[])[1]
-              : 10000,
-          ]}
-          className="w-full font-medium"
-          formatOptions={{ style: "currency", currency: "NPR" }}
-          onChangeEnd={(priceRangeValue) => {
-            queryFilters.priceRange = priceRangeValue;
+      <div className="h-fit sticky top-[13vh] max-sm:top-[1vh] flex flex-col gap-4 max-xsm:hidden p-1 border-2 border-black rounded-xl ">
+        <PriceSlider
+          defaultValue={URLQueryFilters.price}
+          onChangeEnd={(value) => {
+            queryFilters.priceRange = value;
             updataURL();
           }}
         />
-        <div className="flex gap-2">
-          <Slider
-            step={1}
-            size="sm"
-            minValue={0}
-            maxValue={5}
-            label="Rating"
-            defaultValue={[
-              URLQueryFilters.rating
-                ? (URLQueryFilters.rating as number[])[0]
-                : 0,
-              URLQueryFilters.rating
-                ? (URLQueryFilters.rating as number[])[1]
-                : 5,
-            ]}
-            color="foreground"
-            className="w-1/2 font-medium"
-            onChangeEnd={(ratingValue) => {
-              queryFilters.ratingRange = ratingValue;
+
+        <div className="flex gap-4 max-sm:flex-col">
+          <RatingSlider
+            defaultValue={URLQueryFilters.rating}
+            onChangeEnd={(value) => {
+              queryFilters.ratingRange = value;
               updataURL();
             }}
           />
-          <Slider
-            step={1}
-            size="sm"
-            minValue={2}
-            maxValue={20}
-            defaultValue={[
-              URLQueryFilters.capacity
-                ? (URLQueryFilters.capacity as number[])[0]
-                : 2,
-              URLQueryFilters.capacity
-                ? (URLQueryFilters.capacity as number[])[1]
-                : 3,
-            ]}
-            color="foreground"
-            label="Person Capacity"
-            className="w-1/2 font-medium"
-            onChangeEnd={(capacityRangeValue) => {
-              queryFilters.capacityValue = capacityRangeValue;
+
+          <CapacitySlider
+            defaultValue={URLQueryFilters.capacity}
+            onChangeEnd={(value) => {
+              queryFilters.capacityValue = value;
               updataURL();
             }}
           />
@@ -216,7 +177,7 @@ const LoadMoreCityLocations = ({
 
         <CustomCheckboxGroup<Aminities>
           label="Amenities"
-          options={["PARKING", "WIFI"]}
+          options={['PARKING', 'WIFI']}
           defaultValue={URLQueryFilters.amenities}
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(amenity) => {
@@ -227,7 +188,7 @@ const LoadMoreCityLocations = ({
         <CustomCheckboxGroup<RoomType>
           label="Room Type"
           defaultValue={URLQueryFilters.roomtype}
-          options={["ONE_BHK", "TWO_BHK", "FLAT"]}
+          options={['ONE_BHK', 'TWO_BHK', 'FLAT']}
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(roomType) => {
             queryFilters.roomType = roomType;
@@ -237,7 +198,7 @@ const LoadMoreCityLocations = ({
         <CustomCheckboxGroup<PostedBy>
           label="Posted By"
           defaultValue={URLQueryFilters.postedby}
-          options={["OWNER", "BROKER", "USER"]}
+          options={['OWNER', 'BROKER', 'USER']}
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(postedBy) => {
             queryFilters.postedBy = postedBy;
@@ -247,25 +208,26 @@ const LoadMoreCityLocations = ({
         <CustomCheckboxGroup<FurnishingStatus>
           label="Furnishing Status"
           defaultValue={URLQueryFilters.furnishingstatus}
-          options={["FURNISHED", "SEMIFURNISHED", "UNFURNISHED"]}
+          options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
           className="grid grid-cols-3 lg:grid-cols-auto-fit] lg:min-[300px] max-sm:grid-cols-2"
           onChange={(furnishingStatus) => {
             queryFilters.furnishingStatus = furnishingStatus;
             updataURL();
           }}
         />
-        {/* <CustomCheckbox
+        <CustomCheckbox
           label="Verified"
+          defaultValue={URLQueryFilters.verified}
           onChange={(verify) => {
             queryFilters.Verified = verify;
             updataURL();
           }}
-        /> */}
+        />
       </div>
       <div className="grid gap-2 ">
         {children}
         {locations}
-        {offset !== null && <div ref={observerRef} style={{ height: "1px" }} />}
+        {offset !== null && <div ref={observerRef} style={{ height: '1px' }} />}
         {/* {loading && <p className="text-center">Loading...</p>} */}
         {loading && (
           <div className="flex justify-center items-center">

@@ -1,14 +1,15 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import Slider from '@mui/material/Slider';
+import React, { useEffect, useState } from 'react';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
 import {
   PostedBy,
   RoomType,
   Aminities,
   FurnishingStatus,
-} from "@/app/types/types";
+} from '@/app/types/types';
 
 type Room = {
   name: string;
@@ -50,7 +51,7 @@ type InputFieldProps = {
 export const InputField = ({
   label,
   id,
-  type = "text",
+  type = 'text',
   register,
   errors,
   handleEnterPress,
@@ -200,7 +201,7 @@ export const FileInput = ({
 );
 
 // PlusCheckbox Group
-type PlusCheckboxGroupProps = {
+type TickCheckboxGroupProps = {
   label: string;
   options: Aminities[] | PostedBy[] | RoomType[] | FurnishingStatus[];
   register: ReturnType<
@@ -213,11 +214,11 @@ type PlusCheckboxGroupProps = {
   >;
 };
 
-export const PlusCheckboxGroup = ({
+export const TickCheckboxGroup = ({
   label,
   options,
   register,
-}: PlusCheckboxGroupProps) => (
+}: TickCheckboxGroupProps) => (
   <div>
     <span className="block font-medium">{label}</span>
     <div className="grid grid-cols-3 lg:grid-cols-4 max-sm:grid-cols-3 max-xsm:grid-cols-2">
@@ -334,15 +335,21 @@ export const CustomCheckboxGroup = <T extends string>({
 // CheckedBoxProps Group
 type CustomCheckboxProps = {
   label: string;
+  defaultValue: boolean;
   onChange: (checked: boolean) => void;
 };
 
-export const CustomCheckbox = ({ label, onChange }: CustomCheckboxProps) => (
+export const CustomCheckbox = ({
+  label,
+  defaultValue,
+  onChange,
+}: CustomCheckboxProps) => (
   <div>
     <label className="flex gap-2 font-medium">
       {label}
       <input
         type="checkbox"
+        defaultChecked={defaultValue}
         onChange={(event) => onChange(event.target.checked)}
         className="hidden peer"
       />
@@ -352,3 +359,155 @@ export const CustomCheckbox = ({ label, onChange }: CustomCheckboxProps) => (
     </label>
   </div>
 );
+
+// Price Slider
+type PriceSliderProps = {
+  defaultValue?: number | number[];
+  onChangeEnd: (value: number | number[]) => void;
+};
+
+export const PriceSlider: React.FC<PriceSliderProps> = ({
+  onChangeEnd,
+  defaultValue,
+}) => {
+  const [price, setPrice] = useState<number[] | number>(
+    defaultValue ?? [0, 10000]
+  );
+
+  return (
+    <>
+      <label className="block font-medium">Price</label>
+      <Slider
+        min={0}
+        step={500}
+        max={100000}
+        value={price}
+        sx={{
+          color: 'black',
+          width: '98%',
+          margin: 'auto',
+          '& .MuiSlider-thumb': {
+            backgroundColor: 'black',
+          },
+          '& .MuiSlider-track': {
+            backgroundColor: 'black',
+          },
+          '& .MuiSlider-rail': {
+            backgroundColor: '#e0e0e0',
+          },
+        }}
+        valueLabelDisplay="auto"
+        getAriaLabel={() => 'Price'}
+        getAriaValueText={(value) => `${value}`}
+        valueLabelFormat={(value) => `Rs.${value}`}
+        onChange={(event: Event, newValue: number | number[]) =>
+          setPrice(newValue)
+        }
+        onChangeCommitted={(event, newValue: number | number[]) => {
+          onChangeEnd(newValue);
+        }}
+      />
+    </>
+  );
+};
+
+// Rating Slider
+type RatingSliderProps = {
+  defaultValue?: number | number[];
+  onChangeEnd: (value: number | number[]) => void;
+};
+
+export const RatingSlider: React.FC<RatingSliderProps> = ({
+  onChangeEnd,
+  defaultValue,
+}) => {
+  const [rating, setRating] = useState<number[] | number>(
+    defaultValue ?? [0, 5]
+  );
+
+  return (
+    <div className="w-full">
+      <label className="block font-medium">Rating</label>
+      <Slider
+        min={0}
+        max={5}
+        step={1}
+        value={rating}
+        sx={{
+          color: 'black',
+          width: '98%',
+          margin: 'auto',
+          '& .MuiSlider-thumb': {
+            backgroundColor: 'black',
+          },
+          '& .MuiSlider-track': {
+            backgroundColor: 'black',
+          },
+          '& .MuiSlider-rail': {
+            backgroundColor: '#e0e0e0',
+          },
+        }}
+        valueLabelDisplay="auto"
+        getAriaLabel={() => 'Rating'}
+        getAriaValueText={(value) => `${value}`}
+        onChange={(event: Event, newValue: number | number[]) =>
+          setRating(newValue)
+        }
+        onChangeCommitted={(event, newValue: number | number[]) => {
+          onChangeEnd(newValue);
+        }}
+      />
+    </div>
+  );
+};
+
+// Capacity Slider
+type CapacitySliderProps = {
+  defaultValue?: number | number[];
+  onChangeEnd: (value: number | number[]) => void;
+};
+
+export const CapacitySlider: React.FC<CapacitySliderProps> = ({
+  onChangeEnd,
+  defaultValue,
+}) => {
+  const [capacity, setCapacity] = useState<number[] | number>(
+    defaultValue ?? [2, 20]
+  );
+
+  return (
+    <div className="w-full">
+      <label className="block font-medium">Capacity</label>
+      <Slider
+        min={2}
+        max={20}
+        step={1}
+        value={capacity}
+        sx={{
+          color: 'black',
+          width: '98%',
+          margin: 'auto',
+          '& .MuiSlider-thumb': {
+            backgroundColor: 'black',
+          },
+          '& .MuiSlider-track': {
+            backgroundColor: 'black',
+          },
+          '& .MuiSlider-rail': {
+            backgroundColor: '#e0e0e0',
+          },
+        }}
+        valueLabelDisplay="auto"
+        getAriaLabel={() => 'Capacity'}
+        getAriaValueText={(value) => `${value}`}
+        valueLabelFormat={(value) => `${value}P`}
+        onChange={(event: Event, newValue: number | number[]) =>
+          setCapacity(newValue)
+        }
+        onChangeCommitted={(event, newValue: number | number[]) => {
+          onChangeEnd(newValue);
+        }}
+      />
+    </div>
+  );
+};

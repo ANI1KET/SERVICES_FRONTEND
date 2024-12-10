@@ -1,18 +1,26 @@
-"use client";
+'use client';
 
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { Slider } from "@nextui-org/slider";
-import { useCallback, useEffect, useState } from "react";
+import { useForm } from 'react-hook-form';
+import Select from '@mui/material/Select';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 
 import {
   useAppSelector,
   useLazyGetRoomCityLocationsQuery,
   useLazyGetRoomLocationsQuery,
-} from "@/app/store/hooks/hooks";
-import { SearchQuery } from "@/app/types/types";
-import RoomApi from "@/app/store/slices/roomApiSlice";
-import { CheckedBox, PlusCheckboxGroup } from "./FormReusableComponent";
+} from '@/app/store/hooks/hooks';
+import { SearchQuery } from '@/app/types/types';
+import RoomApi from '@/app/store/slices/roomApiSlice';
+import {
+  CapacitySlider,
+  CheckedBox,
+  PriceSlider,
+  RatingSlider,
+  TickCheckboxGroup,
+} from './FormReusableComponent';
 
 const SearchForm: React.FC = () => {
   const router = useRouter();
@@ -32,14 +40,13 @@ const SearchForm: React.FC = () => {
     watch,
     register,
     setValue,
-    setFocus,
     // setError,
     // clearErrors,
     handleSubmit,
   } = useForm<SearchQuery>({
     defaultValues: {
-      city: "",
-      location: "",
+      city: '',
+      location: '',
       postedby: [],
       roomtype: [],
       amenities: [],
@@ -49,13 +56,14 @@ const SearchForm: React.FC = () => {
 
   useEffect(() => {
     if (cachedData?.city) {
-      setValue("city", cachedData.city);
-      setValue("location", "");
+      setValue('city', cachedData.city);
+      setValue('location', '');
     }
   }, [cachedData, setValue]);
 
-  const selectedCity = watch("city");
-  const verified = watch("verified");
+  const verified = watch('verified');
+  const selectedCity = watch('city');
+  const selectedCityLocation = watch('location');
 
   const [
     triggerGetRoomLocations,
@@ -74,95 +82,19 @@ const SearchForm: React.FC = () => {
   const [
     triggerGetRoomCityLocations,
     {
-      data: roomCityLocationsData,
+      // data: roomCityLocationsData,
       // error: roomCityLocationsError,
       // isLoading: roomCityLocationsLoading,
     },
   ] = useLazyGetRoomCityLocationsQuery();
-  useEffect(() => {
-    setFocus("location");
-  }, [roomCityLocationsData, setFocus]);
 
   const capitalize = (text: string) =>
     text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-  // const clearInputErrors = (field: "city" | "location") => clearErrors(field);
-  // const handleError = useCallback(
-  //   (field: "city" | "location", message: string) => {
-  //     setError(field, { type: "manual", message });
-  //   },
-  //   [setError]
-  // );
 
-  const removeLocation = useCallback(
-    (indexToRemove: number) => {
-      setSelectedLocation((prevLocations) =>
-        prevLocations.filter((_, index) => index !== indexToRemove)
-      );
-      setFocus("location");
-    },
-    [setFocus]
-  );
-
-  const handleCityKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Enter") return;
-
-    e.preventDefault();
-    const capitalizedCity = capitalize(selectedCity);
-
-    if (!selectedCity) {
-      // clearInputErrors("city");
-    } else if (
-      cachedData &&
-      cachedData[activeTab].hasOwnProperty(capitalizedCity)
-      // capitalizedCity in cachedData[activeTab]
-    ) {
-      if (
-        (cachedData[activeTab] as { [key: string]: string[] | [] })[
-          capitalizedCity
-        ].length === 0
-      ) {
-        triggerGetRoomCityLocations({
-          category: activeTab,
-          city: capitalizedCity,
-        });
-      }
-      setValue("city", capitalizedCity);
-      setFocus("location");
-      // clearErrors("city");
-    }
-    // else {
-    //   handleError("city", "Currently, service is not available in the city.");
-    // }
-
-    setSelectedLocation([]);
-  };
-
-  const handleLocationKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Enter") return;
-
-    e.preventDefault();
-    const location = e.currentTarget.value;
-
-    const locations = (
-      cachedData?.[activeTab] as { [key: string]: string[] | [] }
-    )[selectedCity];
-    if ((locations as string[]).includes(location)) {
-      e.currentTarget.value = "";
-      setSelectedLocation((prevSelectedLocations) =>
-        prevSelectedLocations.includes(location)
-          ? prevSelectedLocations
-          : [...prevSelectedLocations, location]
-      );
-      // clearInputErrors("location");
-    }
-    // else if (location) {
-    //   handleError(
-    //     "location",
-    //     "Service not available in this location right now."
-    //   );
-    // } else {
-    //   clearErrors("location");
-    // }
+  const removeLocation = (indexToRemove: number) => {
+    setSelectedLocation((prevLocations) =>
+      prevLocations.filter((_, index) => index !== indexToRemove)
+    );
   };
 
   const onSubmit = (data: SearchQuery) => {
@@ -170,29 +102,6 @@ const SearchForm: React.FC = () => {
 
     if (!city) {
       return;
-      // handleError("city", "Please select the city.");
-    }
-
-    if (cachedData && !cachedData[activeTab]?.hasOwnProperty(city)) {
-      return;
-      // handleError(
-      //   "city",
-      //   "Currently, service is not available in the city."
-      // );
-    }
-
-    const availableLocations = (
-      cachedData?.[activeTab] as { [key: string]: string[] | [] }
-    )[city] as string[];
-    if (
-      location &&
-      (!availableLocations || !availableLocations.includes(location))
-    ) {
-      return;
-      // handleError(
-      //   "location",
-      //   "Service not available in this location right now."
-      // );
     }
 
     const locations = (() => {
@@ -229,6 +138,36 @@ const SearchForm: React.FC = () => {
     );
     const url = `/${activeTab}?place=${compressedURLQuery}&filters=${compressedURLQueryFilters}`;
     router.push(url);
+
+    // const encodedCityURLQuery = btoa(JSON.stringify({ city: city }));
+    // const encodedPriceURLQuery = btoa(JSON.stringify({ price: data.price }));
+    // const encodedRatingURLQuery = btoa(JSON.stringify({ rating: data.rating }));
+    // const encodedLocationsURLQuery = btoa(
+    //   JSON.stringify({ locations: locations })
+    // );
+    // const encodedCapacityURLQuery = btoa(
+    //   JSON.stringify({ capacity: data.capacity })
+    // );
+    // const encodedVerifiedURLQuery = btoa(
+    //   JSON.stringify({ verified: data.verified })
+    // );
+    // const encodedPostedByURLQuery = btoa(
+    //   JSON.stringify({ postedby: data.postedby })
+    // );
+    // const encodedRoomTypeURLQuery = btoa(
+    //   JSON.stringify({ roomtype: data.roomtype })
+    // );
+    // const encodedAmienitiesURLQuery = btoa(
+    //   JSON.stringify({ amenities: data.amenities })
+    // );
+    // const encodedFurnishingStatusURLQuery = btoa(
+    //   JSON.stringify({ furnishingstatus: data.furnishingstatus })
+    // );
+
+    // const url = `/${activeTab}?city=${encodedCityURLQuery}&locations=${encodedLocationsURLQuery}
+    // &price=${encodedPriceURLQuery}&rating=${encodedRatingURLQuery}&capacity=${encodedCapacityURLQuery}
+    // &verified=${encodedVerifiedURLQuery}&postedby=${encodedPostedByURLQuery}&roomtype=${encodedRoomTypeURLQuery}
+    // &amenities=${encodedAmienitiesURLQuery}&furnishingstatus=${encodedFurnishingStatusURLQuery}`;
   };
   return (
     <form
@@ -252,122 +191,174 @@ const SearchForm: React.FC = () => {
           <path d="m18 15-6-6-6 6" />
         </svg>
         <div className="w-full h-[40vh] overflow-x-scroll flex flex-col gap-2 p-2 absolute top-full left-0 right-0 rounded-2xl border-2 border-black bg-white opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300">
-          <Slider
-            step={500}
-            size="sm"
-            minValue={0}
-            maxValue={100000}
-            color="foreground"
-            label="Price Range"
-            defaultValue={[0, 10000]}
-            className="w-full font-medium"
-            formatOptions={{ style: "currency", currency: "NPR" }}
-            onChangeEnd={(priceRangeValue) => {
-              setValue("price", priceRangeValue);
-            }}
-          />
+          <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
           <div className="flex gap-4">
-            <Slider
-              step={1}
-              size="sm"
-              minValue={0}
-              maxValue={5}
-              label="Rating"
-              defaultValue={[0, 5]}
-              color="foreground"
-              className="w-1/2 font-medium"
-              onChangeEnd={(ratingValue) => {
-                setValue("rating", ratingValue);
-              }}
-            />
-            <Slider
-              step={1}
-              size="sm"
-              minValue={2}
-              maxValue={20}
-              defaultValue={[2, 3]}
-              color="foreground"
-              label="Person Capacity"
-              className="w-1/2 font-medium"
-              onChangeEnd={(capacityRangeValue) => {
-                setValue("capacity", capacityRangeValue);
-              }}
+            <RatingSlider onChangeEnd={(value) => setValue('rating', value)} />
+            <CapacitySlider
+              onChangeEnd={(value) => setValue('capacity', value)}
             />
           </div>
-          <PlusCheckboxGroup
+          <TickCheckboxGroup
             label="Amenities"
-            options={["PARKING", "WIFI"]}
-            register={register("amenities")}
+            options={['PARKING', 'WIFI']}
+            register={register('amenities')}
           />
-          <PlusCheckboxGroup
+          <TickCheckboxGroup
             label="Room Type"
-            options={["ONE_BHK", "TWO_BHK", "FLAT"]}
-            register={register("roomtype")}
+            options={['ONE_BHK', 'TWO_BHK', 'FLAT']}
+            register={register('roomtype')}
           />
-          <PlusCheckboxGroup
+          <TickCheckboxGroup
             label="Furnishing Status"
-            options={["FURNISHED", "SEMIFURNISHED", "UNFURNISHED"]}
-            register={register("furnishingstatus")}
+            options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
+            register={register('furnishingstatus')}
           />
-          <PlusCheckboxGroup
+          <TickCheckboxGroup
             label="Posted By"
-            options={["OWNER", "BROKER", "USER"]}
-            register={register("postedby")}
+            options={['OWNER', 'BROKER', 'USER']}
+            register={register('postedby')}
           />
-          {/* <CheckedBox
+          <CheckedBox
             label="Verified"
             value={verified ?? false}
-            register={register("verified")}
-            onChange={(e) => setValue("verified", e.target.checked)}
-          /> */}
+            register={register('verified')}
+            onChange={(e) => setValue('verified', e.target.checked)}
+          />
         </div>
       </div>
 
-      <div className="max-sm:h-[5vh] col-span-2 p-1 max-sm:col-span-3 place-content-center max-sm:border-2 max-sm:rounded-xl border-r-[1px] border-black">
-        <input
-          type="text"
-          list="Cities"
-          value={selectedCity}
-          {...register("city")}
-          onKeyDown={handleCityKeyDown}
-          className="w-full h-full text-lg"
-        />
-        <datalist id="Cities">
-          {cachedData &&
-            cachedData[activeTab] &&
-            Object.keys(cachedData[activeTab]).map((city, index) => {
-              return (
-                <option key={index} value={city}>
-                  {city}
-                </option>
-              );
-            })}
-        </datalist>
+      <div className="max-sm:h-[5vh] col-span-2 max-sm:col-span-3 place-content-center max-sm:border-2 max-sm:rounded-xl border-r-[1px] border-black">
+        <FormControl
+          fullWidth
+          size="small"
+          sx={{
+            height: '5vh',
+            '& .MuiOutlinedInput-root': {
+              height: '100%',
+              '& fieldset': {
+                border: 'none',
+              },
+              '&:hover fieldset': {
+                border: 'none',
+              },
+              '&.Mui-focused fieldset': {
+                border: 'none',
+              },
+            },
+            '& .MuiInputLabel-root': {
+              color: 'gray',
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: 'gray',
+            },
+          }}
+        >
+          <Select
+            value={selectedCity ?? ''}
+            disabled={!selectedCity}
+            onChange={(value) => {
+              const capitalizedCity = capitalize(value.target.value);
+              if (
+                cachedData &&
+                cachedData[activeTab].hasOwnProperty(capitalizedCity)
+                // capitalizedCity in cachedData[activeTab]
+              ) {
+                if (
+                  (cachedData[activeTab] as { [key: string]: string[] | [] })[
+                    capitalizedCity
+                  ].length === 0
+                ) {
+                  triggerGetRoomCityLocations({
+                    category: activeTab,
+                    city: capitalizedCity,
+                  });
+                }
+                setValue('city', capitalizedCity);
+                setSelectedLocation([]);
+              }
+            }}
+          >
+            {cachedData &&
+              cachedData[activeTab] &&
+              Object.keys(cachedData[activeTab]).map((city) => {
+                return (
+                  <MenuItem key={city} value={city}>
+                    {city}
+                  </MenuItem>
+                );
+              })}
+          </Select>
+        </FormControl>
       </div>
 
-      <div className="max-sm:h-[5vh] col-span-5 p-1 max-sm:col-span-6 place-content-center max-sm:border-2 max-sm:border-black max-sm:rounded-xl ">
-        <input
-          type="text"
-          list="Locations"
-          {...register("location")}
-          onKeyDown={handleLocationKeyDown}
-          disabled={
-            !(
-              (cachedData?.[activeTab] as { [key: string]: string[] | [] })?.[
+      <div className="max-sm:h-[5vh] col-span-5 max-sm:col-span-6 place-content-center max-sm:border-2 max-sm:border-black max-sm:rounded-xl ">
+        <FormControl
+          fullWidth
+          size="small"
+          sx={{
+            height: '5vh',
+            '& .MuiOutlinedInput-root': {
+              height: '100%',
+              '& fieldset': {
+                border: 'none',
+              },
+              '&:hover fieldset': {
+                border: 'none',
+              },
+              '&.Mui-focused fieldset': {
+                border: 'none',
+              },
+            },
+            '& .MuiInputLabel-root': {
+              color: 'gray',
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: 'gray',
+            },
+          }}
+        >
+          <Select
+            value={
+              cachedData?.[activeTab] &&
+              typeof cachedData[activeTab] === 'object' &&
+              selectedCity &&
+              cachedData[activeTab][selectedCity]?.includes(
+                selectedCityLocation
+              )
+                ? selectedCityLocation
+                : ''
+            }
+            disabled={
+              !(
+                cachedData?.[activeTab] &&
+                typeof cachedData[activeTab] === 'object' &&
+                selectedCity &&
+                cachedData[activeTab][selectedCity]
+              )
+            }
+            onChange={(value) => {
+              const location = value.target.value;
+
+              setValue('location', location);
+              setSelectedLocation((prevSelectedLocations: string[]) =>
+                prevSelectedLocations.includes(location)
+                  ? prevSelectedLocations
+                  : [...prevSelectedLocations, location]
+              );
+            }}
+          >
+            {cachedData &&
+              (cachedData[activeTab] as { [key: string]: string[] | [] })[
                 selectedCity
-              ]?.length > 0
-            )
-          }
-          className={`w-full h-full text-lg`}
-        />
-        <datalist id="Locations">
-          {cachedData &&
-            (cachedData[activeTab] as { [key: string]: string[] | [] })[
-              selectedCity
-            ]?.map((location, index) => {
-              return <option key={index} value={location} />;
-            })}
-        </datalist>
+              ]?.map((city) => {
+                return (
+                  <MenuItem key={city} value={city}>
+                    {city}
+                  </MenuItem>
+                );
+              })}
+          </Select>
+        </FormControl>
       </div>
 
       {selectedLocation.length > 0 && (
@@ -449,80 +440,45 @@ const SearchForm: React.FC = () => {
       )}
 
       <div className="hidden max-sm:flex flex-col gap-1 h-[52vh] col-span-9 border-2 border-black rounded-2xl p-1 overflow-y-scroll">
-        <Slider
-          step={500}
-          size="sm"
-          minValue={0}
-          maxValue={50000}
-          color="foreground"
-          label="Price Range"
-          defaultValue={[0, 10000]}
-          className="w-full font-medium"
-          formatOptions={{ style: "currency", currency: "NPR" }}
-          onChangeEnd={(priceRangeValue) => {
-            setValue("price", priceRangeValue);
-          }}
-        />
+        <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
 
         <div className="flex gap-4">
-          <Slider
-            step={1}
-            size="sm"
-            minValue={0}
-            maxValue={5}
-            label="Rating"
-            defaultValue={[0, 5]}
-            color="foreground"
-            className="w-1/2 font-medium"
-            onChangeEnd={(ratingValue) => {
-              setValue("rating", ratingValue);
-            }}
-          />
+          <RatingSlider onChangeEnd={(value) => setValue('rating', value)} />
 
-          <Slider
-            step={1}
-            size="sm"
-            minValue={2}
-            maxValue={20}
-            defaultValue={[2, 3]}
-            color="foreground"
-            label="Person Capacity"
-            className="w-1/2 font-medium"
-            onChangeEnd={(capacityRangeValue) => {
-              setValue("capacity", capacityRangeValue);
-            }}
+          <CapacitySlider
+            onChangeEnd={(value) => setValue('capacity', value)}
           />
         </div>
 
-        <PlusCheckboxGroup
+        <TickCheckboxGroup
           label="Amenities"
-          options={["PARKING", "WIFI"]}
-          register={register("amenities")}
+          options={['PARKING', 'WIFI']}
+          register={register('amenities')}
         />
 
-        <PlusCheckboxGroup
+        <TickCheckboxGroup
           label="Room Type"
-          options={["ONE_BHK", "TWO_BHK", "FLAT"]}
-          register={register("roomtype")}
+          options={['ONE_BHK', 'TWO_BHK', 'FLAT']}
+          register={register('roomtype')}
         />
 
-        <PlusCheckboxGroup
+        <TickCheckboxGroup
           label="Furnishing Status"
-          options={["FURNISHED", "SEMIFURNISHED", "UNFURNISHED"]}
-          register={register("furnishingstatus")}
+          options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
+          register={register('furnishingstatus')}
         />
 
-        <PlusCheckboxGroup
+        <TickCheckboxGroup
           label="Posted By"
-          options={["OWNER", "BROKER", "USER"]}
-          register={register("postedby")}
+          options={['OWNER', 'BROKER', 'USER']}
+          register={register('postedby')}
         />
 
         <CheckedBox
           label="Verified"
           value={verified ?? false}
-          register={register("verified")}
-          onChange={(e) => setValue("verified", e.target.checked)}
+          register={register('verified')}
+          onChange={(e) => setValue('verified', e.target.checked)}
         />
       </div>
     </form>

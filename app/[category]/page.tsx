@@ -1,23 +1,23 @@
-import axios from "axios";
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import axios from 'axios';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
-import { QueryFilters } from "../types/types";
-import CityLocationsData from "./CityLocationsData";
-import axiosInstance from "../lib/utils/axiosInstance";
-import LoadMoreCityLocations from "./LoadMoreCityLocations";
+import { QueryFilters } from '../types/types';
+import CityLocationsData from './CityLocationsData';
+import axiosInstance from '../lib/utils/axiosInstance';
+import LoadMoreCityLocations from './LoadMoreCityLocations';
 
 const PAGE_SIZE = 2;
 
 export const metadata: Metadata = {
-  title: "Category Page",
+  title: 'Category Page',
 };
 
 const decodeURLPlaceQuery = (query: string) => {
   try {
     return JSON.parse(atob(query));
   } catch (error) {
-    console.error("Error decoding query parameter:", error);
+    console.error('Error decoding query parameter:', error);
     return null;
   }
 };
@@ -44,11 +44,11 @@ const getCityLocations = async ({
         locations: decodedLocations,
         filters: decodedURLQueryFilters,
       },
-      headers: { "Cache-Control": "no-cache" },
+      headers: { 'Cache-Control': 'no-cache' },
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching:", error);
+    console.error('Error fetching:', error);
     throw error;
   }
 };
@@ -78,9 +78,8 @@ const Category = async ({
       decodedURLQueryFilters: decodedURLQueryFilters,
       decodedLocations: decodedURLPlaceQuery.locations,
     });
-
     const loadMoreCityLocations = async ({ offset }: { offset: number }) => {
-      "use server";
+      'use server';
 
       try {
         const cityLocationsData = await getCityLocations({
@@ -104,7 +103,7 @@ const Category = async ({
       } catch (error) {
         if (axios.isAxiosError(error)) {
           return [
-            <>{error.response?.data.message || "Error loading data"}</>,
+            <>{error.response?.data.message || 'Error loading data'}</>,
             null,
           ] as const;
         }
@@ -115,7 +114,7 @@ const Category = async ({
     return (
       <section className="">
         <h1 className="text-center font-medium m-1">
-          {category.toUpperCase()}s in{" "}
+          {category.toUpperCase()}s in{' '}
           {decodedURLPlaceQuery.city?.toUpperCase()}
         </h1>
         <LoadMoreCityLocations
@@ -132,7 +131,7 @@ const Category = async ({
     );
   } catch (error) {
     notFound();
-    console.error("Error fetching initial data:", error);
+    console.error('Error fetching initial data:', error);
   }
 };
 
