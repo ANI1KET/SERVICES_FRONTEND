@@ -1,30 +1,30 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
-import { HeaderTabs } from "../../lib/utils/tabs";
-import NavigationTabs from "../../lib/ui/NavigationTabs";
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks/hooks";
-import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
+import { HeaderTabs } from '../../lib/utils/tabs';
+import NavigationTabs from '../../lib/ui/NavigationTabs';
+import {
+  useDeleteTabState,
+  useTabState,
+} from '@/app/providers/reactqueryProvider';
 
 const Header: React.FC = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const activeListTab = useAppSelector(
-    (state) => state.tabs.activeTabs.ListCategoryTab
-  );
+  const tabState = useTabState();
+  const deleteTabState = useDeleteTabState();
 
   return (
     <div className="max-sm:hidden z-10 text-xl flex items-start h-[8vh] w-full sticky top-0 left-0 right-0 ">
       <div
         className="h-[8vh] w-[12vw] flex justify-center items-center rounded-br-2xl cursor-pointer border-b-2 border-r-2 border-black bg-white "
         onClick={() => {
-          router.push("/");
-          dispatch(RemoveActiveTab("HeaderTab"));
+          deleteTabState('HeaderTab');
+          router.push('/');
         }}
       >
-        {"AfnoSansar".split("").map((char, index) => (
+        {'AfnoSansar'.split('').map((char, index) => (
           <motion.span
             key={index}
             initial={{ opacity: 0, y: 0 }}
@@ -35,7 +35,6 @@ const Header: React.FC = () => {
           </motion.span>
         ))}
       </div>
-
       <NavigationTabs
         tabs={HeaderTabs}
         componentId="HeaderTab"
@@ -63,7 +62,7 @@ const Header: React.FC = () => {
         </div>
         <p
           className="cursor-pointer bg-black text-white p-1 text-base rounded-3xl"
-          onClick={() => router.push(`/list/${activeListTab}`)}
+          onClick={() => router.push(`/list/${tabState?.ListCategoryTab}`)}
         >
           List Property
         </p>

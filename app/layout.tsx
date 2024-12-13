@@ -1,18 +1,18 @@
-import "./globals.css";
-import type { Metadata } from "next";
+import './globals.css';
+import type { Metadata } from 'next';
 
-import Footer from "./components/Footer/footer";
-import AuthProvider from "./providers/authProvider";
-import StoreProvider from "@/app/providers/storeProvider";
-import Header from "./components/HeaderNavigationBar/header";
+import Footer from './components/Footer/footer';
+import AuthProvider from './providers/authProvider';
+import Header from './components/HeaderNavigationBar/header';
+import ReactQueryProvider from './providers/reactqueryProvider';
 // import DisableInteractions from "./lib/utils/DisableInteractions";
 // import SideNavBar from "./components/SideNavigationBar/SideNavBar";
-import BottomNavBar from "./components/BottomNavigationBar/BottomNavBar";
+import BottomNavBar from './components/BottomNavigationBar/BottomNavBar';
 
 export const metadata: Metadata = {
-  title: "ROOM RENTAL",
-  description: "TO RENT ROOM",
-  keywords: ["rent", "room", "accommodation"],
+  title: 'ROOM RENTAL',
+  description: 'TO RENT ROOM',
+  keywords: ['rent', 'room', 'accommodation'],
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <StoreProvider>
+        <ReactQueryProvider>
           <AuthProvider>
             {/* <DisableInteractions /> */}
             <Header />
@@ -32,7 +32,7 @@ export default function RootLayout({
             <Footer />
             <BottomNavBar />
           </AuthProvider>
-        </StoreProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

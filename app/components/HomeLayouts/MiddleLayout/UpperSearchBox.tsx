@@ -1,5 +1,5 @@
-import CategoryTabs from "@/app/lib/ui/CategoryTabs";
-import { categoryTabs } from "@/app/lib/utils/tabs";
+import CategoryTabs from '@/app/lib/ui/CategoryTabs';
+import { categoryTabs } from '@/app/lib/utils/tabs';
 
 const UpperSearchBox = () => {
   return (

@@ -1,10 +1,12 @@
-"use client";
+'use client';
 
-import React, { useCallback } from "react";
-import { useRouter } from "next/navigation";
+import React, { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { setActiveTab } from "@/app/store/slices/tabSlice";
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks/hooks";
+import {
+  useSetTabState,
+  useTabState,
+} from '@/app/providers/reactqueryProvider';
 
 interface TabProps {
   children: React.ReactNode;
@@ -16,7 +18,7 @@ const Tab: React.FC<TabProps> = ({ children, isActive, onClick }) => {
   return (
     <li
       className={`cursor-pointer p-1 text-sm lg:text-base rounded-3xl transition-all duration-200 ${
-        isActive ? `text-white bg-black scale-105 ` : ""
+        isActive ? `text-white bg-black scale-105 ` : ''
       }`}
       onClick={onClick}
     >
@@ -27,8 +29,8 @@ const Tab: React.FC<TabProps> = ({ children, isActive, onClick }) => {
 
 interface TabsProps {
   componentId: string;
-  tabs: [string, React.ReactNode][];
   className: string;
+  tabs: [string, React.ReactNode][];
 }
 
 const CategoryTabs: React.FC<TabsProps> = ({
@@ -37,17 +39,15 @@ const CategoryTabs: React.FC<TabsProps> = ({
   className,
 }) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const activeTab = useAppSelector(
-    (state) => state.tabs.activeTabs[componentId]
-  );
+  const tabState = useTabState();
+  const setTabState = useSetTabState();
 
   const handleTabClick = useCallback(
     (label: string) => {
-      dispatch(setActiveTab({ componentId, activeTab: label }));
-      if (componentId === "ListCategoryTab") router.push(`/list/${label}`);
+      setTabState(componentId, label);
+      if (componentId === 'ListCategoryTab') router.push(`/list/${label}`);
     },
-    [componentId, dispatch, router]
+    [componentId, router, setTabState]
   );
 
   return (
@@ -55,7 +55,7 @@ const CategoryTabs: React.FC<TabsProps> = ({
       {tabs?.map(([label, content], index) => (
         <Tab
           key={index}
-          isActive={activeTab === label}
+          isActive={tabState?.[componentId] === label}
           onClick={() => handleTabClick(label)}
         >
           {content}

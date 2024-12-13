@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import SearchForm from "@/app/lib/ui/SearchForm";
-import { categoryTabs } from "@/app/lib/utils/tabs";
-import CategoryTabs from "@/app/lib/ui/CategoryTabs";
+// import SearchForm from './SearchPanel/SearchForm';
+import { categoryTabs } from '@/app/lib/utils/tabs';
+import CategoryTabs from '@/app/lib/ui/CategoryTabs';
 
 const SearchPanel = () => {
   return (
@@ -13,7 +13,7 @@ const SearchPanel = () => {
         className={`h-[16vh] grid grid-cols-3 place-items-center `}
       />
 
-      <SearchForm />
+      {/* <SearchForm /> */}
     </div>
   );
 };

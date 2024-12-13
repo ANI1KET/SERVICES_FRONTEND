@@ -1,15 +1,13 @@
-"use client";
+'use client';
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from 'react';
 import {
   motion,
   AnimatePresence,
   useScroll,
   useMotionValueEvent,
-} from "framer-motion";
-
-import { useAppDispatch } from "@/app/store/hooks/hooks";
-import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
+} from 'framer-motion';
+import useBreakpoint from '@/app/lib/utils/useBreakpoint';
 
 // const MiddleLayout: React.FC<{
 //   upperComponent: React.ReactNode;
@@ -18,8 +16,7 @@ import { RemoveActiveTab } from "@/app/store/slices/tabSlice";
 const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const dispatch = useAppDispatch();
-
+  const { isMobile } = useBreakpoint();
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState<boolean>(true);
 
@@ -33,7 +30,7 @@ const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
     [scrollYProgress]
   );
 
-  useMotionValueEvent(scrollYProgress, "change", updateVisibility);
+  useMotionValueEvent(scrollYProgress, 'change', updateVisibility);
 
   const animationProps = {
     animate: { y: visible ? 0 : -40, opacity: visible ? 1 : 0 },
@@ -41,20 +38,17 @@ const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
     transition: {
       duration: 0.6,
       delay: 0.1,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   };
 
-  useEffect(() => {
-    dispatch(RemoveActiveTab("HeaderTab"));
-  }, []);
-
+  if (isMobile) return null;
   return (
     <>
       <AnimatePresence mode="wait">
         <motion.div
           {...animationProps}
-          className="max-sm:hidden h-[12vh] w-[71vw] mx-[11.5vw] rounded-xl shadow-2xl sticky top-[5.3vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-white "
+          className="h-[12vh] w-[71vw] mx-[11.5vw] rounded-xl shadow-2xl sticky top-[5.3vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-white "
         >
           {children}
           {/* {upperComponent}
