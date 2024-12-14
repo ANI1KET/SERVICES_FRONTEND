@@ -4,13 +4,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 import {
-  PriceSlider,
-  RatingSlider,
-  CustomCheckbox,
-  CapacitySlider,
-  CustomCheckboxGroup,
-} from '../lib/ui/FormReusableComponent';
-import {
   PostedBy,
   RoomType,
   Aminities,
@@ -18,6 +11,13 @@ import {
   FurnishingStatus,
   DefaultQueryFilters,
 } from '../types/types';
+import {
+  PriceSlider,
+  RatingSlider,
+  CustomCheckbox,
+  CapacitySlider,
+  CustomCheckboxGroup,
+} from '../lib/ui/FormReusableComponent';
 
 type LoadMoreCityLocationsProps = React.PropsWithChildren<{
   enncodedPlaceURL?: string;

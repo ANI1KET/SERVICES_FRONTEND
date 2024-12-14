@@ -30,7 +30,9 @@ export type CityData = {
 
 export default function ReactQueryProvider({
   children,
-}: QueryClientProviderProps) {
+}: {
+  children: React.ReactNode;
+}) {
   const [queryClient] = useState(() => {
     const client = new QueryClient();
 

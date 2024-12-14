@@ -3,11 +3,7 @@
 import BottomBar from './BottomBar';
 
 const BottomNavBar = () => {
-  return (
-    <div className="hidden max-sm:block">
-      <BottomBar />
-    </div>
-  );
+  return <BottomBar />;
 };
 
 export default BottomNavBar;

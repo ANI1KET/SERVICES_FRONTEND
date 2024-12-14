@@ -1,10 +1,10 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { CityData } from '@/app/providers/reactqueryProvider';
 import {
   getCategoryCitiesLocations,
   getCategoryCityLocations,
-} from '../../components/HomeLayouts/MiddleLayout/LowerSearchBox';
+} from './CategoryPlacesServerAction';
+import { CityData } from '@/app/providers/reactqueryProvider';
 
 export function fetchCategoryCitiesLocations(category: string) {
   const queryClient = useQueryClient();
