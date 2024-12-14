@@ -55,6 +55,7 @@ export async function getCategoryCitiesLocations({
 }
 
 //
+
 type CityLocationsData = {
   [key: string]: string[];
 };

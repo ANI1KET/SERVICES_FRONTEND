@@ -5,7 +5,6 @@ import {
   useQuery,
   QueryClient,
   QueryClientProvider,
-  QueryClientProviderProps,
 } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';

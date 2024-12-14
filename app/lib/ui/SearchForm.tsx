@@ -9,16 +9,16 @@ import FormControl from '@mui/material/FormControl';
 import { useQueryClient } from '@tanstack/react-query';
 
 import {
-  fetchCategoryCitiesLocations,
-  fetchCategoryCityLocations,
-} from '../utils/FetchCategoryPlaces';
-import {
   CapacitySlider,
   CheckedBox,
   PriceSlider,
   RatingSlider,
   TickCheckboxGroup,
 } from '@/app/lib/ui/FormReusableComponent';
+import {
+  FetchCategoryCityLocations,
+  FetchCategoryCitiesLocations,
+} from '../utils/FetchCategoryPlaces';
 import { SearchQuery } from '@/app/types/types';
 import useBreakpoint from '../utils/useBreakpoint';
 import { CityData, useTabState } from '@/app/providers/reactqueryProvider';
@@ -59,7 +59,7 @@ const SearchForm: React.FC = () => {
     isError: isCitiesLocationsError,
     error: CitiesLocationsError,
     refetch: reFetchCitiesLocations,
-  } = fetchCategoryCitiesLocations(category);
+  } = FetchCategoryCitiesLocations(category);
   useEffect(() => {
     if (category) {
       const cachedData = queryClient.getQueryData<CityData>([
@@ -79,7 +79,7 @@ const SearchForm: React.FC = () => {
     // error: CityLocationsError,
     // isError: isCityLocationsError,
     reFetchCityLocations,
-  } = fetchCategoryCityLocations();
+  } = FetchCategoryCityLocations();
 
   useEffect(() => {
     if (CitiesLocations?.city) {

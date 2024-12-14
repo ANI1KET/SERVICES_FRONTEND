@@ -1,3 +1,5 @@
+'use client';
+
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
@@ -6,7 +8,7 @@ import {
 } from './CategoryPlacesServerAction';
 import { CityData } from '@/app/providers/reactqueryProvider';
 
-export function fetchCategoryCitiesLocations(category: string) {
+export function FetchCategoryCitiesLocations(category: string) {
   const queryClient = useQueryClient();
 
   return useQuery({
@@ -43,7 +45,7 @@ export function fetchCategoryCitiesLocations(category: string) {
   });
 }
 
-export function fetchCategoryCityLocations() {
+export function FetchCategoryCityLocations() {
   let city: string, category: string;
   const queryClient = useQueryClient();
 
