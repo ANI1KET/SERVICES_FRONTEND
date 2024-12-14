@@ -1,12 +1,12 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import Select from '@mui/material/Select';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import { useQueryClient } from '@tanstack/react-query';
 
 import {
   CapacitySlider,
@@ -97,26 +97,16 @@ const SearchForm: React.FC = () => {
   const onSubmit = (data: SearchQuery) => {
     const { city, location } = data;
 
-    if (!city) {
-      return;
-    }
+    if (!city) return;
 
-    const locations = (() => {
-      if (!selectedLocation.length && location) {
-        return [location];
-      }
-
-      if (location && !selectedLocation.includes(location)) {
-        return [...selectedLocation, location];
-      }
-
-      return selectedLocation;
-    })();
+    const locations = selectedLocation.includes(location)
+      ? selectedLocation
+      : [...selectedLocation, location].filter(Boolean);
 
     const compressedURLQuery = btoa(
       JSON.stringify({
-        city: city,
-        locations: locations,
+        city,
+        locations,
       })
     );
     const compressedURLQueryFilters = btoa(
@@ -124,7 +114,7 @@ const SearchForm: React.FC = () => {
         price: data.price,
         rating: data.rating,
         capacity: data.capacity,
-        verified: data.verified ? data.verified : undefined,
+        verified: data.verified || undefined,
         postedby: data.postedby.length ? data.postedby : undefined,
         roomtype: data.roomtype.length ? data.roomtype : undefined,
         amenities: data.amenities.length ? data.amenities : undefined,
@@ -133,8 +123,10 @@ const SearchForm: React.FC = () => {
           : undefined,
       })
     );
-    const url = `/${tabState?.['CategoryTab']}?place=${compressedURLQuery}&filters=${compressedURLQueryFilters}`;
-    router.push(url);
+
+    router.push(
+      `/${tabState?.['CategoryTab']}?place=${compressedURLQuery}&filters=${compressedURLQueryFilters}`
+    );
 
     // const encodedCityURLQuery = btoa(JSON.stringify({ city: city }));
     // const encodedPriceURLQuery = btoa(JSON.stringify({ price: data.price }));
@@ -166,6 +158,28 @@ const SearchForm: React.FC = () => {
     // &verified=${encodedVerifiedURLQuery}&postedby=${encodedPostedByURLQuery}&roomtype=${encodedRoomTypeURLQuery}
     // &amenities=${encodedAmienitiesURLQuery}&furnishingstatus=${encodedFurnishingStatusURLQuery}`;
   };
+
+  const memoizedValue = useMemo(() => {
+    if (
+      CitiesLocations?.[category] &&
+      typeof CitiesLocations[category] === 'object' &&
+      selectedCity &&
+      CitiesLocations[category][selectedCity]?.includes(selectedCityLocation)
+    ) {
+      return selectedCityLocation;
+    }
+    return '';
+  }, [CitiesLocations, category, selectedCity, selectedCityLocation]);
+
+  const memoizedDisabled = useMemo(() => {
+    return !(
+      CitiesLocations?.[category] &&
+      typeof CitiesLocations[category] === 'object' &&
+      selectedCity &&
+      CitiesLocations[category][selectedCity] &&
+      CitiesLocations[category][selectedCity].length
+    );
+  }, [CitiesLocations, category, selectedCity]);
   return (
     <form
       className="grid grid-cols-9 gap-1 w-full h-1/2 max-sm:h-full relative"
@@ -256,7 +270,6 @@ const SearchForm: React.FC = () => {
         >
           <Select
             value={selectedCity ?? ''}
-            disabled={!selectedCity}
             onChange={(value) => {
               const city = value.target.value;
               if (
@@ -319,25 +332,8 @@ const SearchForm: React.FC = () => {
           }}
         >
           <Select
-            value={
-              CitiesLocations?.[category] &&
-              typeof CitiesLocations[category] === 'object' &&
-              selectedCity &&
-              CitiesLocations[category][selectedCity]?.includes(
-                selectedCityLocation
-              )
-                ? selectedCityLocation
-                : ''
-            }
-            disabled={
-              !(
-                CitiesLocations?.[category] &&
-                typeof CitiesLocations[category] === 'object' &&
-                selectedCity &&
-                CitiesLocations[category][selectedCity] &&
-                CitiesLocations[category][selectedCity].length
-              )
-            }
+            value={memoizedValue}
+            disabled={memoizedDisabled}
             onChange={(value) => {
               const location = value.target.value;
 
