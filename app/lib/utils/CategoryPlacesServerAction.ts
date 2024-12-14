@@ -1,5 +1,7 @@
 'use server';
 
+import { AxiosError } from 'axios';
+
 import axiosInstance from './axiosInstance';
 
 type ResponseData = {
@@ -49,8 +51,11 @@ export async function getCategoryCitiesLocations({
       transformCategoryCitiesLocationsResponse(response.data, category);
 
     return transformedResponseData;
-  } catch (error: any) {
-    throw error.response.data.error;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      throw error.response?.data?.error;
+    }
+    throw error;
   }
 }
 
@@ -88,7 +93,10 @@ export async function getCategoryCityLocations({
       transformCategoryCityLocationsResponse(city, response.data);
 
     return transformedResponseData;
-  } catch (error: any) {
-    throw error.response.data.error;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      throw error.response?.data?.error;
+    }
+    throw error;
   }
 }

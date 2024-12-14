@@ -62,7 +62,7 @@ export function FetchCategoryCityLocations() {
           // ...(cachedData as CityData),
           city: city,
           [category]: {
-            ...(cachedData?.[category] as Record<string, any>),
+            ...(cachedData?.[category] as Record<string, string[]>),
             ...CityLocationsData,
           },
         };

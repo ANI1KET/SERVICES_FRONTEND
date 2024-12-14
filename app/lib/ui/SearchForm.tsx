@@ -69,7 +69,7 @@ const SearchForm: React.FC = () => {
         reFetchCitiesLocations();
       }
     }
-  }, [category, reFetchCitiesLocations]);
+  }, [category, queryClient, reFetchCitiesLocations]);
   if (isCitiesLocationsError) {
     console.log(CitiesLocationsError.message);
   }
