@@ -1,6 +1,6 @@
 'use client';
 
-import { throttle, debounce } from 'lodash';
+import { throttle } from 'lodash';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
