@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 
 import {
   InputField,
@@ -9,9 +9,9 @@ import {
   CheckboxGroup,
   FileInput,
   RoomWithMedia,
-} from "@/app//lib/ui/FormReusableComponent";
-import { upload_Images, upload_Video } from "../uploadUtils";
-import { SubmitRoomDetails } from "../ServerAction";
+} from '@/app//lib/ui/FormReusableComponent';
+import { upload_Images, upload_Video } from '../uploadUtils';
+import { SubmitRoomDetails } from '../ServerAction';
 
 const Room = () => {
   const {
@@ -33,7 +33,7 @@ const Room = () => {
   const handleEnterPress = (
     event: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       event.preventDefault();
       const form = event.currentTarget.form;
       if (form) {
@@ -48,47 +48,46 @@ const Room = () => {
   };
 
   const onSubmit = async (data: RoomWithMedia) => {
-    data.city =
-      data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
+    // data.city =
+    //   data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
 
     try {
-      const [uploadImageUrlsResult, uploadVideoUrlResult] =
-        await Promise.allSettled([
-          upload_Images(data.photos),
-          upload_Video(data.videos),
-        ]);
+      const [uploadVideoUrlResult] = await Promise.allSettled([
+        // upload_Images(data.photos),
+        upload_Video(data.videos),
+      ]);
 
-      const uploadImageUrls =
-        uploadImageUrlsResult.status === "fulfilled"
-          ? uploadImageUrlsResult.value
-          : [];
+      // const uploadImageUrls =
+      //   uploadImageUrlsResult.status === 'fulfilled'
+      //     ? uploadImageUrlsResult.value
+      //     : [];
       const uploadVideoUrl =
-        uploadVideoUrlResult.status === "fulfilled"
+        uploadVideoUrlResult.status === 'fulfilled'
           ? uploadVideoUrlResult.value
           : null;
 
-      const roomDetails = await SubmitRoomDetails({
-        name: data.name,
-        roomNumber: data.roomNumber,
-        city: data.city,
-        direction: data.direction,
-        location: data.location,
-        photos: uploadImageUrls,
-        videos: uploadVideoUrl ?? null,
-        price: data.price,
-        ratings: data.ratings,
-        mincapacity: data.mincapacity,
-        maxcapacity: data.maxcapacity,
-        roomtype: data.roomtype,
-        furnishingStatus: data.furnishingStatus,
-        amenities: data.amenities,
-      });
-      console.log(roomDetails);
+      // const roomDetails = await SubmitRoomDetails({
+      //   name: data.name,
+      //   roomNumber: data.roomNumber,
+      //   city: data.city,
+      //   direction: data.direction,
+      //   location: data.location,
+      //   photos: uploadImageUrls,
+      //   videos: uploadVideoUrl ?? null,
+      //   price: data.price,
+      //   ratings: data.ratings,
+      //   mincapacity: data.mincapacity,
+      //   maxcapacity: data.maxcapacity,
+      //   roomtype: data.roomtype,
+      //   furnishingStatus: data.furnishingStatus,
+      //   amenities: data.amenities,
+      // });
+      // console.log(roomDetails);
 
       reset();
     } catch (error) {
       alert(
-        error instanceof Error ? error.message : "An unknown error occurred"
+        error instanceof Error ? error.message : 'An unknown error occurred'
       );
     }
   };
@@ -101,7 +100,7 @@ const Room = () => {
         onSubmit={handleFormSubmit(onSubmit)}
         className="space-y-6 p-2 border rounded-lg shadow-lg bg-white"
       >
-        <div className="grid max-sm:grid-cols-1 grid-cols-2 gap-1">
+        {/* <div className="grid max-sm:grid-cols-1 grid-cols-2 gap-1">
           <InputField
             label="Name"
             id="name"
@@ -192,14 +191,14 @@ const Room = () => {
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-        </div>
+        </div> */}
 
-        <RadioGroup
+        {/* <RadioGroup
           label="Room Type"
-          options={["ONE_BHK", "TWO_BHK", "FLAT"]}
-          register={register("roomtype", {
-            required: "Room type is required",
-            onBlur: () => trigger("roomtype"),
+          options={['ONE_BHK', 'TWO_BHK', 'FLAT']}
+          register={register('roomtype', {
+            required: 'Room type is required',
+            onBlur: () => trigger('roomtype'),
           })}
           handleEnterPress={handleEnterPress}
           error={errors.roomtype?.message}
@@ -207,35 +206,35 @@ const Room = () => {
 
         <CheckboxGroup
           label="Amenities"
-          options={["PARKING", "WIFI"]}
-          register={register("amenities")}
+          options={['PARKING', 'WIFI']}
+          register={register('amenities')}
         />
 
         <RadioGroup
           label="Furnishing Status"
-          options={["FURNISHED", "SEMIFURNISHED", "UNFURNISHED"]}
-          register={register("furnishingStatus", {
-            required: "Furnishing status is required",
-            onBlur: () => trigger("furnishingStatus"),
+          options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
+          register={register('furnishingStatus', {
+            required: 'Furnishing status is required',
+            onBlur: () => trigger('furnishingStatus'),
           })}
           handleEnterPress={handleEnterPress}
           error={errors.furnishingStatus?.message}
-        />
+        /> */}
 
-        <FileInput
+        {/* <FileInput
           label="Photos"
           id="photos"
-          register={register("photos", {
-            required: "At least one photo is required",
+          register={register('photos', {
+            required: 'At least one photo is required',
           })}
           multiple={true}
           accept="image/*"
           error={errors.photos?.message}
-        />
+        /> */}
         <FileInput
           label="Videos (Optional)"
           id="videos"
-          register={register("videos")}
+          register={register('videos')}
           accept="video/*"
         />
 
@@ -243,10 +242,10 @@ const Room = () => {
           type="submit"
           disabled={isSubmitting}
           className={`w-full bg-black text-white py-2 px-4 rounded-md ${
-            isSubmitting && "opacity-50 cursor-not-allowed"
+            isSubmitting && 'opacity-50 cursor-not-allowed'
           }`}
         >
-          {isSubmitting ? "Listing..." : "List"}
+          {isSubmitting ? 'Listing...' : 'List'}
         </button>
       </form>
     </div>

@@ -23,7 +23,7 @@ const BottomBar = () => {
           isPanelOpen ? '' : 'hidden'
         }`}
       >
-        <div className="h-[80vh] rounded-t-3xl w-full p-2 overflow-y-scroll border-2 border-b-0 border-black">
+        <div className="h-[75vh] rounded-t-3xl w-full p-2 overflow-y-scroll border-2 border-b-0 border-black">
           <SearchPanel />
         </div>
         <div

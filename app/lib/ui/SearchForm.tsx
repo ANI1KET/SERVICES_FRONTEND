@@ -438,7 +438,7 @@ const SearchForm: React.FC = () => {
       )}
 
       {isMobile && (
-        <div className="flex flex-col gap-1 h-[52vh] col-span-9 border-2 border-black rounded-2xl p-1 overflow-y-scroll">
+        <div className="flex flex-col gap-1 h-[50vh] col-span-9 border-2 border-black rounded-2xl p-1 overflow-y-scroll">
           <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
 
           <div className="flex gap-4">

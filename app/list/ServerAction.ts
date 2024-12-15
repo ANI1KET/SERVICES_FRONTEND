@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { Readable } from "stream";
-import { google } from "googleapis";
+import { Readable } from 'stream';
+import { google } from 'googleapis';
 // import { getServerSession } from "next-auth";
 
 // import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { RoomWithMediaUrl } from "@/app/lib/ui/FormReusableComponent";
+import { RoomWithMediaUrl } from '@/app/lib/ui/FormReusableComponent';
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -18,7 +18,7 @@ oauth2Client.setCredentials({
 });
 
 const drive = google.drive({
-  version: "v3",
+  version: 'v3',
   auth: oauth2Client,
 });
 
@@ -34,7 +34,7 @@ export async function uploadImage({
   fileType: string;
   file: File;
 }) {
-  "use server";
+  'use server';
   try {
     const fileStream = new Readable();
     fileStream.push(Buffer.from(await file.arrayBuffer()));
@@ -44,13 +44,13 @@ export async function uploadImage({
       requestBody: {
         name: fileName,
         mimeType: fileType,
-        parents: ["11X7grkDG1HMGpuyg4VRcbYZjeSg6BBqs"],
+        parents: ['11X7grkDG1HMGpuyg4VRcbYZjeSg6BBqs'],
       },
       media: {
         mimeType: fileType,
         body: fileStream,
       },
-      fields: "id, webViewLink",
+      fields: 'id, webViewLink',
     });
 
     const { id, webViewLink } = response.data;
@@ -59,6 +59,7 @@ export async function uploadImage({
       ? webViewLink
       : `https://drive.google.com/file/d/${id}/view`;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 }
@@ -70,33 +71,33 @@ export async function getImageResumableUploadUrl({
   fileName: string;
   fileType: string;
 }) {
-  "use server";
+  'use server';
   try {
     const response = await fetch(
-      "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',
       {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json; charset=UTF-8",
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
           name: fileName,
           mimeType: fileType,
-          parents: ["11X7grkDG1HMGpuyg4VRcbYZjeSg6BBqs"],
+          parents: ['11X7grkDG1HMGpuyg4VRcbYZjeSg6BBqs'],
         }),
       }
     );
 
-    const locationHeader = response.headers.get("Location");
+    const locationHeader = response.headers.get('Location');
 
     if (!locationHeader) {
-      throw new Error("Error generating imageUploadResumableUrl");
+      throw new Error('Error generating imageUploadResumableUrl');
     }
 
     return locationHeader;
   } catch (error) {
-    console.error("Error initiating resumable upload:", error);
+    console.error('Error initiating resumable upload:', error);
     throw error;
   }
 }
@@ -112,15 +113,15 @@ export async function uploadChunkImage({
   offset: number;
   totalSize: number;
 }) {
-  "use server";
+  'use server';
   try {
     const response = await fetch(resumableUrl, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Range": `bytes ${offset}-${
+        'Content-Range': `bytes ${offset}-${
           offset + chunk.length - 1
         }/${totalSize}`,
-        "Content-Type": "application/octet-stream",
+        'Content-Type': 'application/octet-stream',
         Authorization: `Bearer ${accessToken}`,
       },
       body: Buffer.from(chunk),
@@ -131,13 +132,13 @@ export async function uploadChunkImage({
       return `https://drive.google.com/file/d/${imageData.id}/view`;
     }
   } catch (error) {
-    console.error("Error uploading chunk:", error);
+    console.error('Error uploading chunk:', error);
     throw error;
   }
 }
 
 const youtube = google.youtube({
-  version: "v3",
+  version: 'v3',
   auth: oauth2Client,
 });
 // const authUrl = oauth2Client.generateAuthUrl({
@@ -152,7 +153,7 @@ export async function uploadVideo({
   fileName: string;
   file: File;
 }) {
-  "use server";
+  'use server';
   try {
     const fileStream = new Readable();
     fileStream.push(Buffer.from(await file.arrayBuffer()));
@@ -161,10 +162,10 @@ export async function uploadVideo({
     const videoMetadata = {
       snippet: {
         title: fileName,
-        description: "Video uploaded using YouTube API",
+        description: 'Video uploaded using YouTube API',
       },
       status: {
-        privacyStatus: "public",
+        privacyStatus: 'public',
       },
     };
 
@@ -173,13 +174,13 @@ export async function uploadVideo({
     };
 
     const res = await youtube.videos.insert({
-      part: ["snippet", "status"],
+      part: ['snippet', 'status'],
       requestBody: videoMetadata,
       media: media,
     });
 
     if (!res.data.id) {
-      throw new Error("Error uploading video");
+      throw new Error('Error uploading video');
     }
 
     return res.data.id;
@@ -193,39 +194,39 @@ export async function getvideoResumableUploadUrl({
 }: {
   fileName: string;
 }) {
-  "use server";
+  'use server';
   try {
     const response = await fetch(
-      "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
+      'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status',
       {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json; charset=UTF-8",
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
           snippet: {
             title: fileName,
-            description: "Listing",
-            tags: ["example", "upload"],
-            categoryId: "22",
+            description: 'Listing',
+            tags: ['example', 'upload'],
+            categoryId: '22',
           },
           status: {
-            privacyStatus: "public",
+            privacyStatus: 'public',
           },
         }),
       }
     );
 
-    const locationHeader = response.headers.get("Location");
+    const locationHeader = response.headers.get('Location');
 
     if (!locationHeader) {
-      throw new Error("Error generating YouTube resumable upload URL");
+      throw new Error('Error generating YouTube resumable upload URL');
     }
 
     return locationHeader;
   } catch (error) {
-    console.error("Error initiating YouTube upload:", error);
+    console.error('Error initiating YouTube upload:', error);
     throw error;
   }
 }
@@ -241,15 +242,15 @@ export async function uploadChunkVideo({
   offset: number;
   totalSize: number;
 }) {
-  "use server";
+  'use server';
   try {
     const response = await fetch(resumableUrl, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Range": `bytes ${offset}-${
+        'Content-Range': `bytes ${offset}-${
           offset + chunk.length - 1
         }/${totalSize}`,
-        "Content-Type": "application/octet-stream",
+        'Content-Type': 'application/octet-stream',
         Authorization: `Bearer ${accessToken}`,
       },
       body: Buffer.from(chunk),
@@ -260,17 +261,17 @@ export async function uploadChunkVideo({
       return `https://www.youtube.com/watch?v=${videoData.id}`;
     }
   } catch (error) {
-    console.error("Error uploading chunk:", error);
+    console.error('Error uploading chunk:', error);
     throw error;
   }
 }
 
 export async function SubmitRoomDetails(formData: RoomWithMediaUrl) {
-  "use server";
+  'use server';
   try {
     await new Promise((resolve) => setTimeout(resolve, 5000));
     return formData;
   } catch (error) {
-    throw new Error(error?.toString() || "An unknown error occurred");
+    throw new Error(error?.toString() || 'An unknown error occurred');
   }
 }

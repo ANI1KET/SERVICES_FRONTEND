@@ -35,22 +35,17 @@ const getCityLocations = async ({
   decodedLocations: string[];
   decodedURLQueryFilters: QueryFilters;
 }) => {
-  try {
-    const response = await axiosInstance.get(`/place/${category}`, {
-      params: {
-        offset,
-        limit: PAGE_SIZE,
-        city: decodedCity,
-        locations: decodedLocations,
-        filters: decodedURLQueryFilters,
-      },
-      headers: { 'Cache-Control': 'no-cache' },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching:', error);
-    throw error;
-  }
+  const response = await axiosInstance.get(`/place/${category}`, {
+    params: {
+      offset,
+      limit: PAGE_SIZE,
+      city: decodedCity,
+      locations: decodedLocations,
+      filters: decodedURLQueryFilters,
+    },
+    headers: { 'Cache-Control': 'no-cache' },
+  });
+  return response.data;
 };
 
 const Category = async ({
@@ -101,6 +96,7 @@ const Category = async ({
           nextOffset,
         ] as const;
       } catch (error) {
+        console.log('1! ', error);
         if (axios.isAxiosError(error)) {
           return [
             <>{error.response?.data.message || 'Error loading data'}</>,
@@ -118,7 +114,7 @@ const Category = async ({
           {decodedURLPlaceQuery.city?.toUpperCase()}
         </h1>
         <LoadMoreCityLocations
-          loadMoreCityLocationsAction={loadMoreCityLocations}
+          loadMoreCityLocations={loadMoreCityLocations}
           initialOffset={
             initialCityLocationsData.length >= PAGE_SIZE ? PAGE_SIZE : null
           }
@@ -130,8 +126,9 @@ const Category = async ({
       </section>
     );
   } catch (error) {
-    notFound();
+    console.log('object! ', error);
     console.error('Error fetching initial data:', error);
+    // notFound();
   }
 };
 

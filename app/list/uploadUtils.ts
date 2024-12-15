@@ -5,7 +5,7 @@ import {
   uploadChunkVideo,
   getImageResumableUploadUrl,
   getvideoResumableUploadUrl,
-} from "@/app/list/ServerAction";
+} from '@/app/list/ServerAction';
 
 export const upload_Images = async (
   photos: FileList | File[]
@@ -25,14 +25,14 @@ export const upload_Images = async (
         fileType: image.type,
       });
       const imageWorker = new Worker(
-        new URL("@/app/lib/webWorker/ImageChunkWorker.ts", import.meta.url)
+        new URL('@/app/lib/webWorker/ImageChunkWorker.ts', import.meta.url)
       );
 
       uploadImageUrl = await new Promise<string>((resolve, reject) => {
         imageWorker.postMessage({ image });
         imageWorker.onmessage = async (event: MessageEvent) => {
           const { type, chunk, offset, totalSize } = event.data;
-          if (type === "UPLOAD_CHUNK") {
+          if (type === 'UPLOAD_CHUNK') {
             try {
               const chunkUploadUrl = await uploadChunkImage({
                 chunk,
@@ -56,7 +56,7 @@ export const upload_Images = async (
     if (uploadImageUrl) {
       return uploadImageUrl;
     } else {
-      throw new Error("Failed to upload image");
+      throw new Error('Failed to upload image');
     }
   });
 
@@ -74,12 +74,13 @@ export const upload_Video = async (
         file: video,
       });
     } else {
+      console.log('object!');
       const videoUploadResumableUrl = await getvideoResumableUploadUrl({
         fileName: video.name,
       });
 
       const videoWorker = new Worker(
-        new URL("@/app/lib/webWorker/VideoChunkWorker.ts", import.meta.url)
+        new URL('@/app/lib/webWorker/VideoChunkWorker.ts', import.meta.url)
       );
 
       return new Promise<string>((resolve, reject) => {
@@ -87,7 +88,7 @@ export const upload_Video = async (
 
         videoWorker.onmessage = async (event: MessageEvent) => {
           const { type, chunk, offset, totalSize } = event.data;
-          if (type === "UPLOAD_CHUNK") {
+          if (type === 'UPLOAD_CHUNK') {
             try {
               const chunkUploadUrl = await uploadChunkVideo({
                 chunk,
