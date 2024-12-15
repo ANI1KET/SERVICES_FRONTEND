@@ -74,7 +74,6 @@ export const upload_Video = async (
         file: video,
       });
     } else {
-      console.log('object!');
       const videoUploadResumableUrl = await getvideoResumableUploadUrl({
         fileName: video.name,
       });

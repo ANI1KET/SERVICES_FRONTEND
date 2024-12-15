@@ -48,41 +48,42 @@ const Room = () => {
   };
 
   const onSubmit = async (data: RoomWithMedia) => {
-    // data.city =
-    //   data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
+    data.city =
+      data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
 
     try {
-      const [uploadVideoUrlResult] = await Promise.allSettled([
-        // upload_Images(data.photos),
-        upload_Video(data.videos),
-      ]);
+      const [uploadImageUrlsResult, uploadVideoUrlResult] =
+        await Promise.allSettled([
+          upload_Images(data.photos),
+          upload_Video(data.videos),
+        ]);
 
-      // const uploadImageUrls =
-      //   uploadImageUrlsResult.status === 'fulfilled'
-      //     ? uploadImageUrlsResult.value
-      //     : [];
+      const uploadImageUrls =
+        uploadImageUrlsResult.status === 'fulfilled'
+          ? uploadImageUrlsResult.value
+          : [];
       const uploadVideoUrl =
         uploadVideoUrlResult.status === 'fulfilled'
-          ? uploadVideoUrlResult.value
+          ? `https://www.youtube.com/watch?v=${uploadVideoUrlResult.value}`
           : null;
 
-      // const roomDetails = await SubmitRoomDetails({
-      //   name: data.name,
-      //   roomNumber: data.roomNumber,
-      //   city: data.city,
-      //   direction: data.direction,
-      //   location: data.location,
-      //   photos: uploadImageUrls,
-      //   videos: uploadVideoUrl ?? null,
-      //   price: data.price,
-      //   ratings: data.ratings,
-      //   mincapacity: data.mincapacity,
-      //   maxcapacity: data.maxcapacity,
-      //   roomtype: data.roomtype,
-      //   furnishingStatus: data.furnishingStatus,
-      //   amenities: data.amenities,
-      // });
-      // console.log(roomDetails);
+      const roomDetails = await SubmitRoomDetails({
+        name: data.name,
+        roomNumber: data.roomNumber,
+        city: data.city,
+        direction: data.direction,
+        location: data.location,
+        photos: uploadImageUrls,
+        videos: uploadVideoUrl ?? null,
+        price: data.price,
+        ratings: data.ratings,
+        mincapacity: data.mincapacity,
+        maxcapacity: data.maxcapacity,
+        roomtype: data.roomtype,
+        furnishingStatus: data.furnishingStatus,
+        amenities: data.amenities,
+      });
+      console.log(roomDetails);
 
       reset();
     } catch (error) {
@@ -100,13 +101,13 @@ const Room = () => {
         onSubmit={handleFormSubmit(onSubmit)}
         className="space-y-6 p-2 border rounded-lg shadow-lg bg-white"
       >
-        {/* <div className="grid max-sm:grid-cols-1 grid-cols-2 gap-1">
+        <div className="grid max-sm:grid-cols-1 grid-cols-2 gap-1">
           <InputField
             label="Name"
             id="name"
-            register={register("name", {
-              required: "Enter your name",
-              onBlur: () => trigger("name"),
+            register={register('name', {
+              required: 'Enter your name',
+              onBlur: () => trigger('name'),
             })}
             errors={errors}
             handleEnterPress={handleEnterPress}
@@ -114,13 +115,13 @@ const Room = () => {
           <InputField
             label="Number"
             id="roomNumber"
-            register={register("roomNumber", {
-              required: "Enter your number",
+            register={register('roomNumber', {
+              required: 'Enter your number',
               pattern: {
                 value: /^\d{10}$/,
-                message: "The number must be exactly 10 digits",
+                message: 'The number must be exactly 10 digits',
               },
-              onBlur: () => trigger("roomNumber"),
+              onBlur: () => trigger('roomNumber'),
             })}
             errors={errors}
             handleEnterPress={handleEnterPress}
@@ -128,9 +129,9 @@ const Room = () => {
           <InputField
             label="City"
             id="city"
-            register={register("city", {
-              required: "Enter the city",
-              onBlur: () => trigger("city"),
+            register={register('city', {
+              required: 'Enter the city',
+              onBlur: () => trigger('city'),
             })}
             errors={errors}
             handleEnterPress={handleEnterPress}
@@ -138,9 +139,9 @@ const Room = () => {
           <InputField
             label="Location"
             id="location"
-            register={register("location", {
-              required: "Enter the room location",
-              onBlur: () => trigger("location"),
+            register={register('location', {
+              required: 'Enter the room location',
+              onBlur: () => trigger('location'),
             })}
             errors={errors}
             handleEnterPress={handleEnterPress}
@@ -149,7 +150,7 @@ const Room = () => {
           <OptionalField
             id="direction"
             label="Direction"
-            register={register("direction")}
+            register={register('direction')}
             handleEnterPress={handleEnterPress}
           />
 
@@ -157,9 +158,9 @@ const Room = () => {
             label="Price"
             id="price"
             type="number"
-            register={register("price", {
-              required: "Enter the room rent price",
-              onBlur: () => trigger("price"),
+            register={register('price', {
+              required: 'Enter the room rent price',
+              onBlur: () => trigger('price'),
             })}
             errors={errors}
             handleEnterPress={handleEnterPress}
@@ -168,10 +169,10 @@ const Room = () => {
             label="Min Capacity"
             id="mincapacity"
             type="number"
-            register={register("mincapacity", {
-              required: "Enter minimum capacity of person",
+            register={register('mincapacity', {
+              required: 'Enter minimum capacity of person',
               valueAsNumber: true,
-              onBlur: () => trigger("mincapacity"),
+              onBlur: () => trigger('mincapacity'),
             })}
             errors={errors}
             handleEnterPress={handleEnterPress}
@@ -180,20 +181,20 @@ const Room = () => {
             label="Max Capacity"
             id="maxcapacity"
             type="number"
-            register={register("maxcapacity", {
-              required: "Enter maximum capacity of person",
+            register={register('maxcapacity', {
+              required: 'Enter maximum capacity of person',
               valueAsNumber: true,
               validate: (value) =>
-                value > Number(watch("mincapacity")) ||
-                "Max capacity must be greater than min capacity",
-              onBlur: () => trigger("maxcapacity"),
+                value > Number(watch('mincapacity')) ||
+                'Max capacity must be greater than min capacity',
+              onBlur: () => trigger('maxcapacity'),
             })}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-        </div> */}
+        </div>
 
-        {/* <RadioGroup
+        <RadioGroup
           label="Room Type"
           options={['ONE_BHK', 'TWO_BHK', 'FLAT']}
           register={register('roomtype', {
@@ -219,9 +220,9 @@ const Room = () => {
           })}
           handleEnterPress={handleEnterPress}
           error={errors.furnishingStatus?.message}
-        /> */}
+        />
 
-        {/* <FileInput
+        <FileInput
           label="Photos"
           id="photos"
           register={register('photos', {
@@ -230,7 +231,7 @@ const Room = () => {
           multiple={true}
           accept="image/*"
           error={errors.photos?.message}
-        /> */}
+        />
         <FileInput
           label="Videos (Optional)"
           id="videos"
