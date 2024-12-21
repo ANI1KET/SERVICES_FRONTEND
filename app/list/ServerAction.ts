@@ -2,10 +2,12 @@
 
 import { Readable } from 'stream';
 import { google } from 'googleapis';
+import { getServerSession } from 'next-auth';
 // import { getServerSession } from "next-auth";
 
-// import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { RoomWithMediaUrl } from '@/app/lib/ui/FormReusableComponent';
+import prisma from '@/prisma/prismaClient';
+import { RoomWithMediaUrl } from '../types/types';
+import { authOptions } from '../api/auth/[...nextauth]/options';
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -53,11 +55,9 @@ export async function uploadImage({
       fields: 'id, webViewLink',
     });
 
-    const { id, webViewLink } = response.data;
+    const { id } = response.data;
 
-    return webViewLink
-      ? webViewLink
-      : `https://drive.google.com/file/d/${id}/view`;
+    return `https://drive.google.com/uc?export=view&id=${id}`;
   } catch (error) {
     console.log(error);
     throw error;
@@ -129,7 +129,7 @@ export async function uploadChunkImage({
 
     if (response.status === 200) {
       const imageData = await response.json();
-      return `https://drive.google.com/file/d/${imageData.id}/view`;
+      return `https://drive.google.com/uc?export=view&id=${imageData.id}`;
     }
   } catch (error) {
     console.error('Error uploading chunk:', error);
@@ -269,8 +269,22 @@ export async function uploadChunkVideo({
 export async function SubmitRoomDetails(formData: RoomWithMediaUrl) {
   'use server';
   try {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    return formData;
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      throw new Error('You must be signed in to perform this action.');
+    }
+
+    const newRoomDetails = await prisma.room.create({
+      data: {
+        ...formData,
+        price: parseFloat(formData.price),
+        postedBy: session.user.role,
+        userId: session.user.userId as string,
+      },
+    });
+
+    return newRoomDetails;
   } catch (error) {
     throw new Error(error?.toString() || 'An unknown error occurred');
   }

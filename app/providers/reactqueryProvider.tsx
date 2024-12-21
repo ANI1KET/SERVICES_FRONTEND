@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { NewListedRoom } from '../types/types';
 
 export interface TabState {
   [key: string]: string;
@@ -87,4 +88,10 @@ export function useDeleteTabState() {
       return remainingTabs;
     });
   };
+}
+
+export function useGetNewRoomDetails() {
+  const queryClient = useQueryClient();
+
+  return queryClient.getQueryData<NewListedRoom>(['roomDetails']);
 }

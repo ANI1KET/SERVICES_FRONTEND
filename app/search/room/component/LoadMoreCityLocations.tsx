@@ -11,14 +11,14 @@ import {
   QueryFilters,
   FurnishingStatus,
   DefaultQueryFilters,
-} from '../types/types';
+} from '../../../types/types';
 import {
   PriceSlider,
   RatingSlider,
   CustomCheckbox,
   CapacitySlider,
   CustomCheckboxGroup,
-} from '../lib/ui/FormReusableComponent';
+} from '../../../lib/ui/FormReusableComponent';
 
 type LoadMoreCityLocationsProps = React.PropsWithChildren<{
   enncodedPlaceURL: string;
@@ -74,46 +74,58 @@ const LoadMoreCityLocations = ({
     setLoading(false);
   }, [offset, loading, loadMoreCityLocations]);
 
-  const updateURL = useCallback(
-    throttle(() => {
-      const compressedURLQueryFilters = btoa(
-        JSON.stringify({
-          price: queryFilters.priceRange,
-          rating: queryFilters.ratingRange,
-          capacity: queryFilters.capacityValue,
-          verified: queryFilters.Verified || undefined,
-          postedby:
-            queryFilters.postedBy && queryFilters.postedBy.length
-              ? queryFilters.postedBy
-              : undefined,
-          roomtype:
-            queryFilters.roomType && queryFilters.roomType.length
-              ? queryFilters.roomType
-              : undefined,
-          amenities:
-            queryFilters.Amenities && queryFilters.Amenities.length
-              ? queryFilters.Amenities
-              : undefined,
-          furnishingstatus:
-            queryFilters.furnishingStatus &&
-            queryFilters.furnishingStatus.length
-              ? queryFilters.furnishingStatus
-              : undefined,
-        })
-      );
-      router.push(
-        `?place=${enncodedPlaceURL}&filters=${compressedURLQueryFilters}`,
-        { scroll: true }
-      );
-    }, 1000),
-    [queryFilters, router, enncodedPlaceURL]
+  const updateURL = useCallback(() => {
+    const compressedURLQueryFilters = btoa(
+      JSON.stringify({
+        price: queryFilters.priceRange,
+        rating: queryFilters.ratingRange,
+        capacity: queryFilters.capacityValue,
+        verified: queryFilters.Verified || undefined,
+        postedby:
+          queryFilters.postedBy && queryFilters.postedBy.length
+            ? queryFilters.postedBy
+            : undefined,
+        roomtype:
+          queryFilters.roomType && queryFilters.roomType.length
+            ? queryFilters.roomType
+            : undefined,
+        amenities:
+          queryFilters.Amenities && queryFilters.Amenities.length
+            ? queryFilters.Amenities
+            : undefined,
+        furnishingstatus:
+          queryFilters.furnishingStatus && queryFilters.furnishingStatus.length
+            ? queryFilters.furnishingStatus
+            : undefined,
+      })
+    );
+    router.push(
+      `?place=${enncodedPlaceURL}&filters=${compressedURLQueryFilters}`,
+      { scroll: true }
+    );
+  }, [
+    router,
+    enncodedPlaceURL,
+    queryFilters.Verified,
+    queryFilters.postedBy,
+    queryFilters.roomType,
+    queryFilters.Amenities,
+    queryFilters.priceRange,
+    queryFilters.ratingRange,
+    queryFilters.capacityValue,
+    queryFilters.furnishingStatus,
+  ]);
+
+  const throttledUpdateURL = useMemo(
+    () => throttle(updateURL, 1000),
+    [updateURL]
   );
 
   useEffect(() => {
     return () => {
-      updateURL.cancel();
+      throttledUpdateURL.cancel();
     };
-  }, [updateURL]);
+  }, [throttledUpdateURL]);
 
   useEffect(() => {
     setOffset(initialOffset);
@@ -160,7 +172,7 @@ const LoadMoreCityLocations = ({
           defaultValue={URLQueryFilters.price}
           onChangeEnd={(value) => {
             queryFilters.priceRange = value;
-            updateURL();
+            throttledUpdateURL();
           }}
         />
 
@@ -169,7 +181,7 @@ const LoadMoreCityLocations = ({
             defaultValue={URLQueryFilters.rating}
             onChangeEnd={(value) => {
               queryFilters.ratingRange = value;
-              updateURL();
+              throttledUpdateURL();
             }}
           />
 
@@ -177,7 +189,7 @@ const LoadMoreCityLocations = ({
             defaultValue={URLQueryFilters.capacity}
             onChangeEnd={(value) => {
               queryFilters.capacityValue = value;
-              updateURL();
+              throttledUpdateURL();
             }}
           />
         </div>
@@ -189,7 +201,7 @@ const LoadMoreCityLocations = ({
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(amenity) => {
             queryFilters.Amenities = amenity;
-            updateURL();
+            throttledUpdateURL();
           }}
         />
         <CustomCheckboxGroup<RoomType>
@@ -199,7 +211,7 @@ const LoadMoreCityLocations = ({
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(roomType) => {
             queryFilters.roomType = roomType;
-            updateURL();
+            throttledUpdateURL();
           }}
         />
         <CustomCheckboxGroup<PostedBy>
@@ -209,7 +221,7 @@ const LoadMoreCityLocations = ({
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(postedBy) => {
             queryFilters.postedBy = postedBy;
-            updateURL();
+            throttledUpdateURL();
           }}
         />
         <CustomCheckboxGroup<FurnishingStatus>
@@ -219,7 +231,7 @@ const LoadMoreCityLocations = ({
           className="grid grid-cols-3 lg:grid-cols-auto-fit] lg:min-[300px] max-sm:grid-cols-2"
           onChange={(furnishingStatus) => {
             queryFilters.furnishingStatus = furnishingStatus;
-            updateURL();
+            throttledUpdateURL();
           }}
         />
         <CustomCheckbox
@@ -227,7 +239,7 @@ const LoadMoreCityLocations = ({
           defaultValue={URLQueryFilters.verified}
           onChange={(verify) => {
             queryFilters.Verified = verify;
-            updateURL();
+            throttledUpdateURL();
           }}
         />
       </div>

@@ -125,7 +125,7 @@ const SearchForm: React.FC = () => {
     );
 
     router.push(
-      `/${tabState?.['CategoryTab']}?place=${compressedURLQuery}&filters=${compressedURLQueryFilters}`
+      `/search/${tabState?.['CategoryTab']}?place=${compressedURLQuery}&filters=${compressedURLQueryFilters}`
     );
 
     // const encodedCityURLQuery = btoa(JSON.stringify({ city: city }));
@@ -270,6 +270,7 @@ const SearchForm: React.FC = () => {
         >
           <Select
             value={selectedCity ?? ''}
+            disabled={!(CitiesLocations && CitiesLocations[category])}
             onChange={(value) => {
               const city = value.target.value;
               if (

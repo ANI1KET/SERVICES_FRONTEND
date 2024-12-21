@@ -1,19 +1,24 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import {
-  InputField,
-  OptionalField,
-  RadioGroup,
-  CheckboxGroup,
   FileInput,
-  RoomWithMedia,
+  InputField,
+  RadioGroup,
+  OptionalField,
+  CheckboxGroup,
 } from '@/app//lib/ui/FormReusableComponent';
-import { upload_Images, upload_Video } from '../uploadUtils';
 import { SubmitRoomDetails } from '../ServerAction';
+import { upload_Images, upload_Video } from '../uploadUtils';
+import { RoomWithMedia, RoomWithMediaUrl } from '@/app/types/types';
 
 const Room = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   const {
     watch,
     reset,
@@ -27,6 +32,21 @@ const Room = () => {
       photos: [],
       videos: null,
       amenities: [],
+    },
+  });
+
+  const roomCreation = useMutation({
+    mutationFn: (data: RoomWithMediaUrl) =>
+      SubmitRoomDetails({
+        ...data,
+      }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(['roomDetails'], response);
+      reset();
+      router.push(`/listed/room/${btoa(response.id)}`);
+    },
+    onError: (error) => {
+      console.error('Mutation failed:', error);
     },
   });
 
@@ -63,29 +83,16 @@ const Room = () => {
           ? uploadImageUrlsResult.value
           : [];
       const uploadVideoUrl =
-        uploadVideoUrlResult.status === 'fulfilled'
+        uploadVideoUrlResult.status === 'fulfilled' &&
+        uploadVideoUrlResult.value
           ? `https://www.youtube.com/watch?v=${uploadVideoUrlResult.value}`
           : null;
 
-      const roomDetails = await SubmitRoomDetails({
-        name: data.name,
-        roomNumber: data.roomNumber,
-        city: data.city,
-        direction: data.direction,
-        location: data.location,
+      roomCreation.mutate({
+        ...data,
         photos: uploadImageUrls,
         videos: uploadVideoUrl ?? null,
-        price: data.price,
-        ratings: data.ratings,
-        mincapacity: data.mincapacity,
-        maxcapacity: data.maxcapacity,
-        roomtype: data.roomtype,
-        furnishingStatus: data.furnishingStatus,
-        amenities: data.amenities,
       });
-      console.log(roomDetails);
-
-      reset();
     } catch (error) {
       alert(
         error instanceof Error ? error.message : 'An unknown error occurred'
@@ -155,8 +162,9 @@ const Room = () => {
           />
 
           <InputField
-            label="Price"
             id="price"
+            step={0.01}
+            label="Price"
             type="number"
             register={register('price', {
               required: 'Enter the room rent price',

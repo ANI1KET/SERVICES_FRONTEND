@@ -5,42 +5,20 @@ import React, { useEffect, useState } from 'react';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
 import {
-  PostedBy,
+  Room,
   RoomType,
+  PostedBy,
   Aminities,
+  RoomWithMedia,
   FurnishingStatus,
 } from '@/app/types/types';
 
-type Room = {
-  name: string;
-  roomNumber: string;
-  city: string;
-  direction: string | null;
-  location: string;
-  price: number;
-  ratings: number;
-  mincapacity: number;
-  maxcapacity: number;
-  roomtype: RoomType;
-  furnishingStatus: FurnishingStatus;
-  amenities: Aminities[];
-};
-
-export type RoomWithMedia = Room & {
-  photos: File[];
-  videos: FileList | null;
-};
-
-export type RoomWithMediaUrl = Room & {
-  photos: string[];
-  videos: string | null;
-};
-
 // InputField Component
 type InputFieldProps = {
+  step?: number;
+  type?: string;
   label: string;
   id: keyof Room;
-  type?: string;
   register: ReturnType<UseFormRegister<Room>>;
   errors: FieldErrors<Room>;
   handleEnterPress: (
@@ -49,8 +27,9 @@ type InputFieldProps = {
 };
 
 export const InputField = ({
-  label,
   id,
+  step,
+  label,
   type = 'text',
   register,
   errors,
@@ -61,8 +40,9 @@ export const InputField = ({
       {label}
     </label>
     <input
-      type={type}
       id={id}
+      step={step}
+      type={type}
       {...register}
       onKeyDown={handleEnterPress}
       className="border rounded w-full p-1"
