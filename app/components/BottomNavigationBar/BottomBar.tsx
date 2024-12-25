@@ -6,6 +6,7 @@ import { BottomTabs } from '../../lib/utils/tabs';
 import SearchPanel from './PanelComponent/SearchPanel';
 import NavigationTabs from '../../lib/ui/NavigationTabs';
 import useBreakpoint from '@/app/lib/utils/useBreakpoint';
+import { CrossIcon, SearchIcon } from '@/app/lib/icon/svg';
 
 const BottomBar = () => {
   const { isMobile } = useBreakpoint();
@@ -30,21 +31,7 @@ const BottomBar = () => {
           className="cursor-pointer rounded-full p-1 backdrop-blur-3xl border-2 border-black absolute bottom-[0.8vh] right-1 bg-white"
           onClick={togglePanel}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="34"
-            height="34"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentcolor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-x"
-          >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
+          <CrossIcon />
         </div>
       </div>
 
@@ -53,21 +40,7 @@ const BottomBar = () => {
           className="fixed bottom-[8.5vh] right-1 cursor-pointer rounded-full p-1 border-2 border-black bg-white"
           onClick={togglePanel}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="34"
-            height="34"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentcolor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-search"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
+          <SearchIcon />
         </div>
       )}
 

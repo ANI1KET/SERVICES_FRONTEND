@@ -85,7 +85,7 @@ const Room = () => {
       const uploadVideoUrl =
         uploadVideoUrlResult.status === 'fulfilled' &&
         uploadVideoUrlResult.value
-          ? `https://www.youtube.com/watch?v=${uploadVideoUrlResult.value}`
+          ? `https://www.youtube.com/embed/${uploadVideoUrlResult.value}`
           : null;
 
       roomCreation.mutate({

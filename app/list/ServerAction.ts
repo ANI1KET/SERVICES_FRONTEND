@@ -58,6 +58,7 @@ export async function uploadImage({
     const { id } = response.data;
 
     return `https://drive.google.com/uc?export=view&id=${id}`;
+    // return `https://lh3.googleusercontent.com/d/${id}`;
   } catch (error) {
     console.log(error);
     throw error;
@@ -130,6 +131,7 @@ export async function uploadChunkImage({
     if (response.status === 200) {
       const imageData = await response.json();
       return `https://drive.google.com/uc?export=view&id=${imageData.id}`;
+      // return `https://lh3.googleusercontent.com/d/${imageData.id}`;
     }
   } catch (error) {
     console.error('Error uploading chunk:', error);

@@ -22,6 +22,7 @@ import {
 import { SearchQuery } from '@/app/types/types';
 import useBreakpoint from '../utils/useBreakpoint';
 import { CityData, useTabState } from '@/app/providers/reactqueryProvider';
+import { ArrowUpIcon } from '../icon/svg';
 
 const SearchForm: React.FC = () => {
   const router = useRouter();
@@ -188,20 +189,7 @@ const SearchForm: React.FC = () => {
       {!isMobile && (
         <div className="col-span-1 max-sm:col-span-3 grid grid-flow-col place-content-center place-items-center border-r-[1px] border-black h-full cursor-pointer group ">
           <p>Filter</p>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-chevron-up group-hover:scale-125 group-hover:rotate-180 transition-all duration-300"
-          >
-            <path d="m18 15-6-6-6 6" />
-          </svg>
+          <ArrowUpIcon className="group-hover:scale-125 group-hover:rotate-180 transition-all duration-300" />
           <div className="w-full h-[40vh] overflow-x-scroll flex flex-col gap-2 p-2 absolute top-full left-0 right-0 rounded-2xl border-2 border-black bg-white opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300">
             <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
             <div className="flex gap-4">

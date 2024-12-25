@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <div className="bg-slate-500 max-sm:pb-[8vh] ">
+    <div className="bg-slate-500 max-sm:pb-[8vh] mt-5">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem quae
       doloremque, culpa odio minus adipisci commodi voluptate, perferendis
       possimus, deserunt id sunt. Aspernatur minima odio officiis non nisi neque
