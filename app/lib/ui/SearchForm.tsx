@@ -33,7 +33,7 @@ const SearchForm: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
 
   const {
-    // formState: { errors },
+    // formState: { isSubmitting, errors },
     watch,
     register,
     setValue,
@@ -99,6 +99,13 @@ const SearchForm: React.FC = () => {
     const { city, location } = data;
 
     if (!city) return;
+
+    const submitButton = document.querySelector(
+      '.searchSubmit'
+    ) as HTMLButtonElement;
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
 
     const locations = selectedLocation.includes(location)
       ? selectedLocation
@@ -383,7 +390,10 @@ const SearchForm: React.FC = () => {
       )}
 
       <div className="max-sm:h-[4vh] col-span-1 space-y-3 max-sm:col-span-2 max-sm:col-start-8 place-content-center text-center bg-black max-sm:rounded-lg rounded-br-lg ">
-        <button type="submit" className={`text-white text-xl w-full`}>
+        <button
+          type="submit"
+          className={`searchSubmit text-white text-xl w-full`}
+        >
           Search
         </button>
       </div>
@@ -392,34 +402,36 @@ const SearchForm: React.FC = () => {
         <div
           className={`absolute top-full left-1/2 -translate-x-1/2 w-[calc(100%+0.7rem)] col-span-7 col-start-2 place-content-center p-1 bg-white border-b-2 border-r-2 border-l-2 border-black rounded-b-xl overflow-x-scroll`}
         >
-          <div className="inline-flex gap-1">
+          <div className="flex gap-1">
             {selectedLocation.map((location, index) => {
               return (
-                <span
+                <p
                   key={index}
-                  className="inline-flex items-center gap-1 border px-2 rounded bg-gray-100 max-w-[120px] truncate"
+                  className="inline-flex items-center gap-1 border px-2 rounded bg-gray-100 max-w-[140px]"
                   title={location}
                 >
-                  {location.length > 15
-                    ? `${location.slice(0, 15)}...`
-                    : location}
+                  <span className="truncate">
+                    {location.length > 15
+                      ? `${location.slice(0, 15)}...`
+                      : location}
+                  </span>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
                     width="15"
                     height="15"
-                    viewBox="0 0 24 24"
                     fill="none"
-                    stroke="currentColor"
                     strokeWidth="1.5"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="lucide lucide-x cursor-pointer"
+                    xmlns="http://www.w3.org/2000/svg"
                     onClick={() => removeLocation(index)}
+                    className="lucide lucide-x cursor-pointer flex-shrink-0"
                   >
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
                   </svg>
-                </span>
+                </p>
               );
             })}
           </div>

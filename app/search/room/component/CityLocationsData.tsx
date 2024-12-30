@@ -1,4 +1,4 @@
-// import Link from 'next/link';
+import Link from 'next/link';
 // import Image from "next/image";
 
 type Aminities = 'PARKING' | 'WIFI';
@@ -46,12 +46,7 @@ const CityLocationsData = ({
               backgroundColor: '#fff',
             }}
           >
-            {/* <Link href={`/${category}/${btoa(item.id)}`}> */}
-            <a
-              href={`/search/${category}/${btoa(item.id)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Link href={`/${category}/${btoa(item.id)}`}>
               <h2
                 style={{
                   fontSize: '1.5rem',
@@ -131,8 +126,7 @@ const CityLocationsData = ({
                   </video>
                 </div>
               )}
-            </a>
-            {/* </Link> */}
+            </Link>
           </div>
         ))}
     </>

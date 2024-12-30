@@ -108,7 +108,7 @@ const Room = () => {
         onSubmit={handleFormSubmit(onSubmit)}
         className="space-y-6 p-2 border rounded-lg shadow-lg bg-white"
       >
-        <div className="grid max-sm:grid-cols-1 grid-cols-2 gap-1">
+        <div className="grid max-xsm:grid-cols-1 max-sm:grid-cols-2 grid-cols-3 gap-1">
           <InputField
             label="Name"
             id="name"
@@ -202,6 +202,7 @@ const Room = () => {
           />
         </div>
 
+        {/* Bathroom , Hall , Kitchen , Bedroom */}
         <RadioGroup
           label="Room Type"
           options={['ONE_BHK', 'TWO_BHK', 'FLAT']}

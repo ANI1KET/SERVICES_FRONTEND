@@ -167,7 +167,7 @@ const LoadMoreCityLocations = ({
   }, [handleLoadMore]);
   return (
     <div className="grid gap-2 grid-cols-[3fr_5fr] max-sm:grid-cols-[2fr_2fr] max-xsm:grid-cols-[1fr] m-1 mb-6">
-      <div className="h-fit sticky top-[13vh] max-sm:top-[1vh] flex flex-col gap-4 max-xsm:hidden p-1 border-2 border-black rounded-xl ">
+      <div className="h-fit max-sm:h-[86vh] max-sm:overflow-y-scroll sticky top-[12vh] max-sm:top-[1vh] flex flex-col gap-4 max-xsm:hidden p-1 border-2 border-black rounded-xl ">
         <PriceSlider
           defaultValue={URLQueryFilters.price}
           onChangeEnd={(value) => {
@@ -176,7 +176,7 @@ const LoadMoreCityLocations = ({
           }}
         />
 
-        <div className="flex gap-4 max-sm:flex-col">
+        <div className="flex gap-4 mx-1 max-sm:flex-col">
           <RatingSlider
             defaultValue={URLQueryFilters.rating}
             onChangeEnd={(value) => {

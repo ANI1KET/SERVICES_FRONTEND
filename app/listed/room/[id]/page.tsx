@@ -2,9 +2,12 @@
 
 import { useParams } from 'next/navigation';
 
-import ImageSlider from '../../../lib/ui/ImageSlider';
-import { useGetNewRoomDetails } from '@/app/providers/reactqueryProvider';
+import { NewListedRoom } from '@/app/types/types';
 import VideoPlayer from '@/app/lib/ui/VideoPlayer';
+import ImageSlider from '../../../lib/ui/ImageSlider';
+import NewRoomDetails from './component/NewRoomDetails';
+import { useGetNewRoomDetails } from '@/app/providers/reactqueryProvider';
+import ResponsiveNewRoomDetails from './component/ResponsiveNewRoomDetails';
 
 const decodeURLPlaceQuery = (query: string) => {
   try {
@@ -20,47 +23,67 @@ const Room = () => {
   const id = params.id;
   const roomId = decodeURLPlaceQuery(id as string);
 
-  const newRoomDetails = useGetNewRoomDetails();
-  console.log(newRoomDetails);
+  //   const newRoomDetails = useGetNewRoomDetails();
 
-  const images: string[] = [
-    'https://drive.google.com/uc?export=view&id=1VM97XOiPOQ9IE-0V-XeFDXmAdWNzHUHs',
-    'https://drive.google.com/uc?export=view&id=1ii3RevE0dm7O2R_L6QSmrwMbUi2Cxat-',
-    'https://drive.google.com/uc?export=view&id=1cc2PgZjeOIVx2g9nrmhNfzi4s7OkCohV',
-    'https://drive.google.com/uc?export=view&id=1_b5NCiPWEs3yphzlwkWFVxLesliUV0aa',
-    'https://drive.google.com/uc?export=view&id=1ZCJeIeTxDvU80pW7Rgc6wZa159QKL3Ze',
-    'https://drive.google.com/uc?export=view&id=1o7e63HTFP5AMuW8ebUwPh_-hBKqB8zEB',
-    'https://drive.google.com/uc?export=view&id=1zcRjRVvurV7TPk13gLkxM62N_ZUqOC3d',
-    //     'https://drive.google.com/uc?export=view&id=1lE7VKT0SD0WyleTPrFWAO0fgYcLDID1-',
-    //     'https://drive.google.com/uc?export=view&id=154xdUKqZ06bwP5LzeCrNEGZ9oo2eQl3g',
-    //     'https://drive.google.com/uc?export=view&id=1L05uQEwH6Y9hY4nLcQkYD-azWe2WJ1gv',
-    //     'https://drive.google.com/uc?export=view&id=1Iy9IFeGaK3SOP_K4rHWmfHfh-FlFOxrq',
-    //       'https://drive.google.com/uc?export=view&id=1AU27PtVetlQ0pZaRz9TEJ9YaTSenSOuL',
-    //       'https://drive.google.com/uc?export=view&id=1Iy9IFeGaK3SOP_K4rHWmfHfh-FlFOxrq',
-    //       'https://drive.google.com/uc?export=view&id=1AU27PtVetlQ0pZaRz9TEJ9YaTSenSOuL',
-    // //     'https://lh3.googleusercontent.com/d/1lE7VKT0SD0WyleTPrFWAO0fgYcLDID1-',
-    // //     'https://lh3.googleusercontent.com/d/154xdUKqZ06bwP5LzeCrNEGZ9oo2eQl3g',
-    // //     'https://lh3.googleusercontent.com/d/1L05uQEwH6Y9hY4nLcQkYD-azWe2WJ1gv',
-    // //     'https://lh3.googleusercontent.com/d/1Iy9IFeGaK3SOP_K4rHWmfHfh-FlFOxrq',
-    // //     'https://lh3.googleusercontent.com/d/1AU27PtVetlQ0pZaRz9TEJ9YaTSenSOuL',
-    // //     'https://lh3.googleusercontent.com/d/1Iy9IFeGaK3SOP_K4rHWmfHfh-FlFOxrq',
-    // //     'https://lh3.googleusercontent.com/d/1AU27PtVetlQ0pZaRz9TEJ9YaTSenSOuL',
-    // //     'https://drive.google.com/thumbnail?id=1lE7VKT0SD0WyleTPrFWAO0fgYcLDID1-',
-    // //     'https://drive.google.com/thumbnail?id=154xdUKqZ06bwP5LzeCrNEGZ9oo2eQl3g',
-    // //     'https://drive.google.com/thumbnail?id=1L05uQEwH6Y9hY4nLcQkYD-azWe2WJ1gv',
-    // //     'https://drive.google.com/thumbnail?id=1Iy9IFeGaK3SOP_K4rHWmfHfh-FlFOxrq',
-    // //     'https://drive.google.com/thumbnail?id=1AU27PtVetlQ0pZaRz9TEJ9YaTSenSOuL',
-  ];
-
-  const videos: string = 'https://www.youtube.com/embed/JWLsQ8oM8MY';
+  const newRoomDetails = {
+    amenities: ['Parking , Wifi'],
+    city: 'Biratnagar',
+    direction: null,
+    furnishingStatus: 'UNFURNISHED',
+    id: '676c838c241fba50522de99b',
+    location: 'Biratnagar A',
+    maxcapacity: 3,
+    mincapacity: 2,
+    name: 'Aniket',
+    photos: [
+      'https://drive.google.com/uc?export=view&id=1DaKoZ1PIPn7P-ZwBeyATAz5p8XfOmEAT',
+      'https://drive.google.com/uc?export=view&id=1V7uGBECIMCrEDMfDv4f7r0ND5vqgyBiy',
+      'https://drive.google.com/uc?export=view&id=1nscU9Xy3K5RlJi0MmO5gf_71zZH4h-OR',
+      'https://drive.google.com/uc?export=view&id=1YOJxKnuZoO9rQG8c-K93TiUDulMYLzgm',
+      'https://drive.google.com/uc?export=view&id=1Q2AzDKr2vywlVmlmOp3QIlLkPlJgjj5O',
+      'https://drive.google.com/uc?export=view&id=15cB-61xUoj46eOrDzlxwNgbn6_378zdl',
+      'https://drive.google.com/uc?export=view&id=1HsjLbdgmKfzTY3KeRWnbICdUDX4TLBoM',
+      'https://drive.google.com/uc?export=view&id=1EG4GPJ4sUVhwURRx0RY7FO59tSkhV7s3',
+    ],
+    available: true,
+    postedBy: 'USER',
+    price: 10000000.99,
+    ratings: 0,
+    roomNumber: '1111111111',
+    roomtype: 'FLAT',
+    userId: '674b5557b7a8725128d4250c',
+    verified: true,
+    videos: null,
+    // videos:
+    //   'https://www.youtube.com/embed/https://www.youtube.com/watch?v=lMeNzY5f8eQ',
+    createdAt: 'Thu Dec 26 2024 03:43:32 GMT+0530 (India Standard Time)',
+    updatedAt: 'Thu Dec 26 2024 03:43:32 GMT+0530 (India Standard Time)',
+  };
   return (
     <div className="flex flex-col ">
-      <VideoPlayer videoUrl={newRoomDetails?.videos as string} />
-      {/* <VideoPlayer videoUrl={videos as string} /> */}
+      <div className="flex max-xsm:flex-col gap-1 p-2 relative mb-5 max-xsm:p-0 max-xsm:gap-0 ">
+        <VideoPlayer videoUrl={newRoomDetails?.videos} />
+
+        <NewRoomDetails roomCardDetails={newRoomDetails as NewListedRoom} />
+      </div>
+
+      <ResponsiveNewRoomDetails
+        roomCardDetails={newRoomDetails as NewListedRoom}
+      />
+
+      <div className="flex justify-center text-lg font-semibold p-1">
+        Room Images
+      </div>
+
       <ImageSlider imagesUrl={newRoomDetails?.photos as string[]} />
-      {/* <ImageSlider imagesUrl={images as string[]} /> */}
     </div>
   );
 };
 
 export default Room;
+
+//   const images: string[] = [
+//     'https://drive.google.com/uc?export=view&id=1VM97XOiPOQ9IE-0V-XeFDXmAdWNzHUHs',
+//     //       'https://drive.google.com/uc?id=1AU27PtVetlQ0pZaRz9TEJ9YaTSenSOuL',
+//     // //     'https://drive.google.com/thumbnail?id=1AU27PtVetlQ0pZaRz9TEJ9YaTSenSOuL',
+//   ];

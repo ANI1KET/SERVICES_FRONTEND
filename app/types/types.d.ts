@@ -32,16 +32,16 @@ export type SearchQuery = {
 
 export type Room = {
   name: string;
-  roomNumber: string;
   city: string;
-  direction: string | null;
   location: string;
-  price: string;
+  roomtype: RoomType;
+  roomNumber: string;
   mincapacity: number;
   maxcapacity: number;
-  roomtype: RoomType;
-  furnishingStatus: FurnishingStatus;
   amenities: Aminities[];
+  price: string | number;
+  direction: string | null;
+  furnishingStatus: FurnishingStatus;
 };
 
 export type RoomWithMedia = Room & {
@@ -57,9 +57,23 @@ export type RoomWithMediaUrl = Room & {
 export type NewListedRoom = RoomWithMediaUrl & {
   id: string;
   userId: string;
-  updatedAt: Date;
-  createdAt: Date;
   ratings: number;
   postedBy: string;
+  createdAt: string;
+  updatedAt: string;
   verified: boolean;
+  available: boolean;
+};
+
+export type RoomData = NewListedRoom & {
+  user: {
+    role: string;
+  };
+  roomReviews: {
+    id: string;
+    rating: number;
+    comment: String;
+    createdAt: string;
+    updatedAt: string;
+  }[];
 };

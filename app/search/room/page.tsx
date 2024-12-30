@@ -73,8 +73,7 @@ export default async function Room({
     return (
       <section className="">
         <h1 className="text-center font-medium m-1">
-          Rooms in
-          {decodedURLPlaceQuery.city?.toUpperCase()}
+          {`Rooms in ${decodedURLPlaceQuery.city?.toUpperCase()}`}
         </h1>
         <LoadMoreCityLocations
           loadMoreCityLocations={loadMoreCityLocations}

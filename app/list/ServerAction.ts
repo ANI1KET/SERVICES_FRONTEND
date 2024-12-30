@@ -280,7 +280,7 @@ export async function SubmitRoomDetails(formData: RoomWithMediaUrl) {
     const newRoomDetails = await prisma.room.create({
       data: {
         ...formData,
-        price: parseFloat(formData.price),
+        price: parseFloat(formData.price as string),
         postedBy: session.user.role,
         userId: session.user.userId as string,
       },
