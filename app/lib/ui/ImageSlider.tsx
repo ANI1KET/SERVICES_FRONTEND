@@ -114,7 +114,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ imagesUrl }) => {
               style={{ position: 'absolute' }}
               onClick={() => setPreviewImage(image)}
               animate={extendedPositions[positionIndexes[index]]}
-              className={`w-[20%] max-sm:w-[35%] h-[45vh] max-sm:h-[35vh] max-xsm:h-[30vh] cursor-pointer`}
+              className={`w-[20%] max-sm:w-[35%] h-[45vh] max-sm:h-[35vh] max-xsm:h-[30vh] cursor-pointer `}
             >
               <Image
                 fill

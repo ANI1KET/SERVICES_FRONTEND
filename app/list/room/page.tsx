@@ -41,7 +41,7 @@ const Room = () => {
         ...data,
       }),
     onSuccess: (response) => {
-      queryClient.setQueryData(['roomDetails'], response);
+      queryClient.setQueryData(['CategoryDetails', 'room'], response);
       reset();
       router.push(`/listed/room/${btoa(response.id)}`);
     },

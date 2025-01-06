@@ -7,8 +7,9 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 import { NewListedRoom } from '../types/types';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export interface TabState {
   [key: string]: string;
@@ -42,6 +43,12 @@ export default function ReactQueryProvider({
       staleTime: Infinity,
     });
     client.setQueryData<TabState>(['tabState'], initialTabState);
+
+    client.setQueryDefaults(['searchData'], {
+      enabled: false,
+      gcTime: Infinity,
+      staleTime: Infinity,
+    });
     return client;
   });
 
@@ -90,8 +97,8 @@ export function useDeleteTabState() {
   };
 }
 
-export function useGetNewRoomDetails() {
+export function useGetNewRoomDetails(category: string) {
   const queryClient = useQueryClient();
 
-  return queryClient.getQueryData<NewListedRoom>(['roomDetails']);
+  return queryClient.getQueryData<NewListedRoom>(['CategoryDetails', category]);
 }

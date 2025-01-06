@@ -1,13 +1,18 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState, useMemo } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import Select from '@mui/material/Select';
+import { useRouter } from 'next/navigation';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import { useEffect, useState, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
+import {
+  FetchCategoryCityLocations,
+  FetchCategoryCitiesLocations,
+} from '../utils/FetchCategoryPlaces';
+import { ArrowUpIcon } from '../icon/svg';
 import {
   CapacitySlider,
   CheckedBox,
@@ -15,14 +20,9 @@ import {
   RatingSlider,
   TickCheckboxGroup,
 } from '@/app/lib/ui/FormReusableComponent';
-import {
-  FetchCategoryCityLocations,
-  FetchCategoryCitiesLocations,
-} from '../utils/FetchCategoryPlaces';
-import { SearchQuery } from '@/app/types/types';
 import useBreakpoint from '../utils/useBreakpoint';
+import { SearchQueries, SearchQuery } from '@/app/types/types';
 import { CityData, useTabState } from '@/app/providers/reactqueryProvider';
-import { ArrowUpIcon } from '../icon/svg';
 
 const SearchForm: React.FC = () => {
   const router = useRouter();
@@ -64,7 +64,7 @@ const SearchForm: React.FC = () => {
   useEffect(() => {
     if (category) {
       const cachedData = queryClient.getQueryData<CityData>([
-        'getRoomCitiesLocations',
+        'getCategoryCitiesLocations',
       ]);
       if (!cachedData?.[category]) {
         reFetchCitiesLocations();
@@ -111,60 +111,22 @@ const SearchForm: React.FC = () => {
       ? selectedLocation
       : [...selectedLocation, location].filter(Boolean);
 
-    const compressedURLQuery = btoa(
-      JSON.stringify({
-        city,
-        locations,
-      })
-    );
-    const compressedURLQueryFilters = btoa(
-      JSON.stringify({
+    queryClient.setQueryData<SearchQueries>(['searchData'], {
+      city,
+      locations,
+      filters: {
         price: data.price,
         rating: data.rating,
         capacity: data.capacity,
         verified: data.verified || undefined,
-        postedby: data.postedby.length ? data.postedby : undefined,
-        roomtype: data.roomtype.length ? data.roomtype : undefined,
-        amenities: data.amenities.length ? data.amenities : undefined,
-        furnishingstatus: data.furnishingstatus.length
-          ? data.furnishingstatus
-          : undefined,
-      })
-    );
+        postedby: data.postedby,
+        roomtype: data.roomtype,
+        amenities: data.amenities,
+        furnishingstatus: data.furnishingstatus,
+      },
+    });
 
-    router.push(
-      `/search/${tabState?.['CategoryTab']}?place=${compressedURLQuery}&filters=${compressedURLQueryFilters}`
-    );
-
-    // const encodedCityURLQuery = btoa(JSON.stringify({ city: city }));
-    // const encodedPriceURLQuery = btoa(JSON.stringify({ price: data.price }));
-    // const encodedRatingURLQuery = btoa(JSON.stringify({ rating: data.rating }));
-    // const encodedLocationsURLQuery = btoa(
-    //   JSON.stringify({ locations: locations })
-    // );
-    // const encodedCapacityURLQuery = btoa(
-    //   JSON.stringify({ capacity: data.capacity })
-    // );
-    // const encodedVerifiedURLQuery = btoa(
-    //   JSON.stringify({ verified: data.verified })
-    // );
-    // const encodedPostedByURLQuery = btoa(
-    //   JSON.stringify({ postedby: data.postedby })
-    // );
-    // const encodedRoomTypeURLQuery = btoa(
-    //   JSON.stringify({ roomtype: data.roomtype })
-    // );
-    // const encodedAmienitiesURLQuery = btoa(
-    //   JSON.stringify({ amenities: data.amenities })
-    // );
-    // const encodedFurnishingStatusURLQuery = btoa(
-    //   JSON.stringify({ furnishingstatus: data.furnishingstatus })
-    // );
-
-    // const url = `/${activeTab}?city=${encodedCityURLQuery}&locations=${encodedLocationsURLQuery}
-    // &price=${encodedPriceURLQuery}&rating=${encodedRatingURLQuery}&capacity=${encodedCapacityURLQuery}
-    // &verified=${encodedVerifiedURLQuery}&postedby=${encodedPostedByURLQuery}&roomtype=${encodedRoomTypeURLQuery}
-    // &amenities=${encodedAmienitiesURLQuery}&furnishingstatus=${encodedFurnishingStatusURLQuery}`;
+    router.push(`/search/${tabState?.['CategoryTab']}`);
   };
 
   const memoizedValue = useMemo(() => {

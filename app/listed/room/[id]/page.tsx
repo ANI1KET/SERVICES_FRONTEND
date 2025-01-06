@@ -23,7 +23,7 @@ const Room = () => {
   const id = params.id;
   const roomId = decodeURLPlaceQuery(id as string);
 
-  //   const newRoomDetails = useGetNewRoomDetails();
+  //   const newRoomDetails = useGetNewRoomDetails('room');
 
   const newRoomDetails = {
     amenities: ['Parking , Wifi'],

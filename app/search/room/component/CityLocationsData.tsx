@@ -1,36 +1,14 @@
 import Link from 'next/link';
 // import Image from "next/image";
 
-type Aminities = 'PARKING' | 'WIFI';
-
-type Apartment = {
-  id: string;
-  name: string;
-  roomNumber: string;
-  city: string;
-  direction: string | null;
-  location: string;
-  postedBy: 'USER' | 'ADMIN' | 'ClIENT' | 'OWNER' | 'BROKER';
-  photos: string[];
-  videos: string | null;
-  price: number;
-  ratings: number;
-  mincapacity: number;
-  maxcapacity: number;
-  verified: boolean | null;
-  roomtype: 'ONE_BHK' | 'TWO_BHK' | 'FLAT';
-  furnishingStatus: 'FURNISHED' | 'SEMIFURNISHED' | 'UNFURNISHED';
-  amenities: Aminities[];
-};
-
-type ApartmentsList = Apartment[];
+import { NewListedRoom } from '@/app/types/types';
 
 const CityLocationsData = ({
   category,
   cityLocationsData,
 }: {
   category: string;
-  cityLocationsData: ApartmentsList;
+  cityLocationsData: NewListedRoom[];
 }) => {
   return (
     <>

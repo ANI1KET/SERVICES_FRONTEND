@@ -1,16 +1,11 @@
-import { QueryFilters } from '../types/types';
+'use server';
+
+import axios from 'axios';
+
 import axiosInstance from '../lib/utils/axiosInstance';
+import { NewListedRoom, QueryFilters } from '../types/types';
 
 const PAGE_SIZE = 2;
-
-export const decodeURLPlaceQuery = (query: string) => {
-  try {
-    return JSON.parse(atob(query));
-  } catch (error) {
-    console.error('Error decoding query parameter:', error);
-    return null;
-  }
-};
 
 export const getCityLocations = async ({
   category,
@@ -24,16 +19,26 @@ export const getCityLocations = async ({
   decodedCity: string;
   decodedLocations: string[];
   decodedURLQueryFilters: QueryFilters;
-}) => {
-  const response = await axiosInstance.get(`/place/${category}`, {
-    params: {
-      offset,
-      limit: PAGE_SIZE,
-      city: decodedCity,
-      locations: decodedLocations,
-      filters: decodedURLQueryFilters,
-    },
-    headers: { 'Cache-Control': 'no-cache' },
-  });
-  return response.data;
+}): Promise<NewListedRoom[]> => {
+  'use server';
+
+  try {
+    const response = await axiosInstance.get(`/place/${category}`, {
+      params: {
+        offset,
+        limit: PAGE_SIZE,
+        city: decodedCity,
+        locations: decodedLocations,
+        filters: decodedURLQueryFilters,
+      },
+      headers: { 'Cache-Control': 'no-cache' },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data || error.message;
+    }
+    throw error;
+  }
 };

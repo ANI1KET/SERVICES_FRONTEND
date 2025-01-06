@@ -12,14 +12,12 @@ export function FetchCategoryCitiesLocations(category: string) {
   const queryClient = useQueryClient();
 
   return useQuery({
-    queryKey: ['getRoomCitiesLocations'],
+    queryKey: ['getCategoryCitiesLocations'],
     queryFn: async () => {
-      const CitiesLocationsData = await getCategoryCitiesLocations({
-        category: category,
-      });
+      const CitiesLocationsData = await getCategoryCitiesLocations();
 
       const newCacheData = queryClient.setQueryData(
-        ['getRoomCitiesLocations'],
+        ['getCategoryCitiesLocations'],
         (cachedData: CityData | undefined) => {
           if (!cachedData) {
             return {
@@ -50,14 +48,14 @@ export function FetchCategoryCityLocations() {
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: ['getRoomCityLocations'],
+    queryKey: ['getCategoryCityLocations'],
     queryFn: async () => {
       const CityLocationsData = await getCategoryCityLocations({
         city: city,
         category: category,
       });
 
-      queryClient.setQueryData(['getRoomCitiesLocations'], (cachedData) => {
+      queryClient.setQueryData(['getCategoryCitiesLocations'], (cachedData) => {
         return {
           // ...(cachedData as CityData),
           city: city,
@@ -69,7 +67,7 @@ export function FetchCategoryCityLocations() {
       }) as CityData;
 
       // queryClient.removeQueries({
-      //   queryKey: ['getRoomCityLocations'],
+      //   queryKey: ['getCategoryCityLocations'],
       //   exact: true,
       // });
 

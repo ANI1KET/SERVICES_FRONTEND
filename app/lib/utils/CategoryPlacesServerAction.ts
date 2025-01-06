@@ -4,53 +4,13 @@ import { AxiosError } from 'axios';
 
 import axiosInstance from './axiosInstance';
 
-type ResponseData = {
-  city: string;
-  cities: { city: string }[];
-  cityLocations: { location: string }[];
-};
-
-type CitiesLocationsData = {
-  [key: string]:
-    | {
-        [key: string]: string[];
-      }
-    | string;
-  city: string;
-};
-
-function transformCategoryCitiesLocationsResponse(
-  responseData: ResponseData,
-  category: string
-): CitiesLocationsData {
-  const citiesLocationsData = responseData.cities.reduce((acc, { city }) => {
-    if (city === responseData.city) {
-      acc[city] = responseData.cityLocations.map((loc) => loc.location);
-    } else {
-      acc[city] = [];
-    }
-
-    return acc;
-  }, {} as { [key: string]: string[] });
-
-  return { [category]: citiesLocationsData, city: responseData.city };
-}
-
-export async function getCategoryCitiesLocations({
-  category,
-}: {
-  category: string;
-}) {
+export async function getCategoryCitiesLocations() {
   'use server';
+
   try {
-    const response = await axiosInstance.get(
-      `/place/cities-locations?category=${category}`
-    );
+    const response = await axiosInstance.get(`/place/cities-locations`);
 
-    const transformedResponseData: CitiesLocationsData =
-      transformCategoryCitiesLocationsResponse(response.data, category);
-
-    return transformedResponseData;
+    return response.data;
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       throw error.response?.data?.error;
@@ -84,6 +44,7 @@ export async function getCategoryCityLocations({
   category: string;
 }) {
   'use server';
+
   try {
     const response = await axiosInstance.get(
       `/place/city-locations?category=${category}&city=${city}`
