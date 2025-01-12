@@ -1,11 +1,6 @@
-export const decodeURLPlaceQuery = (query: string) => {
-  try {
-    return atob(query);
-  } catch (error) {
-    console.error('Error decoding query parameter:', error);
-    return null;
-  }
-};
+import { notFound } from 'next/navigation';
+
+import { decodeURLPlaceQuery } from '@/app/lib/utils/decodeURL';
 
 export default async function SelectedLand({
   params,
@@ -15,5 +10,9 @@ export default async function SelectedLand({
   const { id } = await params;
   const landId = id ? decodeURLPlaceQuery(id) : null;
 
-  return <div>{landId}</div>;
+  if (!landId) {
+    notFound();
+  }
+
+  return <div>{'landId'}</div>;
 }

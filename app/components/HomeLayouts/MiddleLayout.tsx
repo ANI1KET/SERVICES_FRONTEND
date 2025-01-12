@@ -50,7 +50,7 @@ const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
       <AnimatePresence mode="wait">
         <motion.div
           {...animationProps}
-          className="max-sm:hidden h-[12vh] w-[71vw] mx-[11.5vw] rounded-xl shadow-2xl sticky top-[5.3vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-white "
+          className="max-sm:hidden h-[12vh] w-[71vw] mx-[11.5vw] rounded-xl shadow-2xl sticky top-[5.3vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-green-300"
         >
           {children}
           {/* {upperComponent}

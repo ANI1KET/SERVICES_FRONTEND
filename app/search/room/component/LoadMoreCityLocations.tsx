@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
@@ -33,11 +33,11 @@ const LoadMoreCityLocations = () => {
   const updateFilter = useFilterUpdater(queryClient, refetch);
   const observerRef = useRef<HTMLDivElement | null>(null);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -61,7 +61,7 @@ const LoadMoreCityLocations = () => {
     };
   }, [handleLoadMore]);
   return (
-    <div className="grid gap-2 grid-cols-[3fr_5fr] max-sm:grid-cols-[2fr_2fr] max-xsm:grid-cols-[1fr] m-1 mb-6">
+    <div className="grid gap-2 grid-cols-[3fr_6fr] max-sm:grid-cols-[2fr_4fr] max-xsm:grid-cols-[1fr] m-1 mb-6">
       <div className="h-fit max-sm:h-[90vh] max-sm:overflow-y-scroll sticky top-[8.5vh] max-sm:top-1 flex flex-col gap-4 max-xsm:hidden p-1 border-2 border-black rounded-xl ">
         <PriceSlider
           defaultValue={searchData?.filters.price}
@@ -120,7 +120,7 @@ const LoadMoreCityLocations = () => {
           onChange={(verify) => updateFilter('verified', verify)}
         />
       </div>
-      <div className="grid gap-2 ">
+      <div className="">
         {data?.pages.map((roomDetails, pageIndex) => (
           <CityLocationsData
             key={pageIndex}

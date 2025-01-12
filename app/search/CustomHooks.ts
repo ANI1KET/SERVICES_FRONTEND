@@ -5,7 +5,7 @@ import {
   QueryObserverResult,
 } from '@tanstack/react-query';
 import { throttle } from 'lodash';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { getCityLocations } from './ServerAction';
 import { NewListedRoom, QueryFilters, SearchQueries } from '../types/types';
@@ -33,6 +33,8 @@ export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
       return lastPage.length === PAGE_SIZE ? currentOffset : undefined;
     },
     initialPageParam: 0,
+    // gcTime: 1000 * 60 * 10,
+    // staleTime: 1000 * 60 * 10,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
@@ -44,15 +46,19 @@ export const useFilterUpdater = (
     QueryObserverResult<InfiniteData<NewListedRoom[], unknown>, Error>
   >
 ) => {
-  const debouncedRefetch = useCallback(
-    throttle(() => {
-      refetch();
-    }, 1000),
+  const debouncedRefetch = useMemo(
+    () =>
+      throttle(() => {
+        refetch();
+      }, 1000),
     [refetch]
   );
 
   return useCallback(
-    (key: keyof QueryFilters, value: any) => {
+    <K extends keyof SearchQueries['filters']>(
+      key: K,
+      value: SearchQueries['filters'][K]
+    ) => {
       queryClient.setQueryData<SearchQueries>(['searchData'], (prevData) => {
         if (!prevData) return undefined;
         return {

@@ -15,18 +15,18 @@ const ImageLoop = ({ images }: { images: string[] }) => {
   }, [images.length]);
 
   return (
-    <div className="absolute top-0 w-full h-full">
-      <Image
-        fill
-        loading="lazy"
-        src={images[currentIndex]}
-        alt={`Slide ${currentIndex}`}
-        style={{
-          objectFit: 'fill',
-          objectPosition: 'center',
-        }}
-      />
-    </div>
+    <Image
+      fill
+      sizes="100%"
+      loading="lazy"
+      src={images[currentIndex]}
+      alt={`Slide ${currentIndex}`}
+      style={{
+        objectFit: 'fill',
+        objectPosition: 'center',
+      }}
+      // sizes="(max-width: 768px) 100vw, (min-width: 769px) 100vw"
+    />
   );
 };
 

@@ -1,11 +1,6 @@
-export const decodeURLPlaceQuery = (query: string) => {
-  try {
-    return atob(query);
-  } catch (error) {
-    console.error('Error decoding query parameter:', error);
-    return null;
-  }
-};
+import { notFound } from 'next/navigation';
+
+import { decodeURLPlaceQuery } from '../../ServerAction';
 
 export default async function SelectedRental({
   params,
@@ -15,5 +10,9 @@ export default async function SelectedRental({
   const { id } = await params;
   const rentalId = id ? decodeURLPlaceQuery(id) : null;
 
-  return <div>{rentalId}</div>;
+  if (!rentalId) {
+    notFound();
+  }
+
+  return <div>{'rentalId'}</div>;
 }

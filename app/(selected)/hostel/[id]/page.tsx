@@ -1,11 +1,6 @@
-export const decodeURLPlaceQuery = (query: string) => {
-  try {
-    return atob(query);
-  } catch (error) {
-    console.error('Error decoding query parameter:', error);
-    return null;
-  }
-};
+import { notFound } from 'next/navigation';
+
+import { decodeURLPlaceQuery } from '@/app/lib/utils/decodeURL';
 
 export default async function SelectedHostel({
   params,
@@ -14,6 +9,10 @@ export default async function SelectedHostel({
 }) {
   const { id } = await params;
   const hostelId = id ? decodeURLPlaceQuery(id) : null;
+
+  if (!hostelId) {
+    notFound();
+  }
 
   return <div>{hostelId}</div>;
 }

@@ -100,12 +100,12 @@ const SearchForm: React.FC = () => {
 
     if (!city) return;
 
-    const submitButton = document.querySelector(
-      '.searchSubmit'
-    ) as HTMLButtonElement;
-    if (submitButton) {
-      submitButton.disabled = true;
-    }
+    // const submitButton = document.querySelector(
+    //   '.searchSubmit'
+    // ) as HTMLButtonElement;
+    // if (submitButton) {
+    //   submitButton.disabled = true;
+    // }
 
     const locations = selectedLocation.includes(location)
       ? selectedLocation
@@ -159,7 +159,7 @@ const SearchForm: React.FC = () => {
         <div className="col-span-1 max-sm:col-span-3 grid grid-flow-col place-content-center place-items-center border-r-[1px] border-black h-full cursor-pointer group ">
           <p>Filter</p>
           <ArrowUpIcon className="group-hover:scale-125 group-hover:rotate-180 transition-all duration-300" />
-          <div className="w-full h-[40vh] overflow-x-scroll flex flex-col gap-2 p-2 absolute top-full left-0 right-0 rounded-2xl border-2 border-black bg-white opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300">
+          <div className="w-full h-[40vh] overflow-x-scroll flex flex-col gap-2 p-2 absolute top-full left-0 right-0 rounded-2xl border-2 border-black bg-white opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300 ">
             <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
             <div className="flex gap-4">
               <RatingSlider

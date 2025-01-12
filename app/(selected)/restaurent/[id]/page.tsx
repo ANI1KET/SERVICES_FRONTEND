@@ -1,11 +1,5 @@
-export const decodeURLPlaceQuery = (query: string) => {
-  try {
-    return atob(query);
-  } catch (error) {
-    console.error('Error decoding query parameter:', error);
-    return null;
-  }
-};
+import { notFound } from 'next/navigation';
+import { decodeURLPlaceQuery } from '../../ServerAction';
 
 export default async function SelectedRestaurent({
   params,
@@ -15,5 +9,9 @@ export default async function SelectedRestaurent({
   const { id } = await params;
   const restaurentId = id ? decodeURLPlaceQuery(id) : null;
 
-  return <div>{restaurentId}</div>;
+  if (!restaurentId) {
+    notFound();
+  }
+
+  return <div>{'restaurentId'}</div>;
 }

@@ -2,11 +2,12 @@
 
 import ReactPlayer from 'react-player';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import ImageLoop from './ImageLoop';
+import ImageLoop from '@/app/lib/ui/ImageLoop';
 import { getCategoryDetails } from './ServerAction';
+import { CapacityIcon, HomeLocationIcon, PriceIcon } from '@/app/lib/icon/svg';
 
 const PAGE_SIZE = 2;
 
@@ -40,11 +41,11 @@ const CategoryCardLayout: React.FC<{
 
   const observerRef = useRef<HTMLDivElement | null>(null);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -68,7 +69,7 @@ const CategoryCardLayout: React.FC<{
     };
   }, [handleLoadMore]);
   return (
-    <div className="w-full h-[45vh] max-xsm:h-[52vh]">
+    <div className="w-full ">
       <p className="text-2xl font-semibold text-center">
         {title.charAt(0).toUpperCase() + title.slice(1)}s
       </p>
@@ -86,81 +87,98 @@ const CategoryCardLayout: React.FC<{
             </span>
           ))}
       </div>
-      <div className="h-[30vh] max-xsm:h-fit w-full flex overflow-x-auto">
-        <div className="flex">
+      <div className="w-full flex overflow-x-auto ">
+        <div className="flex ">
           {data?.pages.map((page, pageIndex) =>
             page.map((item, index: number) => (
               <div
+                className="cursor-pointer"
                 key={`${pageIndex}${index}`}
-                // className="w-[33.3vw] max-sm:w-[50vw] max-xsm:w-screen relative aspect-video"
-                className="max-xsm:w-screen relative aspect-video cursor-pointer"
-                onClick={() => router.push(`/room/${btoa(item.id)}`)}
+                onClick={() =>
+                  router.push(`/room/${btoa(`${item.id},${City}`)}`)
+                }
               >
                 {item.videos ? (
-                  <ReactPlayer
-                    loop
-                    muted
-                    playing
-                    width="100%"
-                    height="100%"
-                    controls={false}
-                    config={{
-                      youtube: {
-                        playerVars: {
-                          rel: 0,
-                          showinfo: 0,
-                          disablekb: 1,
-                          modestbranding: 1,
+                  <div className="w-[25vw] max-sm:w-[50vw] max-xsm:w-screen aspect-video ">
+                    <ReactPlayer
+                      loop
+                      muted
+                      playing
+                      width="100%"
+                      height="100%"
+                      controls={false}
+                      url={item.videos}
+                      config={{
+                        youtube: {
+                          playerVars: {
+                            rel: 0,
+                            showinfo: 0,
+                            disablekb: 1,
+                            modestbranding: 1,
+                          },
                         },
-                      },
-                    }}
-                    url={item.videos}
-                  />
+                      }}
+                      style={{ pointerEvents: 'none' }}
+                    />
+                  </div>
                 ) : (
-                  <div className="relative w-full h-full overflow-hidden">
+                  <div className="w-[25vw] max-sm:w-[50vw] max-xsm:w-screen relative aspect-video -z-10">
                     {item.photos && item.photos.length > 0 && (
                       <ImageLoop images={item.photos} />
                     )}
                   </div>
                 )}
-                <div className="absolute top-0 w-full h-full z-10 pointer-events-auto">
-                  <div className="grid grid-rows-2 grid-cols-2 h-full p-1">
-                    <p className="row-span-1 col-span-1 text-xl "></p>
-                    <p
-                      title={`Posted By : ${item.postedBy}${
-                        item.verified ? ' (Verified)' : ''
-                      }`}
-                      className={`row-span-1 col-span-1 text-xl flex justify-end ${
-                        item.verified ? 'text-green-400' : ''
-                      }`}
-                    >
-                      <span>
-                        {item.postedBy}
-                        {'  '}
-                        {item.verified ? '✓' : ''}
-                      </span>
-                    </p>
-                    <p
-                      className={`row-span-1 col-span-1 text-xl flex flex-col justify-end`}
-                      title={`Price : ${item.price}/month\nMinimum Person : ${item.mincapacity}\nMaximum Person : ${item.maxcapacity}`}
-                    >
-                      <span>
-                        {item.mincapacity}-{item.maxcapacity}
-                      </span>
-                      <span>Rs.{item.price}</span>
-                    </p>
-                    <p
-                      title={`UpdatedAt : ${new Date(
-                        item.updatedAt
-                      ).toDateString()}`}
-                      className={`row-span-1 col-span-1 text-xl flex flex-col justify-end items-end ${
-                        item.available ? 'text-green-400' : ''
-                      }`}
-                    >
-                      {item.available && <span>Available </span>}
-                      <span>{new Date(item.updatedAt).toDateString()}</span>
-                    </p>
-                  </div>
+                <div
+                  className="w-[25vw] max-sm:w-[50vw] max-xsm:w-screen grid grid-rows-2 grid-cols-2 gap-1 p-1  
+                             border-r-[1px] border-l-[1px] border-b-[1px] border-black rounded-b-md"
+                >
+                  <p
+                    className={`row-span-1 col-span-1 text-xl `}
+                    title={`Minimum Person : ${item.mincapacity}\nMaximum Person : ${item.maxcapacity}`}
+                  >
+                    <span className="flex items-center gap-1">
+                      <CapacityIcon size={20} />
+                      {item.mincapacity}-{item.maxcapacity}
+                    </span>
+                  </p>
+                  <p
+                    className={`row-span-1 col-span-1 text-xl flex justify-end ${
+                      item.available ? 'text-green-400' : ''
+                    }`}
+                  >
+                    {item.available && <span>Available </span>}
+                  </p>
+                  <p
+                    className="row-span-1 col-span-1 text-xl"
+                    title={`Price/month`}
+                  >
+                    <span className="flex items-center gap-1">
+                      <PriceIcon size={20} />
+                      Rs.{item.price}
+                    </span>
+                  </p>
+                  <p
+                    title={`Posted By : ${item.postedBy}${
+                      item.verified ? ' (Verified)' : ''
+                    }`}
+                    className={`row-span-1 col-span-1 text-xl flex justify-end ${
+                      item.verified ? 'text-green-400' : ''
+                    }`}
+                  >
+                    <span>
+                      {item.postedBy}
+                      {'  '}
+                      {item.verified ? '✓' : ''}
+                    </span>
+                  </p>
+                  <p
+                    title={`Location`}
+                    className={`row-span-1 col-span-2 text-xl flex justify-start `}
+                  >
+                    <span className="flex items-center gap-1">
+                      <HomeLocationIcon size={20} /> {item.location}
+                    </span>
+                  </p>
                 </div>
               </div>
             ))

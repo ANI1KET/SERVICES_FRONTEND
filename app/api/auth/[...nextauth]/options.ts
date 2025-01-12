@@ -8,7 +8,7 @@ import { PostedBy } from '@/app/types/types';
 
 export const authOptions: NextAuthOptions = {
   // pages: {
-  //   signIn: "/login",
+  //   signIn: '/login',
   // },
   // cookies: {
   //   sessionToken: {
@@ -117,6 +117,8 @@ export const authOptions: NextAuthOptions = {
           });
           user.role = userDetails.role;
           user.userId = userDetails.id;
+
+          return true;
         } catch (error) {
           console.error('Error signing in user:', error);
           return false; // Return `false` on validation or database error
@@ -125,6 +127,10 @@ export const authOptions: NextAuthOptions = {
 
       return true;
     },
+    // async redirect({ baseUrl, url }) {
+    //   console.log(baseUrl, url);
+    //   return baseUrl;
+    // },
     async jwt({ user, token }) {
       if (user) {
         token.id = user.id?.toString();

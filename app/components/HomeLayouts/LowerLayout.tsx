@@ -11,7 +11,7 @@ const LowerLayout = () => {
   const [cachedData, setCachedData] = useState<CityData | undefined>();
 
   useEffect(() => {
-    const handleCacheUpdate = (event: any) => {
+    const handleCacheUpdate = (event: { query?: { queryKey?: unknown[] } }) => {
       const updatedData = queryClient.getQueryData<CityData>([
         'getCategoryCitiesLocations',
       ]);

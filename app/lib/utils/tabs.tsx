@@ -11,11 +11,11 @@ export const HeaderTabs: [string, React.ReactNode][] = [
 ];
 
 export const BottomTabs: [string, React.ReactNode][] = [
-  ['', <SearchIcon />],
-  ['profile', <ProfileIcon />],
-  ['', <HomeIcon />],
-  ['profile', <ProfileIcon />],
-  ['profile', <ProfileIcon />],
+  ['', <SearchIcon key={'SearchIcon'} />],
+  ['profile', <ProfileIcon key={'ProfileIcon'} />],
+  ['', <HomeIcon key={'HomeIcon'} />],
+  ['profile', <ProfileIcon key={'Icon'} />],
+  ['profile', <ProfileIcon key={'sIcon'} />],
 ];
 
 // Category Tabs

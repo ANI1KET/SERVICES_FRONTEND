@@ -2,12 +2,9 @@
 
 import { Readable } from 'stream';
 import { google } from 'googleapis';
-import { getServerSession } from 'next-auth';
-// import { getServerSession } from "next-auth";
 
 import prisma from '@/prisma/prismaClient';
-import { RoomWithMediaUrl } from '../types/types';
-import { authOptions } from '../api/auth/[...nextauth]/options';
+import { PostedBy, RoomWithMediaUrl } from '../types/types';
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -268,21 +265,15 @@ export async function uploadChunkVideo({
   }
 }
 
-export async function SubmitRoomDetails(formData: RoomWithMediaUrl) {
+export async function SubmitRoomDetails(
+  formData: RoomWithMediaUrl & { postedBy: PostedBy; userId: string }
+) {
   'use server';
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session || !session.user) {
-      throw new Error('You must be signed in to perform this action.');
-    }
-
     const newRoomDetails = await prisma.room.create({
       data: {
         ...formData,
         price: parseFloat(formData.price as string),
-        postedBy: session.user.role,
-        userId: session.user.userId as string,
       },
     });
 

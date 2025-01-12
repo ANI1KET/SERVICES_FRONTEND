@@ -37,3 +37,7 @@ export default function RootLayout({
     </html>
   );
 }
+
+// import { getServerSession } from 'next-auth';
+// import { authOptions } from '../api/auth/[...nextauth]/options';
+// const session = await getServerSession(authOptions);

@@ -1,7 +1,11 @@
 import Link from 'next/link';
-// import Image from "next/image";
+// import Image from 'next/image';
+import ReactPlayer from 'react-player';
 
+import ImageLoop from '../../../lib/ui/ImageLoop';
 import { NewListedRoom } from '@/app/types/types';
+import AutoScrollCarousel from './AutoScrollCarousel';
+import RoomDetailsLayout from './/RoomDetailsLayout';
 
 const CityLocationsData = ({
   category,
@@ -13,99 +17,70 @@ const CityLocationsData = ({
   return (
     <>
       {cityLocationsData &&
-        cityLocationsData.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              border: '1px solid #ccc',
-              borderRadius: '8px',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-              padding: '16px',
-              backgroundColor: '#fff',
-            }}
+        cityLocationsData.map((roomDetails) => (
+          <Link
+            key={roomDetails.id}
+            href={`/${category}/${btoa(roomDetails.id)}`}
           >
-            <Link href={`/${category}/${btoa(item.id)}`}>
-              <h2
-                style={{
-                  fontSize: '1.5rem',
-                  marginBottom: '8px',
-                  color: '#333',
-                }}
-              >
-                {item.name}
-              </h2>
-              <p style={{ marginBottom: '8px' }}>
-                <strong>Room Number:</strong> {item.roomNumber}
-              </p>
-              <p style={{ marginBottom: '8px' }}>
-                <strong>City:</strong> {item.city}
-              </p>
-              <p style={{ marginBottom: '8px' }}>
-                <strong>Location:</strong> {item.location}
-              </p>
-              <p style={{ marginBottom: '8px' }}>
-                <strong>Price:</strong> ${item.price}
-              </p>
-              <p style={{ marginBottom: '8px' }}>
-                <strong>Ratings:</strong> {item.ratings}
-              </p>
-              <p style={{ marginBottom: '8px' }}>
-                <strong>Room Type:</strong> {item.roomtype}
-              </p>
-              <p style={{ marginBottom: '8px' }}>
-                <strong>Furnishing Status:</strong> {item.furnishingStatus}
-              </p>
-              <p style={{ marginBottom: '16px' }}>
-                <strong>Capacity:</strong> {item.mincapacity} -
-                {item.maxcapacity}
-              </p>
-              {item.photos.length > 0 && (
-                <div>
-                  <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>
-                    Photos:
-                  </h3>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: '8px',
+            <div className="w-full grid grid-cols-6 mb-5 ">
+              {roomDetails.videos ? (
+                <div className="col-span-3 max-xsm:col-span-6 aspect-video ">
+                  <ReactPlayer
+                    loop
+                    muted
+                    playing
+                    width="100%"
+                    height="100%"
+                    controls={false}
+                    config={{
+                      youtube: {
+                        playerVars: {
+                          rel: 0,
+                          showinfo: 0,
+                          disablekb: 1,
+                          modestbranding: 1,
+                        },
+                      },
                     }}
-                  >
-                    {/* {item.photos.map((photo, index) => (
-                <Image
-                  width={80}
-                  height={80}
-                  key={index}
-                  src={photo}
-                  alt={`Photo ${index + 1}`}
-                  // style={{
-                  // borderRadius: "4px",
-                  // objectFit: "cover",
-                  // }}
-                />
-              ))} */}
+                    style={{ pointerEvents: 'none' }}
+                    url={roomDetails.videos as string}
+                  />
+                  <AutoScrollCarousel photos={roomDetails.photos} />
+                  {/* <div className="flex overflow-x-scroll">
+                    {roomDetails.photos.map((image, index) => (
+                      // <div
+                      //   key={index}
+                      //   className="relative min-w-[25%] max-sm:min-w-[33.33%] aspect-square"
+                      // >
+                      //   <Image
+                      //     fill
+                      //     loading="lazy"
+                      //     src={image}
+                      //     alt={`Slide ${index}`}
+                      //     style={{
+                      //       objectFit: 'fill',
+                      //       objectPosition: 'center',
+                      //     }}
+                      //     sizes="100%"
+                      //   />
+                      // </div>
+                    ))}
+                  </div> */}
+                </div>
+              ) : (
+                <div className="col-span-3 max-xsm:col-span-6">
+                  <div className="relative aspect-square max-xsm:aspect-video">
+                    <ImageLoop images={roomDetails.photos} />
                   </div>
                 </div>
               )}
-              {item.videos && (
-                <div style={{ marginTop: '16px' }}>
-                  <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>
-                    Video:
-                  </h3>
-                  <video
-                    width="100%"
-                    controls
-                    style={{
-                      borderRadius: '4px',
-                    }}
-                  >
-                    <source src={item.videos} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              )}
-            </Link>
-          </div>
+              <div className="col-span-3 max-xsm:col-span-6 p-1 border-2 border-black rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl">
+                <RoomDetailsLayout
+                  roomCardDetails={roomDetails as NewListedRoom}
+                />
+              </div>
+            </div>
+          </Link>
         ))}
     </>
   );

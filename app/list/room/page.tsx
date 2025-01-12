@@ -2,6 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import {
@@ -13,11 +14,12 @@ import {
 } from '@/app//lib/ui/FormReusableComponent';
 import { SubmitRoomDetails } from '../ServerAction';
 import { upload_Images, upload_Video } from '../uploadUtils';
-import { RoomWithMedia, RoomWithMediaUrl } from '@/app/types/types';
+import { PostedBy, RoomWithMedia, RoomWithMediaUrl } from '@/app/types/types';
 
 const Room = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { data: session, status } = useSession();
 
   const {
     watch,
@@ -28,15 +30,17 @@ const Room = () => {
     formState: { errors, isSubmitting },
   } = useForm<RoomWithMedia>({
     defaultValues: {
-      direction: null,
       photos: [],
       videos: null,
       amenities: [],
+      direction: null,
     },
   });
 
   const roomCreation = useMutation({
-    mutationFn: (data: RoomWithMediaUrl) =>
+    mutationFn: (
+      data: RoomWithMediaUrl & { postedBy: PostedBy; userId: string }
+    ) =>
       SubmitRoomDetails({
         ...data,
       }),
@@ -68,6 +72,8 @@ const Room = () => {
   };
 
   const onSubmit = async (data: RoomWithMedia) => {
+    if (status === 'unauthenticated') return;
+
     data.city =
       data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
 
@@ -92,26 +98,28 @@ const Room = () => {
         ...data,
         photos: uploadImageUrls,
         videos: uploadVideoUrl ?? null,
+        userId: session?.user.userId as string,
+        postedBy: session?.user.role as PostedBy,
       });
     } catch (error) {
+      console.log('object!!!');
       alert(
         error instanceof Error ? error.message : 'An unknown error occurred'
       );
     }
   };
-
   return (
     <div className="">
       <h2 className="text-xl font-bold mb-1">List Room</h2>
 
       <form
         onSubmit={handleFormSubmit(onSubmit)}
-        className="space-y-6 p-2 border rounded-lg shadow-lg bg-white"
+        className="space-y-6 p-2 border rounded-lg shadow-lg bg-green-200"
       >
         <div className="grid max-xsm:grid-cols-1 max-sm:grid-cols-2 grid-cols-3 gap-1">
           <InputField
-            label="Name"
             id="name"
+            label="Name"
             register={register('name', {
               required: 'Enter your name',
               onBlur: () => trigger('name'),
@@ -134,8 +142,8 @@ const Room = () => {
             handleEnterPress={handleEnterPress}
           />
           <InputField
-            label="City"
             id="city"
+            label="City"
             register={register('city', {
               required: 'Enter the city',
               onBlur: () => trigger('city'),
@@ -144,8 +152,8 @@ const Room = () => {
             handleEnterPress={handleEnterPress}
           />
           <InputField
-            label="Location"
             id="location"
+            label="Location"
             register={register('location', {
               required: 'Enter the room location',
               onBlur: () => trigger('location'),
@@ -166,29 +174,29 @@ const Room = () => {
             step={0.01}
             label="Price"
             type="number"
+            errors={errors}
             register={register('price', {
               required: 'Enter the room rent price',
               onBlur: () => trigger('price'),
             })}
-            errors={errors}
             handleEnterPress={handleEnterPress}
           />
           <InputField
-            label="Min Capacity"
-            id="mincapacity"
             type="number"
+            errors={errors}
+            id="mincapacity"
+            label="Min Capacity"
             register={register('mincapacity', {
               required: 'Enter minimum capacity of person',
               valueAsNumber: true,
               onBlur: () => trigger('mincapacity'),
             })}
-            errors={errors}
             handleEnterPress={handleEnterPress}
           />
           <InputField
-            label="Max Capacity"
-            id="maxcapacity"
             type="number"
+            id="maxcapacity"
+            label="Max Capacity"
             register={register('maxcapacity', {
               required: 'Enter maximum capacity of person',
               valueAsNumber: true,
@@ -222,13 +230,13 @@ const Room = () => {
 
         <RadioGroup
           label="Furnishing Status"
-          options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
+          handleEnterPress={handleEnterPress}
           register={register('furnishingStatus', {
             required: 'Furnishing status is required',
             onBlur: () => trigger('furnishingStatus'),
           })}
-          handleEnterPress={handleEnterPress}
           error={errors.furnishingStatus?.message}
+          options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
         />
 
         <FileInput
@@ -250,9 +258,10 @@ const Room = () => {
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || status === 'unauthenticated'}
           className={`w-full bg-black text-white py-2 px-4 rounded-md ${
-            isSubmitting && 'opacity-50 cursor-not-allowed'
+            (isSubmitting || status === 'unauthenticated') &&
+            'opacity-50 cursor-not-allowed'
           }`}
         >
           {isSubmitting ? 'Listing...' : 'List'}

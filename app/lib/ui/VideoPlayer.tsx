@@ -17,6 +17,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl }) => {
           width="100%"
           height="100%"
           controls={false}
+          url={videoUrl}
           config={{
             youtube: {
               playerVars: {
@@ -27,14 +28,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl }) => {
               },
             },
           }}
-          url={videoUrl}
+          style={{ pointerEvents: 'none' }}
         />
       ) : (
         <div className="h-full grid place-items-center border-2 border-black">
           Video not available
         </div>
       )}
-      <div className="absolute top-0 left-0 w-full h-full z-10 bg-transparent pointer-events-auto"></div>
     </div>
   );
 };
