@@ -27,7 +27,7 @@ const Header: React.FC = () => {
         }}
       >
         {/* {'AfnoSansar'.split('').map((char, index) => ( */}
-        {'Room Rental'.split('').map((char, index) => (
+        {'Aniket'.split('').map((char, index) => (
           <motion.span
             key={index}
             initial={{ opacity: 0, y: 0 }}
