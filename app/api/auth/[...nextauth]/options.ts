@@ -128,8 +128,15 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     // async redirect({ baseUrl, url }) {
-    //   console.log(baseUrl, url);
-    //   return baseUrl;
+    //   console.log('! ', url);
+    //   const callbackUrl = new URLSearchParams(url).get('callbackUrl');
+    //   console.log('!! ', callbackUrl);
+    //   const redirectUrl = callbackUrl
+    //     ? decodeURIComponent(callbackUrl)
+    //     : baseUrl;
+    //   console.log('!!! ', redirectUrl);
+
+    //   return redirectUrl;
     // },
     async jwt({ user, token }) {
       if (user) {
