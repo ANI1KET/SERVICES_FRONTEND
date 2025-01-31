@@ -1,8 +1,7 @@
-export type Aminities = 'PARKING' | 'WIFI';
+export type Aminities = 'PARKING' | 'WIFI' | 'WATER';
 export type PostedBy = 'USER' | 'OWNER' | 'BROKER';
 export type FurnishingStatus = 'UNFURNISHED' | 'SEMIFURNISHED' | 'FURNISHED';
-export type RoomType = 'FLAT' | 'ONE_BHK' | 'TWO_BHK';
-// export type RoomType = 'FLAT' | 'ONE_BHK' | 'TWO_BHK' | 'SHOP' | 'STOREFRONT';
+export type RoomType = 'FLAT' | '1BHK' | '2BHK' | '3BHK' | '4BHK';
 
 export type QueryFilters = {
   postedby: PostedBy[];
@@ -30,7 +29,11 @@ export type Room = {
   name: string;
   city: string;
   location: string;
-  roomtype: RoomType;
+  bedroom: number;
+  hall: number;
+  kitchen: number;
+  bathroom: number;
+  roomtype: string;
   roomNumber: string;
   mincapacity: number;
   maxcapacity: number;

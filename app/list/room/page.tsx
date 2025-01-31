@@ -76,6 +76,10 @@ const Room = () => {
 
     data.city =
       data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
+    if (!data.roomtype)
+      data.roomtype = `${data.bedroom > 0 ? data.bedroom : ''}B${
+        data.hall > 0 ? 'H' : ''
+      }${data.kitchen > 0 ? 'K' : ''}`;
 
     try {
       const [uploadImageUrlsResult, uploadVideoUrlResult] =
@@ -208,23 +212,71 @@ const Room = () => {
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
+
+          <InputField
+            type="number"
+            id="bedroom"
+            label="Bedroom"
+            register={register('bedroom', {
+              valueAsNumber: true,
+              required: 'Bedroom is required',
+              onBlur: () => trigger('roomtype'),
+            })}
+            errors={errors}
+            handleEnterPress={handleEnterPress}
+          />
+
+          <InputField
+            type="number"
+            id="hall"
+            label="Hall"
+            register={register('hall', {
+              valueAsNumber: true,
+              required: 'Hall is required',
+              onBlur: () => trigger('roomtype'),
+            })}
+            errors={errors}
+            handleEnterPress={handleEnterPress}
+          />
+
+          <InputField
+            type="number"
+            id="kitchen"
+            label="Kitchen"
+            register={register('kitchen', {
+              valueAsNumber: true,
+              required: 'Kitchen is required',
+              onBlur: () => trigger('roomtype'),
+            })}
+            errors={errors}
+            handleEnterPress={handleEnterPress}
+          />
+
+          <InputField
+            type="number"
+            id="bathroom"
+            label="Bathroom"
+            register={register('bathroom', {
+              valueAsNumber: true,
+              required: 'Bathroom is required',
+              onBlur: () => trigger('roomtype'),
+            })}
+            errors={errors}
+            handleEnterPress={handleEnterPress}
+          />
         </div>
 
-        {/* Bathroom , Hall , Kitchen , Bedroom */}
         <RadioGroup
           label="Room Type"
-          options={['ONE_BHK', 'TWO_BHK', 'FLAT']}
-          register={register('roomtype', {
-            required: 'Room type is required',
-            onBlur: () => trigger('roomtype'),
-          })}
+          options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
+          register={register('roomtype')}
           handleEnterPress={handleEnterPress}
           error={errors.roomtype?.message}
         />
 
         <CheckboxGroup
           label="Amenities"
-          options={['PARKING', 'WIFI']}
+          options={['PARKING', 'WIFI', 'WATER']}
           register={register('amenities')}
         />
 

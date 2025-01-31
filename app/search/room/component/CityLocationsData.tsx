@@ -22,9 +22,9 @@ const CityLocationsData = ({
             key={roomDetails.id}
             href={`/${category}/${btoa(roomDetails.id)}`}
           >
-            <div className="w-full grid grid-cols-6 mb-5 ">
+            <div className="w-full grid grid-cols-9 mb-5 ">
               {roomDetails.videos ? (
-                <div className="col-span-3 max-xsm:col-span-6 aspect-video ">
+                <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9 aspect-video ">
                   <ReactPlayer
                     loop
                     muted
@@ -68,13 +68,13 @@ const CityLocationsData = ({
                   </div> */}
                 </div>
               ) : (
-                <div className="col-span-3 max-xsm:col-span-6">
+                <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9">
                   <div className="relative aspect-square max-xsm:aspect-video">
                     <ImageLoop images={roomDetails.photos} />
                   </div>
                 </div>
               )}
-              <div className="col-span-3 max-xsm:col-span-6 p-1 border-2 border-black rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl">
+              <div className="col-span-6 max-sm:col-span-5 max-xsm:col-span-9 p-1 border-2 border-black rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl ">
                 <RoomDetailsLayout
                   roomCardDetails={roomDetails as NewListedRoom}
                 />

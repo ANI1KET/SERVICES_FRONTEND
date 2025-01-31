@@ -43,6 +43,7 @@ export const InputField = ({
       id={id}
       step={step}
       type={type}
+      min={0}
       {...register}
       onKeyDown={handleEnterPress}
       className="border rounded w-full p-1"

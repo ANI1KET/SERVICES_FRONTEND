@@ -19,7 +19,7 @@ interface RoomDetailsProps {
 
 const RoomDetailsLayout: React.FC<RoomDetailsProps> = ({ roomCardDetails }) => {
   return (
-    <div className="w-full h-full grid grid-cols-2 gap-2 ">
+    <div className="w-full h-full grid grid-cols-2 gap-2 text-2xl max-sm:text-sm">
       <p className="hidden max-xsm:block col-span-2 ">
         <span className="flex items-center gap-2 text-sm">
           <HomeLocationIcon />
@@ -42,52 +42,52 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = ({ roomCardDetails }) => {
       </p>
       <p className="hidden max-xsm:block break-words">
         <span className="flex items-center gap-2 text-sm">
+          <ListedOnIcon />
+          Listed On
+        </span>
+        <span>{new Date(roomCardDetails.createdAt).toDateString()}</span>
+      </p>
+      <hr className="hidden max-xsm:block col-span-2" />
+      {/*  */}
+      <p className="break-words border-r">
+        <span className="flex items-center gap-2 text-xl max-sm:text-sm">
           <PriceIcon />
           Price
         </span>
         <span>{`Rs.${roomCardDetails.price}`}</span>
       </p>
-      <hr className="hidden max-xsm:block col-span-2" />
-      {/*  */}
-      <p className="border-r break-words">
-        <span className="flex items-center gap-2 text-sm">
+      <p className="break-words">
+        <span className="flex items-center gap-2 text-xl max-sm:text-sm">
           <RoomTypeIcon />
           Room Type
         </span>
         <span>{`${roomCardDetails.roomtype}`}</span>
       </p>
-      <p className="break-words">
-        <span className="flex items-center gap-2 text-sm">
-          <FurnishIcon />
-          Furinshing
-        </span>
-        <span>{`${roomCardDetails.furnishingStatus}`}</span>
-      </p>
       <hr className="col-span-2" />
       <p className="border-r break-words">
-        <span className="flex items-center gap-2 text-sm">
+        <span className="flex items-center gap-2 text-xl max-sm:text-sm">
           <CapacityIcon />
           Capacity
         </span>
         <span>{`${roomCardDetails.mincapacity}-${roomCardDetails.maxcapacity}`}</span>
       </p>
       <p className="break-words">
-        <span className="flex items-center gap-2 text-sm">
+        <span className="flex items-center gap-2 text-xl max-sm:text-sm">
+          <FurnishIcon />
+          Furinshing
+        </span>
+        <span>{`${roomCardDetails.furnishingStatus}`}</span>
+      </p>
+      <hr className="col-span-2" />
+      <p className="break-words border-r ">
+        <span className="flex items-center gap-2 text-xl max-sm:text-sm">
           <PostedByIcon />
           Posted By
         </span>
         <span>{`${roomCardDetails.postedBy}`}</span>
       </p>
-      <hr className="col-span-2" />
-      <p className="border-r break-words">
-        <span className="flex items-center gap-2 text-sm">
-          <ListedOnIcon />
-          Listed On
-        </span>
-        <span>{new Date(roomCardDetails.createdAt).toDateString()}</span>
-      </p>
       <p className="break-words ">
-        <span className="flex items-center gap-2 text-sm">
+        <span className="flex items-center gap-2 text-xl max-sm:text-sm">
           <UpdatedOnIcon />
           Updated On
         </span>

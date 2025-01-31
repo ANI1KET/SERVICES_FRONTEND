@@ -84,7 +84,7 @@ const LoadMoreCityLocations = () => {
 
         <CustomCheckboxGroup<Aminities>
           label="Amenities"
-          options={['PARKING', 'WIFI']}
+          options={['PARKING', 'WIFI', 'WATER']}
           defaultValue={searchData?.filters.amenities as Aminities[]}
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(amenity) => updateFilter('amenities', amenity)}
@@ -92,7 +92,7 @@ const LoadMoreCityLocations = () => {
         <CustomCheckboxGroup<RoomType>
           label="Room Type"
           defaultValue={searchData?.filters.roomtype as RoomType[]}
-          options={['ONE_BHK', 'TWO_BHK', 'FLAT']}
+          options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(roomType) => updateFilter('roomtype', roomType)}
         />

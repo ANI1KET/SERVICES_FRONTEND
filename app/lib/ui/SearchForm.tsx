@@ -171,12 +171,12 @@ const SearchForm: React.FC = () => {
             </div>
             <TickCheckboxGroup
               label="Amenities"
-              options={['PARKING', 'WIFI']}
+              options={['PARKING', 'WIFI', 'WATER']}
               register={register('amenities')}
             />
             <TickCheckboxGroup
               label="Room Type"
-              options={['ONE_BHK', 'TWO_BHK', 'FLAT']}
+              options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
               register={register('roomtype')}
             />
             <TickCheckboxGroup
@@ -414,13 +414,13 @@ const SearchForm: React.FC = () => {
 
           <TickCheckboxGroup
             label="Amenities"
-            options={['PARKING', 'WIFI']}
+            options={['PARKING', 'WIFI', 'WATER']}
             register={register('amenities')}
           />
 
           <TickCheckboxGroup
             label="Room Type"
-            options={['ONE_BHK', 'TWO_BHK', 'FLAT']}
+            options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
             register={register('roomtype')}
           />
 
