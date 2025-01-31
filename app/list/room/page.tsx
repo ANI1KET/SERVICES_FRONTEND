@@ -132,7 +132,7 @@ const Room = () => {
             handleEnterPress={handleEnterPress}
           />
           <InputField
-            label="Number"
+            label="Contact"
             id="roomNumber"
             register={register('roomNumber', {
               required: 'Enter your number',

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
@@ -17,6 +17,7 @@ import {
   CapacitySlider,
   CustomCheckboxGroup,
 } from '../../../lib/ui/FormReusableComponent';
+import { CrossIcon } from '@/app/lib/icon/svg';
 import CityLocationsData from './CityLocationsData';
 import { useFilterUpdater, useInfiniteRoomQuery } from '../../CustomHooks';
 
@@ -33,11 +34,16 @@ const LoadMoreCityLocations = () => {
   const updateFilter = useFilterUpdater(queryClient, refetch);
   const observerRef = useRef<HTMLDivElement | null>(null);
 
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const handleLoadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const togglePanel = useCallback(() => {
+    setIsPanelOpen((prev) => !prev);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -135,6 +141,86 @@ const LoadMoreCityLocations = () => {
           </div>
         )}
       </div>
+
+      <div
+        className={`fixed bottom-[7.8vh] left-0 right-0 flex flex-col items-center rounded-t-2xl bg-white transition-transform duration-300 ${
+          isPanelOpen ? '' : 'hidden'
+        }`}
+      >
+        <div className="flex flex-col gap-1 w-full h-[50vh] col-span-9 border-2 border-black rounded-t-2xl p-2 overflow-y-scroll">
+          <PriceSlider
+            defaultValue={searchData?.filters.price}
+            onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
+          />
+
+          <div className="flex gap-4">
+            <RatingSlider
+              defaultValue={searchData?.filters.rating}
+              onChangeEnd={(ratingRange) => updateFilter('rating', ratingRange)}
+            />
+
+            <CapacitySlider
+              defaultValue={searchData?.filters.capacity}
+              onChangeEnd={(capacityValue) =>
+                updateFilter('capacity', capacityValue)
+              }
+            />
+          </div>
+
+          <CustomCheckboxGroup<Aminities>
+            label="Amenities"
+            options={['PARKING', 'WIFI', 'WATER']}
+            defaultValue={searchData?.filters.amenities as Aminities[]}
+            className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
+            onChange={(amenity) => updateFilter('amenities', amenity)}
+          />
+          <CustomCheckboxGroup<RoomType>
+            label="Room Type"
+            defaultValue={searchData?.filters.roomtype as RoomType[]}
+            options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
+            className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
+            onChange={(roomType) => updateFilter('roomtype', roomType)}
+          />
+          <CustomCheckboxGroup<PostedBy>
+            label="Posted By"
+            defaultValue={searchData?.filters.postedby as PostedBy[]}
+            options={['OWNER', 'BROKER', 'USER']}
+            className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
+            onChange={(postedBy) => updateFilter('postedby', postedBy)}
+          />
+          <CustomCheckboxGroup<FurnishingStatus>
+            label="Furnishing Status"
+            defaultValue={
+              searchData?.filters.furnishingstatus as FurnishingStatus[]
+            }
+            options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
+            className="grid grid-cols-3 lg:grid-cols-auto-fit] lg:min-[300px] max-sm:grid-cols-2"
+            onChange={(furnishingStatus) =>
+              updateFilter('furnishingstatus', furnishingStatus)
+            }
+          />
+          <CustomCheckbox
+            label="Verified"
+            defaultValue={searchData?.filters.verified as boolean}
+            onChange={(verify) => updateFilter('verified', verify)}
+          />
+        </div>
+        <div
+          className="cursor-pointer rounded-full p-1 backdrop-blur-3xl border-2 border-black absolute bottom-[0.8vh] right-1 bg-white"
+          onClick={togglePanel}
+        >
+          <CrossIcon />
+        </div>
+      </div>
+
+      {!isPanelOpen && (
+        <div
+          className="hidden max-xsm:block fixed bottom-[8.5vh] right-1 z-10 p-2 text-xl text-white bg-black rounded-lg"
+          onClick={togglePanel}
+        >
+          Filters
+        </div>
+      )}
     </div>
   );
 };

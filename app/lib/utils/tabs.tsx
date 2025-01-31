@@ -11,7 +11,7 @@ export const HeaderTabs: [string, React.ReactNode][] = [
 ];
 
 export const BottomTabs: [string, React.ReactNode][] = [
-  ['', <SearchIcon key={'SearchIcon'} />],
+  ['sfas', <SearchIcon key={'SearchIcon'} />],
   ['profile', <ProfileIcon key={'ProfileIcon'} />],
   ['', <HomeIcon key={'HomeIcon'} />],
   ['profile', <ProfileIcon key={'Icon'} />],

@@ -10,7 +10,7 @@ import { useCallback, useMemo } from 'react';
 import { getCityLocations } from './ServerAction';
 import { NewListedRoom, QueryFilters, SearchQueries } from '../types/types';
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 10;
 
 export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
   return useInfiniteQuery({

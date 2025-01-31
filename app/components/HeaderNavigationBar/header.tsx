@@ -63,11 +63,11 @@ const Header: React.FC = () => {
             <circle cx="12" cy="12" r="10" />
           </svg>
 
-          <div className="absolute right-0 w-30 bg-green-300 shadow-lg rounded-lg border opacity-0 group-hover:opacity-100 group-hover:block hidden">
+          <div className="absolute right-0 w-24 bg-green-300 shadow-lg rounded-lg border opacity-0 group-hover:opacity-100 group-hover:block hidden border-black">
             <ul>
               <li
                 className="p-2 hover:scale-105 cursor-pointer rounded-lg"
-                // onClick={() => router.push("/")}
+                // onClick={() => router.push("/profile")}
               >
                 Profile
               </li>
@@ -89,11 +89,20 @@ const Header: React.FC = () => {
             </ul>
           </div>
         </div>
-        <p
-          className="cursor-pointer bg-black text-white p-1 text-base rounded-3xl"
-          onClick={() => router.push(`/list/${tabState?.ListCategoryTab}`)}
-        >
-          List Property
+        <p className="cursor-pointer bg-black text-white p-1 text-base rounded-3xl relative group">
+          <span
+            onClick={() => router.push(`/list/${tabState?.ListCategoryTab}`)}
+          >
+            List Property
+          </span>
+          {session?.user.role === 'USER' && (
+            <span
+              className="absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl bg-green-300 text-base text-black transition-all group-hover:scale-100 border border-black"
+              onClick={() => router.push('/upgrade')}
+            >
+              Upgrade to list property
+            </span>
+          )}
         </p>
       </div>
     </div>

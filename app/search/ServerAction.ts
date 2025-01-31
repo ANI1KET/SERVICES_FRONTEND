@@ -5,7 +5,7 @@ import axios from 'axios';
 import axiosInstance from '../lib/utils/axiosInstance';
 import { NewListedRoom, QueryFilters } from '../types/types';
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 10;
 
 export const getCityLocations = async ({
   category,

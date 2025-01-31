@@ -1,14 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { CrossIcon, SearchIcon } from '@/app/lib/icon/svg';
 import { CityData } from '@/app/providers/reactqueryProvider';
 import CategoryCardLayout from './LowerLayout/CategoryCardLayout';
+import SearchPanel from '../BottomNavigationBar/PanelComponent/SearchPanel';
 
 const LowerLayout = () => {
   const queryClient = useQueryClient();
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [cachedData, setCachedData] = useState<CityData | undefined>();
+
+  const togglePanel = useCallback(() => {
+    setIsPanelOpen((prev) => !prev);
+  }, []);
 
   useEffect(() => {
     const handleCacheUpdate = (event: { query?: { queryKey?: unknown[] } }) => {
@@ -104,6 +111,31 @@ const LowerLayout = () => {
           />
         )}
       </div>
+
+      <div
+        className={`fixed bottom-[7.8vh] left-0 right-0 flex flex-col items-center rounded-t-3xl bg-white transition-transform duration-300 ${
+          isPanelOpen ? '' : 'hidden'
+        }`}
+      >
+        <div className="h-[75vh] rounded-t-3xl w-full p-2 overflow-y-scroll border-2 border-b-0 border-black">
+          <SearchPanel />
+        </div>
+        <div
+          className="cursor-pointer rounded-full p-1 backdrop-blur-3xl border-2 border-black absolute bottom-[0.8vh] right-1 bg-white"
+          onClick={togglePanel}
+        >
+          <CrossIcon />
+        </div>
+      </div>
+
+      {!isPanelOpen && (
+        <div
+          className="hidden max-sm:block fixed bottom-[8.5vh] right-1 cursor-pointer rounded-full p-1 border-2 border-black bg-white"
+          onClick={togglePanel}
+        >
+          <SearchIcon />
+        </div>
+      )}
 
       {/* <div className="w-[20vw] ">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad illo itaque

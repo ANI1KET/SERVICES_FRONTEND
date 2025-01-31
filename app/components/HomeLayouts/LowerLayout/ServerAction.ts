@@ -3,7 +3,7 @@
 import { RoomData } from '@/app/types/types';
 import axiosInstance from '@/app/lib/utils/axiosInstance';
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 10;
 
 export const getCategoryDetails = async ({
   city,
