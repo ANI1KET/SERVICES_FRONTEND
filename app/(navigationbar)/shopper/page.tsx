@@ -1,5 +1,5 @@
 const Shopper = () => {
-  return <div>afef</div>;
+  return <div>Shopper</div>;
 };
 
 export default Shopper;

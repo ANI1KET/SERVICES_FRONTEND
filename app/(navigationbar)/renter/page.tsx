@@ -1,5 +1,5 @@
 const Renter = () => {
-  return <div>afef</div>;
+  return <div>Renter</div>;
 };
 
 export default Renter;

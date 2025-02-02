@@ -1,21 +1,11 @@
-import { HomeIcon, ProfileIcon, SearchIcon } from '../icon/svg';
-
 // Navigation Tabs
 export const HeaderTabs: [string, React.ReactNode][] = [
-  ['buyer', 'FOR BUYER'],
   ['renter', 'FOR RENTER'],
-  ['repairer', 'FOR REPAIRER'],
   ['shopper', 'FOR SHOPPER'],
   ['foodie', 'FOR FOODIES'],
+  ['buyer', 'FOR BUYER'],
+  // ['repairer', 'FOR REPAIRER'],
   ['client', 'FOR CLIENT'],
-];
-
-export const BottomTabs: [string, React.ReactNode][] = [
-  ['sfas', <SearchIcon key={'SearchIcon'} />],
-  ['profile', <ProfileIcon key={'ProfileIcon'} />],
-  ['', <HomeIcon key={'HomeIcon'} />],
-  ['profile', <ProfileIcon key={'Icon'} />],
-  ['profile', <ProfileIcon key={'sIcon'} />],
 ];
 
 // Category Tabs

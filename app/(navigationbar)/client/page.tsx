@@ -1,5 +1,5 @@
 const Client = () => {
-  return <div>afef</div>;
+  return <div>Client</div>;
 };
 
 export default Client;

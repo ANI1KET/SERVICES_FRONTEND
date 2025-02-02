@@ -1,5 +1,5 @@
 const Buyer = () => {
-  return <div>afef</div>;
+  return <div>Buyer</div>;
 };
 
 export default Buyer;

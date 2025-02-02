@@ -1,5 +1,5 @@
 const Foodie = () => {
-  return <div>afef</div>;
+  return <div>Foodie</div>;
 };
 
 export default Foodie;

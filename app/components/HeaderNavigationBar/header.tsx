@@ -63,7 +63,7 @@ const Header: React.FC = () => {
             <ul>
               <li
                 className="p-2 hover:scale-105 cursor-pointer rounded-lg"
-                // onClick={() => router.push("/profile")}
+                onClick={() => router.push('/profile')}
               >
                 Profile
               </li>
@@ -85,7 +85,7 @@ const Header: React.FC = () => {
             </ul>
           </div>
         </div>
-        <p className="cursor-pointer bg-black text-white p-1 text-base rounded-3xl relative group">
+        <div className="cursor-pointer bg-black text-white p-1 text-base rounded-3xl relative group">
           List Property
           {session?.user.role === 'USER' ? (
             <span
@@ -96,11 +96,11 @@ const Header: React.FC = () => {
             </span>
           ) : (
             (session?.user.permission ?? []).length > 0 && (
-              <div className="absolute left-1/2 top-full mt-[1px] w-24 -translate-x-1/2 scale-0 bg-green-300 text-base text-black transition-all group-hover:scale-100 border border-black rounded-xl">
+              <p className="absolute left-1/2 top-full mt-[1px] w-24 -translate-x-1/2 scale-0 bg-green-300 text-base text-black transition-all group-hover:scale-100 border border-black rounded-xl">
                 {(session?.user.permission ?? []).map((route, index, list) => (
                   <span
                     key={route}
-                    className={`block w-full p-1 border-black rounded-b-md ${
+                    className={`block w-full p-1 border-black rounded-b-md hover:text-lg ${
                       index !== list.length - 1 ? 'border-b-2' : ''
                     }`}
                     onClick={() => router.push(`/list/${route}`)}
@@ -108,7 +108,7 @@ const Header: React.FC = () => {
                     {route}
                   </span>
                 ))}
-              </div>
+              </p>
             )
           )}
           {!session && (
@@ -119,7 +119,7 @@ const Header: React.FC = () => {
               Login
             </span>
           )}
-        </p>
+        </div>
       </div>
     </div>
   );
