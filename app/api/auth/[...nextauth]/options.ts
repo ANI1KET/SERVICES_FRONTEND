@@ -84,10 +84,11 @@ export const authOptions: NextAuthOptions = {
 
             return {
               id,
-              email,
               name,
-              number: number ?? undefined,
               role,
+              email,
+              permission,
+              number: number ?? undefined,
             };
           } else {
             throw new Error('Incoorect Email or Password');

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 
 import {
   useSetTabState,
@@ -38,7 +37,6 @@ const CategoryTabs: React.FC<TabsProps> = ({
   tabs,
   className,
 }) => {
-  const router = useRouter();
   const tabState = useTabState();
   const setTabState = useSetTabState();
 
@@ -46,7 +44,7 @@ const CategoryTabs: React.FC<TabsProps> = ({
     (label: string) => {
       setTabState(componentId, label);
     },
-    [componentId, router, setTabState]
+    [componentId, setTabState]
   );
 
   return (
