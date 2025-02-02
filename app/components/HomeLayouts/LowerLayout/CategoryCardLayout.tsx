@@ -343,15 +343,20 @@ const CategoryCardLayout: React.FC<{
                     </span>
                   </p>
                   <p
+                    title={`${item.available ? 'Available' : 'Unavailable'}`}
                     className={`row-span-1 col-span-1 text-xl flex justify-end ${
-                      item.available ? 'text-green-400' : ''
+                      item.available ? 'text-green-400' : 'text-red-400'
                     }`}
                   >
-                    {item.available && <span>Available </span>}
+                    {item.available ? (
+                      <span className="truncate">Available </span>
+                    ) : (
+                      <span className="truncate">Unavailable</span>
+                    )}
                   </p>
                   <p
                     className="row-span-1 col-span-1 text-xl"
-                    title={`Price/month`}
+                    title={`Rs.${item.price}/month`}
                   >
                     <span className="flex items-center gap-1">
                       <PriceIcon size={20} />

@@ -10,9 +10,9 @@ import ReactQueryProvider from './providers/reactqueryProvider';
 import BottomNavBar from './components/BottomNavigationBar/BottomNavBar';
 
 export const metadata: Metadata = {
-  title: 'ROOM RENTAL',
-  description: 'TO RENT ROOM',
+  title: 'Services Market Place',
   keywords: ['rent', 'room', 'accommodation'],
+  description: 'Room, Land, Hostel, Store, Services',
 };
 
 export default function RootLayout({

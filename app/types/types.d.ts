@@ -1,7 +1,15 @@
-export type Aminities = 'PARKING' | 'WIFI' | 'WATER';
+export type Permission =
+  | 'room'
+  | 'land'
+  | 'store'
+  | 'hostel'
+  | 'repair'
+  | 'rental'
+  | 'restaurant';
 export type PostedBy = 'USER' | 'OWNER' | 'BROKER';
-export type FurnishingStatus = 'UNFURNISHED' | 'SEMIFURNISHED' | 'FURNISHED';
+export type Aminities = 'PARKING' | 'WIFI' | 'WATER';
 export type RoomType = 'FLAT' | '1BHK' | '2BHK' | '3BHK' | '4BHK';
+export type FurnishingStatus = 'UNFURNISHED' | 'SEMIFURNISHED' | 'FURNISHED';
 
 export type QueryFilters = {
   postedby: PostedBy[];

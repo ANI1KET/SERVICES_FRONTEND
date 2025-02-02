@@ -4,16 +4,12 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 
-import {
-  useDeleteTabState,
-  useTabState,
-} from '@/app/providers/reactqueryProvider';
 import { HeaderTabs } from '../../lib/utils/tabs';
 import NavigationTabs from '../../lib/ui/NavigationTabs';
+import { useDeleteTabState } from '@/app/providers/reactqueryProvider';
 
 const Header: React.FC = () => {
   const router = useRouter();
-  const tabState = useTabState();
   const { data: session } = useSession();
   const deleteTabState = useDeleteTabState();
 
@@ -90,17 +86,37 @@ const Header: React.FC = () => {
           </div>
         </div>
         <p className="cursor-pointer bg-black text-white p-1 text-base rounded-3xl relative group">
-          <span
-            onClick={() => router.push(`/list/${tabState?.ListCategoryTab}`)}
-          >
-            List Property
-          </span>
-          {session?.user.role === 'USER' && (
+          List Property
+          {session?.user.role === 'USER' ? (
             <span
               className="absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl bg-green-300 text-base text-black transition-all group-hover:scale-100 border border-black"
               onClick={() => router.push('/upgrade')}
             >
               Upgrade to list property
+            </span>
+          ) : (
+            (session?.user.permission ?? []).length > 0 && (
+              <div className="absolute left-1/2 top-full mt-[1px] w-24 -translate-x-1/2 scale-0 bg-green-300 text-base text-black transition-all group-hover:scale-100 border border-black rounded-xl">
+                {(session?.user.permission ?? []).map((route, index, list) => (
+                  <span
+                    key={route}
+                    className={`block w-full p-1 border-black rounded-b-md ${
+                      index !== list.length - 1 ? 'border-b-2' : ''
+                    }`}
+                    onClick={() => router.push(`/list/${route}`)}
+                  >
+                    {route}
+                  </span>
+                ))}
+              </div>
+            )
+          )}
+          {!session && (
+            <span
+              className="absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl bg-green-300 text-base text-black text-center transition-all group-hover:scale-100 border border-black"
+              onClick={() => router.push('/auth/login')}
+            >
+              Login
             </span>
           )}
         </p>

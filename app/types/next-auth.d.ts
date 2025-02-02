@@ -1,6 +1,6 @@
 import 'next-auth';
 import { DefaultSession } from 'next-auth';
-import { PostedBy } from './types';
+import { PostedBy, Permission } from './types';
 
 declare module 'next-auth' {
   interface User {
@@ -8,6 +8,7 @@ declare module 'next-auth' {
     role?: string;
     userId?: string;
     number?: string;
+    permission?: Permission[];
   }
   interface Session {
     user: {
@@ -15,8 +16,9 @@ declare module 'next-auth' {
       role?: PostedBy;
       userId?: string;
       number?: string;
-      refresh_token?: string;
       access_token?: string;
+      refresh_token?: string;
+      permission?: Permission[];
     } & DefaultSession['user'];
   }
 }

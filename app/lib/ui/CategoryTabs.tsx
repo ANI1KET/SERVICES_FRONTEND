@@ -45,7 +45,6 @@ const CategoryTabs: React.FC<TabsProps> = ({
   const handleTabClick = useCallback(
     (label: string) => {
       setTabState(componentId, label);
-      if (componentId === 'ListCategoryTab') router.push(`/list/${label}`);
     },
     [componentId, router, setTabState]
   );

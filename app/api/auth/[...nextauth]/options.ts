@@ -4,7 +4,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 import prisma from '@/prisma/prismaClient';
-import { PostedBy } from '@/app/types/types';
+import { PostedBy, Permission } from '@/app/types/types';
 
 export const authOptions: NextAuthOptions = {
   // pages: {
@@ -80,7 +80,7 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (isPasswordCorrect) {
-            const { id, email, name, number, role } = user;
+            const { id, email, name, number, role, permission } = user;
 
             return {
               id,
@@ -110,13 +110,14 @@ export const authOptions: NextAuthOptions = {
             where: { email: user.email as string },
             update: {},
             create: {
+              image: user.image,
               name: user.name as string,
               email: user.email as string,
-              image: user.image,
             },
           });
           user.role = userDetails.role;
           user.userId = userDetails.id;
+          user.permission = userDetails.permission as Permission[];
 
           return true;
         } catch (error) {
@@ -146,6 +147,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.userId = user.userId;
         token.number = user.number;
+        token.permission = user.permission;
 
         // if (account?.provider === 'google') {
         //   token.refresh_token = account.refresh_token;
@@ -160,6 +162,7 @@ export const authOptions: NextAuthOptions = {
       session.user.number = token.number as string | undefined;
       session.user.role = token.role as PostedBy;
       session.user.userId = token.userId as string | undefined;
+      session.user.permission = token.permission as Permission[] | [];
       // session.user.refresh_token = token?.refresh_token;
       // session.user.access_token = token?.access_token;
 

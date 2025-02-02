@@ -17,7 +17,6 @@ export interface TabState {
 
 const initialTabState: TabState = {
   CategoryTab: 'room',
-  ListCategoryTab: 'room',
 };
 
 export type CityData = {

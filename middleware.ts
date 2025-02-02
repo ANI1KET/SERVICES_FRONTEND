@@ -5,8 +5,10 @@ import type { NextRequest } from 'next/server';
 const secret = process.env.NEXTAUTH_SECRET;
 
 export async function middleware(req: NextRequest) {
-  console.log('object');
-  const token = await getToken({ req, secret });
+  const token = (await getToken({ req, secret })) as unknown as {
+    role: string;
+    permission: string[];
+  };
 
   if (!token) {
     const loginUrl = new URL('/auth/login', req.url);
@@ -14,7 +16,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (req.nextUrl.pathname.startsWith('/list/room') && token.role === 'USER') {
+  const requestedPath = req.nextUrl.pathname.split('/')[2];
+  const permission = token.permission.includes(requestedPath);
+  if (req.nextUrl.pathname.startsWith('/list/') && !permission) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 

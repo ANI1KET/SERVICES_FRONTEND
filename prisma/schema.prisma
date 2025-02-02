@@ -14,10 +14,20 @@ datasource db {
 }
 
 enum Role {
+  USER
   ADMIN
   OWNER
   BROKER
-  USER
+}
+
+enum Permission {
+  room
+  land
+  store
+  hostel
+  repair
+  rental
+  restaurant
 }
 
 model User {
@@ -29,6 +39,7 @@ model User {
   password     String?
   // ENUM
   role         Role          @default(USER)
+  permission   Permission[]  @default([])
   // RELATIONSHIP
   rooms        Room[]        @relation("UserRooms")
   reviews      RoomReview[]  @relation("RoomReviews")
