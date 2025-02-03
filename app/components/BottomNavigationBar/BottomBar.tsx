@@ -35,7 +35,6 @@ const BottomBar = () => {
   );
 
   if (!isMobile) return null;
-
   return (
     <div className="">
       <div
@@ -133,12 +132,20 @@ const BottomBar = () => {
                   Logout
                 </li>
               ) : (
-                <li
-                  className="p-2 hover:scale-105 cursor-pointer border-t-2 border-black "
-                  onClick={() => router.push('/auth/login')}
-                >
-                  Login
-                </li>
+                <>
+                  <li
+                    className="p-2 hover:scale-105 cursor-pointer border-t-2 border-black "
+                    onClick={() => router.push('/auth/login')}
+                  >
+                    Login
+                  </li>
+                  <li
+                    className="p-2 hover:scale-105 cursor-pointer border-t-2 border-black "
+                    onClick={() => router.push('/auth/signup')}
+                  >
+                    Signup
+                  </li>
+                </>
               )}
             </ul>
           </div>

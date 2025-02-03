@@ -11,7 +11,8 @@ import { useRouter } from 'next/navigation';
 export default function Login() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
 
   const {
     register,
@@ -28,21 +29,24 @@ export default function Login() {
   const handleSignInCredentials = async (data: LoginFormInputs) => {
     setIsLoading(true);
 
+    const callbackUrl = new URLSearchParams(window.location.search).get(
+      'callbackUrl'
+    );
+    const redirectUrl = callbackUrl ? decodeURIComponent(callbackUrl) : '/';
+
     const result = await signIn('credentials', {
-      callbackUrl: '/',
       redirect: false,
       email: data.email,
       password: data.password,
+      // callbackUrl: redirectUrl,
     });
 
     setIsLoading(false);
 
     if (result?.error) {
-      return {
-        email: { type: 'manual', message: 'Incorrect email or password.' },
-      };
+      setLoginErrorMessage(result?.error);
     } else {
-      console.log('Sign-in successful:', result);
+      router.push(redirectUrl);
     }
   };
 
@@ -55,13 +59,14 @@ export default function Login() {
     const redirectUrl = callbackUrl ? decodeURIComponent(callbackUrl) : '/';
 
     const result = await signIn('google', {
-      redirect: false,
+      // redirect: false,
       callbackUrl: redirectUrl,
     });
+
     setIsLoading(false);
 
     if (result?.ok) {
-      router.push('/');
+      router.push(redirectUrl);
     } else {
       console.error('Sign-in failed:', result?.error);
     }
@@ -142,6 +147,9 @@ export default function Login() {
                     {errors.password.message}
                   </p>
                 )}
+                {loginErrorMessage && (
+                  <p className="text-red-400 text-sm">{loginErrorMessage}</p>
+                )}
               </div>
               <button
                 type="submit"
@@ -169,7 +177,23 @@ export default function Login() {
           </>
         )}
       </div>
-      <p className="text-gray-600 text-sm mt-4">
+      <p className="flex flex-row-reverse justify-between w-full px-1 max-w-md text-sm mt-2">
+        <span
+          className="cursor-pointer"
+          // onClick={()=>router.push('')}
+        >
+          Forgot Password
+        </span>
+        {loginErrorMessage === 'Password is not Created' && (
+          <span
+            className="cursor-pointer"
+            // onClick={()=>router.push('')}
+          >
+            Create Password
+          </span>
+        )}
+      </p>
+      <p className="text-gray-600 text-sm mt-2">
         {session
           ? 'Enjoy your session!'
           : 'Welcome back! Please sign in to continue.'}

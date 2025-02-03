@@ -1,13 +1,19 @@
 'use client';
 
+import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { createUser } from '../SeverAction';
 import { SignUpFormData, signUpSchema } from '../Schema';
-import Link from 'next/link';
 
 export default function SignUp() {
+  const router = useRouter();
+  const [creationMessage, setCreationMessage] = useState<string>('');
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -22,12 +28,13 @@ export default function SignUp() {
   });
 
   const onSubmit = async (data: SignUpFormData) => {
-    console.log('Form data:', data);
-
-    // Simulate a delay for loading state demonstration
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    console.log('Sign-up successful!');
+    const response = await createUser(data);
+    if (response === 'Account Sucessfully Created') {
+      reset();
+      router.push('/auth/login');
+    } else {
+      setCreationMessage(response);
+    }
   };
 
   return (
@@ -85,12 +92,15 @@ export default function SignUp() {
           >
             {isSubmitting ? 'Signing up...' : 'Sign up'}
           </button>
+          {creationMessage && (
+            <p className="text-red-500 text-center ">{creationMessage}</p>
+          )}
         </form>
       </div>
       <p className="text-gray-500 text-sm mt-4">
-        Already have an account?{' '}
+        Already have an account?
         <Link href="/auth/login" className="text-green-500">
-          Sign in
+          Login
         </Link>
       </p>
     </div>

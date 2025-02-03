@@ -44,13 +44,6 @@ export const HomeIcon: React.FC<{ className?: string; size?: number }> = ({
   );
 };
 
-// export const ShopIcon: React.FC<{
-//   className?: string;
-//   size?: number;
-// }> = ({ className = '', size = 34 }) => {
-//   return (
-//   )}
-
 export const ClientIcon: React.FC<{
   className?: string;
   size?: number;

@@ -62,7 +62,7 @@ const Header: React.FC = () => {
           <div className="absolute right-0 w-24 bg-green-300 shadow-lg rounded-lg border opacity-0 group-hover:opacity-100 group-hover:block hidden border-black">
             <ul>
               <li
-                className="p-2 hover:scale-105 cursor-pointer rounded-lg"
+                className="p-2 hover:scale-105 cursor-pointer border-b-2 border-black rounded-lg"
                 onClick={() => router.push('/profile')}
               >
                 Profile
@@ -75,12 +75,20 @@ const Header: React.FC = () => {
                   Logout
                 </li>
               ) : (
-                <li
-                  className="p-2 hover:scale-105 cursor-pointer rounded-lg"
-                  onClick={() => router.push('/auth/login')}
-                >
-                  Login
-                </li>
+                <>
+                  <li
+                    className="p-2 hover:scale-105 cursor-pointer border-b-2 border-black rounded-lg"
+                    onClick={() => router.push('/auth/login')}
+                  >
+                    Login
+                  </li>
+                  <li
+                    className="p-2 hover:scale-105 cursor-pointer "
+                    onClick={() => router.push('/auth/signup')}
+                  >
+                    Signup
+                  </li>
+                </>
               )}
             </ul>
           </div>

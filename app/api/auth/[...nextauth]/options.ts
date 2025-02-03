@@ -71,7 +71,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           if (!user.password) {
-            throw new Error('Password not set for this user');
+            throw new Error('Password is not Created');
           }
 
           const isPasswordCorrect = await bcrypt.compare(
