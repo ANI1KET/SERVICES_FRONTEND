@@ -229,7 +229,6 @@ const SearchForm: React.FC = () => {
             height: '5vh',
             '& .MuiOutlinedInput-root': {
               height: '100%',
-              color: `${cachedTheme?.textColor}`,
               '& fieldset': {
                 border: 'none',
               },
@@ -240,12 +239,12 @@ const SearchForm: React.FC = () => {
                 border: 'none',
               },
             },
-            // '& .MuiInputLabel-root': {
-            //   color: 'green',
-            // },
-            // '& .MuiInputLabel-root.Mui-focused': {
-            //   color: 'green',
-            // },
+            '& .MuiInputLabel-root': {
+              color: 'green',
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: 'green',
+            },
             // '& .MuiSelect-select': {
             //   color: `${cachedTheme?.textColor} !important`,
             // },
@@ -331,7 +330,6 @@ const SearchForm: React.FC = () => {
             height: '5vh',
             '& .MuiOutlinedInput-root': {
               height: '100%',
-              color: `${cachedTheme?.textColor}`,
               '& fieldset': {
                 border: 'none',
               },
@@ -342,12 +340,12 @@ const SearchForm: React.FC = () => {
                 border: 'none',
               },
             },
-            // '& .MuiInputLabel-root': {
-            //   color: 'green',
-            // },
-            // '& .MuiInputLabel-root.Mui-focused': {
-            //   color: 'green',
-            // },
+            '& .MuiInputLabel-root': {
+              color: 'green',
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: 'green',
+            },
             // '& .MuiSelect-select': {
             //   color: `${cachedTheme?.textColor} !important`,
             // },
