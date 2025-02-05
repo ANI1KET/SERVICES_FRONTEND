@@ -7,10 +7,13 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { createUser } from '../SeverAction';
+import { cn } from '@/app/lib/utils/tailwindMerge';
 import { SignUpFormData, signUpSchema } from '../Schema';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 export default function SignUp() {
   const router = useRouter();
+  const cachedTheme = useThemeState();
   const [creationMessage, setCreationMessage] = useState<string>('');
   const {
     reset,
@@ -36,10 +39,15 @@ export default function SignUp() {
       setCreationMessage(response);
     }
   };
-
   return (
     <div className="flex flex-col items-center justify-center p-4">
-      <div className="bg-green-300 shadow-xl rounded-lg p-8 w-full max-w-md">
+      <div
+        className={cn(
+          cachedTheme?.bg,
+          cachedTheme?.textColor,
+          'shadow-xl rounded-lg p-8 w-full max-w-md'
+        )}
+      >
         <h2 className="text-2xl font-semibold mb-6 text-center">
           Create an Account
         </h2>
@@ -49,7 +57,11 @@ export default function SignUp() {
             type="text"
             placeholder="Name"
             {...register('name')}
-            className="w-full p-2 rounded-md bg-green-200 placeholder-gray-400"
+            className={cn(
+              cachedTheme?.activeBg,
+              cachedTheme?.activeTextColor,
+              'w-full p-2 rounded-md placeholder-gray-400'
+            )}
           />
           {errors.name && <p className="text-red-400">{errors.name.message}</p>}
 
@@ -57,7 +69,11 @@ export default function SignUp() {
             type="email"
             placeholder="Email"
             {...register('email')}
-            className="w-full p-2 rounded-md bg-green-200 placeholder-gray-400"
+            className={cn(
+              cachedTheme?.activeBg,
+              cachedTheme?.activeTextColor,
+              'w-full p-2 rounded-md placeholder-gray-400'
+            )}
           />
           {errors.email && (
             <p className="text-red-400">{errors.email.message}</p>
@@ -67,7 +83,11 @@ export default function SignUp() {
             type="text"
             placeholder="Phone Number"
             {...register('number')}
-            className="w-full p-2 rounded-md bg-green-200 placeholder-gray-400"
+            className={cn(
+              cachedTheme?.activeBg,
+              cachedTheme?.activeTextColor,
+              'w-full p-2 rounded-md placeholder-gray-400'
+            )}
           />
           {errors.number && (
             <p className="text-red-400">{errors.number.message}</p>
@@ -77,7 +97,11 @@ export default function SignUp() {
             type="password"
             placeholder="Password"
             {...register('password')}
-            className="w-full p-2 rounded-md bg-green-200 placeholder-gray-400"
+            className={cn(
+              cachedTheme?.activeBg,
+              cachedTheme?.activeTextColor,
+              'w-full p-2 rounded-md placeholder-gray-400'
+            )}
           />
           {errors.password && (
             <p className="text-red-400">{errors.password.message}</p>
@@ -86,9 +110,16 @@ export default function SignUp() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full bg-green-100 py-2 rounded-md shadow-md hover:bg-green-200 transition-colors ${
-              isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
-            }`}
+            className={cn(
+              cachedTheme?.bg,
+              cachedTheme?.textColor,
+              cachedTheme?.borderColor,
+              `w-full py-2 border rounded-md shadow-md transition-colors ${
+                isSubmitting
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:scale-105'
+              }`
+            )}
           >
             {isSubmitting ? 'Signing up...' : 'Sign up'}
           </button>
@@ -99,7 +130,7 @@ export default function SignUp() {
       </div>
       <p className="text-gray-500 text-sm mt-4">
         Already have an account?
-        <Link href="/auth/login" className="text-green-500">
+        <Link href="/auth/login" className={cn(cachedTheme?.textColor)}>
           Login
         </Link>
       </p>

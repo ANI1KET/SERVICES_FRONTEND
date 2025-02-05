@@ -70,14 +70,14 @@ const LoadMoreCityLocations = () => {
   }, [handleLoadMore]);
   return (
     <div
-      className={cn(
-        cacheTheme?.bg,
-        cacheTheme?.textColor,
+      className={
         'grid gap-2 grid-cols-[3fr_6fr] max-sm:grid-cols-[2fr_4fr] max-xsm:grid-cols-[1fr] m-1 mb-6'
-      )}
+      }
     >
       <div
         className={cn(
+          cacheTheme?.bg,
+          cacheTheme?.textColor,
           cacheTheme?.borderColor,
           'h-fit max-sm:h-[90vh] max-sm:overflow-y-scroll sticky top-[8.5vh] max-sm:top-1 flex flex-col gap-4 max-xsm:hidden p-1 border-2 rounded-xl '
         )}
@@ -163,6 +163,7 @@ const LoadMoreCityLocations = () => {
       <div
         className={cn(
           cacheTheme?.bg,
+          cacheTheme?.textColor,
           `fixed bottom-[7.8vh] left-0 right-0 flex flex-col items-center rounded-t-2xl transition-transform duration-300 ${
             isPanelOpen ? '' : 'hidden'
           }`
@@ -252,6 +253,7 @@ const LoadMoreCityLocations = () => {
         <div
           className={cn(
             cacheTheme?.bg,
+            cacheTheme?.textColor,
             cacheTheme?.borderColor,
             'hidden max-xsm:block fixed bottom-[8.5vh] right-1 z-10 p-2 text-xl rounded-lg border'
           )}

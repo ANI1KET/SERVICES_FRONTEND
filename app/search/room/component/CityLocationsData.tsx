@@ -80,6 +80,8 @@ const CityLocationsData = ({
               )}
               <div
                 className={cn(
+                  cachedTheme?.bg,
+                  cachedTheme?.textColor,
                   cachedTheme?.borderColor,
                   'col-span-6 max-sm:col-span-5 max-xsm:col-span-9 p-1 border-2 rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl '
                 )}

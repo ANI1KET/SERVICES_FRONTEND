@@ -1,15 +1,18 @@
 'use client';
 
-import { useSession, signIn, signOut } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-
-import { LoginFormInputs, loginSchema } from '../Schema';
 import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession, signIn, signOut } from 'next-auth/react';
+
+import { cn } from '@/app/lib/utils/tailwindMerge';
+import { LoginFormInputs, loginSchema } from '../Schema';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 export default function Login() {
   const router = useRouter();
+  const cachedTheme = useThemeState();
   const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
@@ -87,7 +90,12 @@ export default function Login() {
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center h-screen text-lg font-semibold text-gray-300">
+      <div
+        className={cn(
+          cachedTheme?.textColor,
+          'flex items-center justify-center h-screen text-lg font-semibold'
+        )}
+      >
         Loading...
       </div>
     );
@@ -95,7 +103,13 @@ export default function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center p-4">
-      <div className="bg-green-300 shadow-2xl rounded-lg p-8 w-full max-w-md animate-fade-in">
+      <div
+        className={cn(
+          cachedTheme?.bg,
+          cachedTheme?.textColor,
+          'shadow-2xl rounded-lg p-8 w-full max-w-md animate-fade-in'
+        )}
+      >
         {session ? (
           <>
             <p className="text-2xl font-semibold mb-6 text-center">
@@ -125,9 +139,13 @@ export default function Login() {
                   type="email"
                   placeholder="Email"
                   {...register('email')}
-                  className={`w-full px-4 py-2 rounded-md bg-green-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.email ? 'border border-red-500' : ''
-                  }`}
+                  className={cn(
+                    cachedTheme?.activeBg,
+                    cachedTheme?.activeTextColor,
+                    `w-full px-4 py-2 rounded-md focus:outline-none ${
+                      errors.email ? 'border border-red-500' : ''
+                    }`
+                  )}
                 />
                 {errors.email && (
                   <p className="text-red-400 text-sm">{errors.email.message}</p>
@@ -138,9 +156,13 @@ export default function Login() {
                   type="password"
                   placeholder="Password"
                   {...register('password')}
-                  className={`w-full px-4 py-2 rounded-md bg-green-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.password ? 'border border-red-500' : ''
-                  }`}
+                  className={cn(
+                    cachedTheme?.activeBg,
+                    cachedTheme?.activeTextColor,
+                    `w-full px-4 py-2 rounded-md focus:outline-none ${
+                      errors.password ? 'border border-red-500' : ''
+                    }`
+                  )}
                 />
                 {errors.password && (
                   <p className="text-red-400 text-sm">
@@ -154,11 +176,16 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={isLoading || isSubmitting}
-                className={`w-full bg-green-100 py-2 rounded-md shadow-md hover:bg-green-200 transition-transform transform ${
-                  isLoading || isSubmitting
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:scale-105'
-                }`}
+                className={cn(
+                  cachedTheme?.bg,
+                  cachedTheme?.textColor,
+                  cachedTheme?.borderColor,
+                  `w-full py-2 rounded-md shadow-md border transition-transform transform ${
+                    isLoading || isSubmitting
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:scale-105'
+                  }`
+                )}
               >
                 {isLoading || isSubmitting
                   ? 'Signing in...'
@@ -168,16 +195,28 @@ export default function Login() {
             <button
               disabled={isLoading}
               onClick={handleSignInGoogle}
-              className={`w-full bg-green-100 py-2 rounded-md shadow-md hover:bg-green-200 transition-transform transform mt-4 ${
-                isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
-              }`}
+              className={cn(
+                cachedTheme?.bg,
+                cachedTheme?.textColor,
+                cachedTheme?.borderColor,
+                `w-full border py-2 rounded-md shadow-md transition-transform transform mt-4 ${
+                  isLoading
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:scale-105'
+                }`
+              )}
             >
               {isLoading ? 'Signing in...' : 'Sign in with Google'}
             </button>
           </>
         )}
       </div>
-      <p className="flex flex-row-reverse justify-between w-full px-1 max-w-md text-sm mt-2">
+      <p
+        className={cn(
+          cachedTheme?.textColor,
+          'flex flex-row-reverse justify-between w-full px-1 max-w-md text-sm mt-2'
+        )}
+      >
         <span
           className="cursor-pointer"
           // onClick={()=>router.push('')}
@@ -193,7 +232,7 @@ export default function Login() {
           </span>
         )}
       </p>
-      <p className="text-gray-600 text-sm mt-2">
+      <p className={cn(cachedTheme?.textColor, 'text-sm mt-2')}>
         {session
           ? 'Enjoy your session!'
           : 'Welcome back! Please sign in to continue.'}
