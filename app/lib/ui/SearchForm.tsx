@@ -247,10 +247,10 @@ const SearchForm: React.FC = () => {
             //   color: 'green',
             // },
             '& .MuiSelect-select': {
-              color: `${cachedTheme?.textColor} !important`,
+              color: cachedTheme?.textColor,
             },
             '& .MuiInputBase-input': {
-              color: `${cachedTheme?.textColor} !important`,
+              color: cachedTheme?.textColor,
             },
             '& .MuiSelect-icon': {
               color: cachedTheme?.selectIcon,
@@ -346,10 +346,10 @@ const SearchForm: React.FC = () => {
             //   color: 'green',
             // },
             '& .MuiSelect-select': {
-              color: `${cachedTheme?.textColor} !important`,
+              color: cachedTheme?.textColor,
             },
             '& .MuiInputBase-input': {
-              color: `${cachedTheme?.textColor} !important`,
+              color: cachedTheme?.textColor,
             },
             '& .MuiSelect-icon': {
               color: cachedTheme?.selectIcon,
