@@ -229,6 +229,7 @@ const SearchForm: React.FC = () => {
             height: '5vh',
             '& .MuiOutlinedInput-root': {
               height: '100%',
+              color: `${cachedTheme?.textColor}`,
               '& fieldset': {
                 border: 'none',
               },
@@ -245,15 +246,15 @@ const SearchForm: React.FC = () => {
             // '& .MuiInputLabel-root.Mui-focused': {
             //   color: 'green',
             // },
-            '& .MuiSelect-select': {
-              color: `${cachedTheme?.textColor} !important`,
-            },
-            '& .MuiSelect-select.Mui-disabled': {
-              color: `${cachedTheme?.textColor} !important`,
-            },
-            '& .Mui-focused .MuiSelect-select': {
-              color: `${cachedTheme?.textColor} !important`,
-            },
+            // '& .MuiSelect-select': {
+            //   color: `${cachedTheme?.textColor} !important`,
+            // },
+            // '& .MuiSelect-select.Mui-disabled': {
+            //   color: `${cachedTheme?.textColor} !important`,
+            // },
+            // '& .Mui-focused .MuiSelect-select': {
+            //   color: `${cachedTheme?.textColor} !important`,
+            // },
             '& .MuiSelect-icon': {
               color: cachedTheme?.selectIcon,
             },
@@ -330,6 +331,7 @@ const SearchForm: React.FC = () => {
             height: '5vh',
             '& .MuiOutlinedInput-root': {
               height: '100%',
+              color: `${cachedTheme?.textColor}`,
               '& fieldset': {
                 border: 'none',
               },
@@ -346,15 +348,15 @@ const SearchForm: React.FC = () => {
             // '& .MuiInputLabel-root.Mui-focused': {
             //   color: 'green',
             // },
-            '& .MuiSelect-select': {
-              color: `${cachedTheme?.textColor} !important`,
-            },
-            '& .MuiSelect-select.Mui-disabled': {
-              color: `${cachedTheme?.textColor} !important`,
-            },
-            '& .Mui-focused .MuiSelect-select': {
-              color: `${cachedTheme?.textColor} !important`,
-            },
+            // '& .MuiSelect-select': {
+            //   color: `${cachedTheme?.textColor} !important`,
+            // },
+            // '& .MuiSelect-select.Mui-disabled': {
+            //   color: `${cachedTheme?.textColor} !important`,
+            // },
+            // '& .Mui-focused .MuiSelect-select': {
+            //   color: `${cachedTheme?.textColor} !important`,
+            // },
             '& .MuiSelect-icon': {
               color: cachedTheme?.selectIcon,
             },
