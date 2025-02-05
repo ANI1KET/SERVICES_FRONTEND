@@ -15,8 +15,46 @@ export interface TabState {
   [key: string]: string;
 }
 
+export interface ThemeState {
+  bg: string;
+  activeBg: string;
+  textColor: string;
+  borderColor: string;
+  svgIconColor: string;
+  activeTextColor: string;
+  //
+  hoverBg: string;
+  peerCheckedBg: string;
+  peerCheckedText: string;
+  // MUI
+  selectIcon: string;
+  selectMenuBg: string;
+  selectMenuColor: string;
+  selectMenuHoverFocused: string;
+  bottomBarActiveTextColor: string;
+}
+
 const initialTabState: TabState = {
   CategoryTab: 'room',
+};
+
+const initialThemeState = {
+  bg: 'bg-neutral-900',
+  activeBg: 'bg-green-300',
+  svgIconColor: 'lightgreen',
+  textColor: 'text-green-200',
+  activeTextColor: 'text-black',
+  borderColor: 'border-green-200',
+  bottomBarActiveTextColor: 'text-green-400',
+  //
+  hoverBg: 'hover:bg-neutral-800',
+  peerCheckedBg: 'peer-checked:bg-green-300',
+  peerCheckedText: 'peer-checked:text-black',
+  // MUI
+  selectMenuBg: '#1c2021',
+  selectIcon: 'lightgreen',
+  selectMenuColor: '#4eff5d',
+  selectMenuHoverFocused: '#e7fce9',
 };
 
 export type CityData = {
@@ -48,6 +86,14 @@ export default function ReactQueryProvider({
       gcTime: Infinity,
       staleTime: Infinity,
     });
+
+    client.setQueryDefaults(['theme'], {
+      enabled: false,
+      gcTime: Infinity,
+      staleTime: Infinity,
+    });
+    client.setQueryData<ThemeState>(['theme'], initialThemeState);
+
     return client;
   });
 
@@ -100,4 +146,10 @@ export function useGetNewRoomDetails(category: string) {
   const queryClient = useQueryClient();
 
   return queryClient.getQueryData<NewListedRoom>(['CategoryDetails', category]);
+}
+
+export function useThemeState() {
+  const queryClient = useQueryClient();
+
+  return queryClient.getQueryData<ThemeState>(['theme']);
 }

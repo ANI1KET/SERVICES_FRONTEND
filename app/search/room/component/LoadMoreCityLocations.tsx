@@ -17,11 +17,13 @@ import {
   CapacitySlider,
   CustomCheckboxGroup,
 } from '../../../lib/ui/FormReusableComponent';
-import { CrossIcon } from '@/app/lib/icon/svg';
+import { cn } from '@/app/lib/utils/tailwindMerge';
 import CityLocationsData from './CityLocationsData';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { useFilterUpdater, useInfiniteRoomQuery } from '../../CustomHooks';
 
 const LoadMoreCityLocations = () => {
+  const cacheTheme = useThemeState();
   const queryClient = useQueryClient();
   const { data: searchData } = useQuery<SearchQueries>({
     queryKey: ['searchData'],
@@ -67,8 +69,19 @@ const LoadMoreCityLocations = () => {
     };
   }, [handleLoadMore]);
   return (
-    <div className="grid gap-2 grid-cols-[3fr_6fr] max-sm:grid-cols-[2fr_4fr] max-xsm:grid-cols-[1fr] m-1 mb-6">
-      <div className="h-fit max-sm:h-[90vh] max-sm:overflow-y-scroll sticky top-[8.5vh] max-sm:top-1 flex flex-col gap-4 max-xsm:hidden p-1 border-2 border-black rounded-xl ">
+    <div
+      className={cn(
+        cacheTheme?.bg,
+        cacheTheme?.textColor,
+        'grid gap-2 grid-cols-[3fr_6fr] max-sm:grid-cols-[2fr_4fr] max-xsm:grid-cols-[1fr] m-1 mb-6'
+      )}
+    >
+      <div
+        className={cn(
+          cacheTheme?.borderColor,
+          'h-fit max-sm:h-[90vh] max-sm:overflow-y-scroll sticky top-[8.5vh] max-sm:top-1 flex flex-col gap-4 max-xsm:hidden p-1 border-2 rounded-xl '
+        )}
+      >
         <PriceSlider
           defaultValue={searchData?.filters.price}
           onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
@@ -137,17 +150,25 @@ const LoadMoreCityLocations = () => {
         <div ref={observerRef} className="h-1"></div>
         {isFetchingNextPage && (
           <div className="flex justify-center items-center">
-            <div className="w-8 h-8 border-4 border-t-transparent border-black rounded-full animate-spin"></div>
+            <div
+              className={cn(
+                cacheTheme?.borderColor,
+                'w-8 h-8 border-4 border-t-transparent rounded-full animate-spin'
+              )}
+            ></div>
           </div>
         )}
       </div>
 
       <div
-        className={`fixed bottom-[7.8vh] left-0 right-0 flex flex-col items-center rounded-t-2xl bg-white transition-transform duration-300 ${
-          isPanelOpen ? '' : 'hidden'
-        }`}
+        className={cn(
+          cacheTheme?.bg,
+          `fixed bottom-[7.8vh] left-0 right-0 flex flex-col items-center rounded-t-2xl transition-transform duration-300 ${
+            isPanelOpen ? '' : 'hidden'
+          }`
+        )}
       >
-        <div className="flex flex-col gap-1 w-full h-[50vh] col-span-9 border-2 border-black rounded-t-2xl p-2 overflow-y-scroll">
+        <div className="flex flex-col gap-1 w-full h-[50vh] col-span-9 border-2 rounded-t-2xl p-2 overflow-y-scroll">
           <PriceSlider
             defaultValue={searchData?.filters.price}
             onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
@@ -206,16 +227,34 @@ const LoadMoreCityLocations = () => {
           />
         </div>
         <div
-          className="cursor-pointer rounded-full p-1 backdrop-blur-3xl border-2 border-black absolute bottom-[0.8vh] right-1 bg-white"
+          className="cursor-pointer rounded-full p-1 backdrop-blur-3xl border-2 absolute bottom-[0.8vh] right-1"
           onClick={togglePanel}
         >
-          <CrossIcon />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={34}
+            height={34}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentcolor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={`lucide lucide-x`}
+          >
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>{' '}
         </div>
       </div>
 
       {!isPanelOpen && (
         <div
-          className="hidden max-xsm:block fixed bottom-[8.5vh] right-1 z-10 p-2 text-xl text-white bg-black rounded-lg"
+          className={cn(
+            cacheTheme?.bg,
+            cacheTheme?.borderColor,
+            'hidden max-xsm:block fixed bottom-[8.5vh] right-1 z-10 p-2 text-xl rounded-lg border'
+          )}
           onClick={togglePanel}
         >
           Filters

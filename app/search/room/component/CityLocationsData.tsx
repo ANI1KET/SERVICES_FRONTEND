@@ -4,8 +4,10 @@ import ReactPlayer from 'react-player';
 
 import ImageLoop from '../../../lib/ui/ImageLoop';
 import { NewListedRoom } from '@/app/types/types';
-import AutoScrollCarousel from './AutoScrollCarousel';
+import { cn } from '@/app/lib/utils/tailwindMerge';
 import RoomDetailsLayout from './/RoomDetailsLayout';
+import AutoScrollCarousel from './AutoScrollCarousel';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 const CityLocationsData = ({
   category,
@@ -14,6 +16,8 @@ const CityLocationsData = ({
   category: string;
   cityLocationsData: NewListedRoom[];
 }) => {
+  const cachedTheme = useThemeState();
+
   return (
     <>
       {cityLocationsData &&
@@ -74,7 +78,12 @@ const CityLocationsData = ({
                   </div>
                 </div>
               )}
-              <div className="col-span-6 max-sm:col-span-5 max-xsm:col-span-9 p-1 border-2 border-black rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl ">
+              <div
+                className={cn(
+                  cachedTheme?.borderColor,
+                  'col-span-6 max-sm:col-span-5 max-xsm:col-span-9 p-1 border-2 rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl '
+                )}
+              >
                 <RoomDetailsLayout
                   roomCardDetails={roomDetails as NewListedRoom}
                 />

@@ -2,10 +2,12 @@
 
 import ImageSlider from '@/app/lib/ui/ImageSlider';
 import VideoPlayer from '@/app/lib/ui/VideoPlayer';
-import NewRoomDetails from '@/app/listed/room/[id]/component/NewRoomDetails';
-import ResponsiveNewRoomDetails from '@/app/listed/room/[id]/component/ResponsiveNewRoomDetails';
+import { cn } from '@/app/lib/utils/tailwindMerge';
+import NewRoomDetails from '@/app/lib/ui/NewRoomDetails';
 import { NewListedRoom, RoomData } from '@/app/types/types';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
+import ResponsiveNewRoomDetails from '@/app/lib/ui/ResponsiveNewRoomDetails';
 
 const findMatchingRoom = (
   cachedData: { pages: RoomData[][] } | undefined,
@@ -25,6 +27,7 @@ const RoomDetailsLayout: React.FC<{ city: string; roomId: string }> = ({
   city,
   roomId,
 }) => {
+  const cacheTheme = useThemeState();
   const queryClient = useQueryClient();
 
   const cachedData = city
@@ -46,7 +49,12 @@ const RoomDetailsLayout: React.FC<{ city: string; roomId: string }> = ({
         roomCardDetails={RoomDetails as NewListedRoom}
       />
 
-      <div className="flex justify-center text-lg font-semibold p-1">
+      <div
+        className={cn(
+          cacheTheme?.textColor,
+          'flex justify-center text-lg font-semibold p-1'
+        )}
+      >
         Room Images
       </div>
 

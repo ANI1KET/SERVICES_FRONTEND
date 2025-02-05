@@ -4,9 +4,11 @@ import React, { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 import {
-  useSetTabState,
   useTabState,
+  useThemeState,
+  useSetTabState,
 } from '@/app/providers/reactqueryProvider';
+import { cn } from '../utils/tailwindMerge';
 
 interface TabProps {
   children: React.ReactNode;
@@ -15,11 +17,15 @@ interface TabProps {
 }
 
 const Tab: React.FC<TabProps> = ({ children, isActive, onClick }) => {
+  const cachedTheme = useThemeState();
+
   return (
     <li
-      className={`cursor-pointer text-sm lg:text-base rounded-3xl transition-all duration-200 ${
-        isActive ? `text-white bg-black p-1 scale-105 ` : ''
-      }`}
+      className={cn(
+        'cursor-pointer text-sm lg:text-base rounded-3xl transition-all duration-200 hover:scale-105',
+        isActive &&
+          `${cachedTheme?.activeBg} ${cachedTheme?.activeTextColor} p-1 scale-105`
+      )}
       onClick={onClick}
     >
       <span>{children}</span>
@@ -51,7 +57,7 @@ const NavigationTabs: React.FC<TabsProps> = ({
   );
 
   return (
-    <ul className={`${className}`}>
+    <ul className={cn(className)}>
       {tabs?.map(([label, content], index) => {
         return (
           <Tab

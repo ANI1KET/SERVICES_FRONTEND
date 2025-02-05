@@ -5,9 +5,9 @@
 import { NewListedRoom } from '@/app/types/types';
 import VideoPlayer from '@/app/lib/ui/VideoPlayer';
 import ImageSlider from '../../../lib/ui/ImageSlider';
-import NewRoomDetails from './component/NewRoomDetails';
+import NewRoomDetails from '../../../lib/ui/NewRoomDetails';
 import { useGetNewRoomDetails } from '@/app/providers/reactqueryProvider';
-import ResponsiveNewRoomDetails from './component/ResponsiveNewRoomDetails';
+import ResponsiveNewRoomDetails from '../../../lib/ui/ResponsiveNewRoomDetails';
 
 const Room = () => {
   // const params = useParams();

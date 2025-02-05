@@ -12,21 +12,31 @@ import {
   HomeLocationIcon,
 } from '@/app/lib/icon/svg';
 import { NewListedRoom } from '@/app/types/types';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
+import { cn } from '@/app/lib/utils/tailwindMerge';
 
 interface NewRoomCardProps {
   roomCardDetails: NewListedRoom;
 }
 
 const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
+  const cacheTheme = useThemeState();
+
   return (
-    <div className="w-[55vw] max-xsm:w-screen p-2 absolute right-1 top-3 bottom-3 max-xsm:static max-xsm:-mt-3 max-xsm:-z-0 overflow-y-scroll rounded-xl bg-white">
+    <div
+      className={cn(
+        cacheTheme?.bg,
+        cacheTheme?.textColor,
+        'w-[55vw] max-xsm:w-screen p-2 absolute right-1 top-3 bottom-3 max-xsm:static max-xsm:-mt-3 max-xsm:-z-0 overflow-y-scroll rounded-xl'
+      )}
+    >
       <div className="w-full h-full grid grid-cols-2 gap-2 ">
         <p className="hidden max-xsm:block col-span-2 ">
           <span className="flex items-center gap-2 text-sm">
             <HomeLocationIcon />
             Address
             {roomCardDetails.verified && (
-              <span className="bg-green-400 p-[2px] rounded-lg ml-auto">
+              <span className="bg-green-500 p-[2px] rounded-lg ml-auto">
                 Verified
               </span>
             )}

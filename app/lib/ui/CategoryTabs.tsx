@@ -17,7 +17,7 @@ const Tab: React.FC<TabProps> = ({ children, isActive, onClick }) => {
   return (
     <li
       className={`cursor-pointer p-1 text-sm lg:text-base rounded-3xl transition-all duration-200 ${
-        isActive ? `text-white bg-black scale-105 ` : ''
+        isActive ? `text-black bg-green-300 scale-105 ` : ''
       }`}
       onClick={onClick}
     >

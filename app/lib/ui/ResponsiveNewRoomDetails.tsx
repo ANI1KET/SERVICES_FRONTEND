@@ -7,6 +7,8 @@ import {
   HomeLocationIcon,
 } from '@/app/lib/icon/svg';
 import { NewListedRoom } from '@/app/types/types';
+import { cn } from '@/app/lib/utils/tailwindMerge';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 interface NewRoomCardProps {
   roomCardDetails: NewListedRoom;
@@ -15,9 +17,18 @@ interface NewRoomCardProps {
 const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
   roomCardDetails,
 }) => {
+  const cacheTheme = useThemeState();
+
   return (
-    <div className="max-xsm:hidden grid grid-cols-6 place-content-start mx-2 border-[1px] border-black rounded-lg">
-      <p className="col-span-2 border-r border-black mr-2 ml-1 ">
+    <div
+      className={cn(
+        cacheTheme?.bg,
+        cacheTheme?.textColor,
+        cacheTheme?.borderColor,
+        'max-xsm:hidden grid grid-cols-6 place-content-start mx-2 border-[1px] rounded-lg'
+      )}
+    >
+      <p className="col-span-2 border-r mr-2 ml-1 ">
         <span className="text-lg font-semibold flex items-center gap-1">
           <PriceIcon size={16} />
           Rs.{`${roomCardDetails?.price}`}
@@ -29,13 +40,13 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
         <HomeLocationIcon size={16} />
         {`${roomCardDetails?.city}, ${roomCardDetails?.location}`}
         {roomCardDetails?.verified && (
-          <span className="text-sm p-1 bg-green-400 rounded-lg ml-auto">
+          <span className="text-sm p-1 bg-green-500 rounded-lg ml-auto">
             Verified
           </span>
         )}
       </span>
 
-      <span className="col-span-2 border-r border-black mr-2 flex items-center gap-1 ml-2 ">
+      <span className="col-span-2 border-r mr-2 flex items-center gap-1 ml-2 ">
         <ContactIcon size={14} />
         {`+977-${roomCardDetails?.roomNumber}`}
       </span>
@@ -45,7 +56,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
         {`${roomCardDetails?.roomtype}`} for Rent
       </span>
 
-      <hr className="col-span-6 border-1 border-black " />
+      <hr className="col-span-6 border-1 " />
 
       <p className="flex items-center col-span-6 gap-2 ml-2">
         <span className="text-lg font-semibold col-span-1 ">Amenities:</span>

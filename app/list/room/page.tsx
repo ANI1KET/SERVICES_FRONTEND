@@ -12,12 +12,15 @@ import {
   OptionalField,
   CheckboxGroup,
 } from '@/app//lib/ui/FormReusableComponent';
+import { cn } from '@/app/lib/utils/tailwindMerge';
 import { SubmitRoomDetails } from '../ServerAction';
 import { upload_Images, upload_Video } from '../uploadUtils';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { PostedBy, RoomWithMedia, RoomWithMediaUrl } from '@/app/types/types';
 
 const Room = () => {
   const router = useRouter();
+  const cachedTheme = useThemeState();
   const queryClient = useQueryClient();
   const { data: session, status } = useSession();
 
@@ -113,12 +116,24 @@ const Room = () => {
     }
   };
   return (
-    <div className="">
-      <h2 className="text-xl font-bold mb-1">List Room</h2>
+    <div className="ml-[12vw] w-[70vw] max-sm:w-full max-sm:ml-0">
+      <h2
+        className={cn(
+          cachedTheme?.textColor,
+          'text-xl text-center font-bold mb-1'
+        )}
+      >
+        List Room
+      </h2>
 
       <form
         onSubmit={handleFormSubmit(onSubmit)}
-        className="space-y-6 p-2 border rounded-lg shadow-lg bg-green-200"
+        className={cn(
+          cachedTheme?.bg,
+          cachedTheme?.textColor,
+          cachedTheme?.borderColor,
+          'space-y-6 p-2 border rounded-lg shadow-lg'
+        )}
       >
         <div className="grid max-xsm:grid-cols-1 max-sm:grid-cols-2 grid-cols-3 gap-1">
           <InputField
@@ -311,10 +326,14 @@ const Room = () => {
         <button
           type="submit"
           disabled={isSubmitting || status === 'unauthenticated'}
-          className={`w-full bg-black text-white py-2 px-4 rounded-md ${
-            (isSubmitting || status === 'unauthenticated') &&
-            'opacity-50 cursor-not-allowed'
-          }`}
+          className={cn(
+            cachedTheme?.activeBg,
+            cachedTheme?.activeTextColor,
+            `w-full py-2 px-4 rounded-md ${
+              (isSubmitting || status === 'unauthenticated') &&
+              'opacity-50 cursor-not-allowed'
+            }`
+          )}
         >
           {isSubmitting ? 'Listing...' : 'List'}
         </button>

@@ -1,13 +1,16 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+
 import {
   motion,
   AnimatePresence,
   useScroll,
   useMotionValueEvent,
 } from 'framer-motion';
+import { cn } from '@/app/lib/utils/tailwindMerge';
 import useBreakpoint from '@/app/lib/utils/useBreakpoint';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 // const MiddleLayout: React.FC<{
 //   upperComponent: React.ReactNode;
@@ -16,6 +19,7 @@ import useBreakpoint from '@/app/lib/utils/useBreakpoint';
 const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const cachedTheme = useThemeState();
   const { isMobile } = useBreakpoint();
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState<boolean>(true);
@@ -50,7 +54,12 @@ const MiddleLayout: React.FC<{ children: React.ReactNode }> = ({
       <AnimatePresence mode="wait">
         <motion.div
           {...animationProps}
-          className="max-sm:hidden h-[12vh] w-[71vw] mx-[11.5vw] rounded-xl shadow-2xl sticky top-[5.3vh] mt-[-6vh] mb-[-6vh] border-2 border-black bg-green-300"
+          className={cn(
+            'max-sm:hidden h-[12vh] w-[71vw] mx-[11.5vw] rounded-xl shadow-2xl sticky top-[5.3vh] mt-[-6vh] mb-[-6vh] border-2',
+            cachedTheme?.bg,
+            cachedTheme?.textColor,
+            cachedTheme?.borderColor
+          )}
         >
           {children}
           {/* {upperComponent}

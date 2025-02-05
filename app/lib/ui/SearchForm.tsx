@@ -20,13 +20,19 @@ import {
   RatingSlider,
   TickCheckboxGroup,
 } from '@/app/lib/ui/FormReusableComponent';
+import {
+  CityData,
+  useTabState,
+  useThemeState,
+} from '@/app/providers/reactqueryProvider';
+import { cn } from '../utils/tailwindMerge';
 import useBreakpoint from '../utils/useBreakpoint';
 import { SearchQueries, SearchQuery } from '@/app/types/types';
-import { CityData, useTabState } from '@/app/providers/reactqueryProvider';
 
 const SearchForm: React.FC = () => {
   const router = useRouter();
   const tabState = useTabState();
+  const cachedTheme = useThemeState();
   const queryClient = useQueryClient();
   const { isMobile } = useBreakpoint();
   const category = tabState?.['CategoryTab'] as string;
@@ -156,10 +162,21 @@ const SearchForm: React.FC = () => {
       onSubmit={handleSubmit(onSubmit)}
     >
       {!isMobile && (
-        <div className="col-span-1 max-sm:col-span-3 grid grid-flow-col place-content-center place-items-center border-r-[1px] border-black h-full cursor-pointer group ">
+        <div
+          className={cn(
+            cachedTheme?.borderColor,
+            'col-span-1 max-sm:col-span-3 grid grid-flow-col place-content-center place-items-center border-r-[1px] h-full cursor-pointer group'
+          )}
+        >
           <p>Filter</p>
           <ArrowUpIcon className="group-hover:scale-125 group-hover:rotate-180 transition-all duration-300" />
-          <div className="w-full h-[40vh] overflow-x-scroll flex flex-col gap-2 p-2 absolute top-full left-0 right-0 rounded-2xl border-2 border-black bg-white opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300 ">
+          <div
+            className={cn(
+              cachedTheme?.bg,
+              cachedTheme?.borderColor,
+              'w-full h-[40vh] overflow-x-scroll flex flex-col gap-2 p-2 absolute top-full left-0 right-0 rounded-2xl border-2 opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300'
+            )}
+          >
             <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
             <div className="flex gap-4">
               <RatingSlider
@@ -199,7 +216,12 @@ const SearchForm: React.FC = () => {
         </div>
       )}
 
-      <div className="max-sm:h-[5vh] col-span-2 max-sm:col-span-3 place-content-center max-sm:border-2 max-sm:rounded-xl border-r-[1px] border-black">
+      <div
+        className={cn(
+          cachedTheme?.borderColor,
+          'max-sm:h-[5vh] col-span-2 max-sm:col-span-3 place-content-center max-sm:border-2 max-sm:rounded-xl border-r-[1px]'
+        )}
+      >
         <FormControl
           fullWidth
           size="small"
@@ -217,11 +239,14 @@ const SearchForm: React.FC = () => {
                 border: 'none',
               },
             },
-            '& .MuiInputLabel-root': {
-              color: 'gray',
-            },
-            '& .MuiInputLabel-root.Mui-focused': {
-              color: 'gray',
+            // '& .MuiInputLabel-root': {
+            //   color: 'green',
+            // },
+            // '& .MuiInputLabel-root.Mui-focused': {
+            //   color: 'green',
+            // },
+            '& .MuiSelect-icon': {
+              color: cachedTheme?.selectIcon,
             },
           }}
         >
@@ -249,12 +274,32 @@ const SearchForm: React.FC = () => {
                 setSelectedLocation([]);
               }
             }}
+            className={cn(cachedTheme?.textColor)}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  color: cachedTheme?.selectMenuColor,
+                  backgroundColor: cachedTheme?.selectMenuBg,
+                },
+              },
+            }}
           >
             {CitiesLocations &&
               CitiesLocations[category] &&
               Object.keys(CitiesLocations[category]).map((city) => {
                 return (
-                  <MenuItem key={city} value={city}>
+                  <MenuItem
+                    key={city}
+                    value={city}
+                    sx={{
+                      '&.MuiMenuItem-root:hover': {
+                        backgroundColor: cachedTheme?.selectMenuHoverFocused,
+                      },
+                      '&.Mui-focusVisible': {
+                        backgroundColor: cachedTheme?.selectMenuHoverFocused,
+                      },
+                    }}
+                  >
                     {city}
                   </MenuItem>
                 );
@@ -263,7 +308,12 @@ const SearchForm: React.FC = () => {
         </FormControl>
       </div>
 
-      <div className="max-sm:h-[5vh] col-span-5 max-sm:col-span-6 place-content-center max-sm:border-2 max-sm:border-black max-sm:rounded-xl ">
+      <div
+        className={cn(
+          cachedTheme?.borderColor,
+          `max-sm:h-[5vh] col-span-5 max-sm:col-span-6 place-content-center max-sm:border-2 max-sm:rounded-xl `
+        )}
+      >
         <FormControl
           fullWidth
           size="small"
@@ -281,11 +331,14 @@ const SearchForm: React.FC = () => {
                 border: 'none',
               },
             },
-            '& .MuiInputLabel-root': {
-              color: 'gray',
-            },
-            '& .MuiInputLabel-root.Mui-focused': {
-              color: 'gray',
+            // '& .MuiInputLabel-root': {
+            //   color: 'green',
+            // },
+            // '& .MuiInputLabel-root.Mui-focused': {
+            //   color: 'green',
+            // },
+            '& .MuiSelect-icon': {
+              color: cachedTheme?.selectIcon,
             },
           }}
         >
@@ -302,13 +355,33 @@ const SearchForm: React.FC = () => {
                   : [...prevSelectedLocations, location]
               );
             }}
+            className={cn(cachedTheme?.textColor)}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  color: cachedTheme?.selectMenuColor,
+                  backgroundColor: cachedTheme?.selectMenuBg,
+                },
+              },
+            }}
           >
             {CitiesLocations &&
               ((CitiesLocations[category] as {
                 [key: string]: string[] | [];
               }) || {})[selectedCity]?.map((city) => {
                 return (
-                  <MenuItem key={city} value={city}>
+                  <MenuItem
+                    key={city}
+                    value={city}
+                    sx={{
+                      '&.MuiMenuItem-root:hover': {
+                        backgroundColor: cachedTheme?.selectMenuHoverFocused,
+                      },
+                      '&.Mui-focusVisible': {
+                        backgroundColor: cachedTheme?.selectMenuHoverFocused,
+                      },
+                    }}
+                  >
                     {city}
                   </MenuItem>
                 );
@@ -318,12 +391,22 @@ const SearchForm: React.FC = () => {
       </div>
 
       {isMobile && selectedLocation.length > 0 && (
-        <div className="col-span-7 place-content-center border-2 border-black rounded-xl overflow-x-auto whitespace-nowrap">
+        <div
+          className={cn(
+            cachedTheme?.bg,
+            cachedTheme?.borderColor,
+            'col-span-7 place-content-center border-2 rounded-xl overflow-x-auto whitespace-nowrap'
+          )}
+        >
           <div className="inline-flex gap-1">
             {selectedLocation.map((location, index) => (
               <span
                 key={index}
-                className="inline-flex items-center gap-1 border px-2 rounded bg-gray-100 max-w-[120px] truncate"
+                className={cn(
+                  cachedTheme?.activeBg,
+                  cachedTheme?.activeTextColor,
+                  'inline-flex items-center gap-1 border px-2 rounded max-w-[120px] truncate my-1'
+                )}
                 title={location}
               >
                 {location.length > 10
@@ -351,25 +434,36 @@ const SearchForm: React.FC = () => {
         </div>
       )}
 
-      <div className="max-sm:h-[4vh] col-span-1 space-y-3 max-sm:col-span-2 max-sm:col-start-8 place-content-center text-center bg-black max-sm:rounded-lg rounded-br-lg ">
-        <button
-          type="submit"
-          className={`searchSubmit text-white text-xl w-full`}
-        >
+      <div
+        className={cn(
+          cachedTheme?.activeBg,
+          cachedTheme?.activeTextColor,
+          'max-sm:h-[5vh] m-1 col-span-1 space-y-3 max-sm:col-span-2 max-sm:col-start-8 place-content-center text-center max-sm:rounded-lg rounded-br-lg '
+        )}
+      >
+        <button type="submit" className={`searchSubmit text-xl w-full`}>
           Search
         </button>
       </div>
 
       {!isMobile && selectedLocation.length > 0 && (
         <div
-          className={`absolute top-full left-1/2 -translate-x-1/2 w-[calc(100%+0.7rem)] col-span-7 col-start-2 place-content-center p-1 bg-white border-b-2 border-r-2 border-l-2 border-black rounded-b-xl overflow-x-scroll`}
+          className={cn(
+            cachedTheme?.bg,
+            cachedTheme?.borderColor,
+            'absolute top-full left-1/2 -translate-x-1/2 w-[calc(100%+0.7rem)] col-span-7 col-start-2 place-content-center p-1 border-b-2 border-r-2 border-l-2 rounded-b-xl overflow-x-scroll'
+          )}
         >
           <div className="flex gap-1">
             {selectedLocation.map((location, index) => {
               return (
                 <p
                   key={index}
-                  className="inline-flex items-center gap-1 border px-2 rounded bg-gray-100 max-w-[140px]"
+                  className={cn(
+                    cachedTheme?.activeBg,
+                    cachedTheme?.activeTextColor,
+                    'inline-flex items-center gap-1 border px-2 rounded max-w-[140px]'
+                  )}
                   title={location}
                 >
                   <span className="truncate">
@@ -401,7 +495,13 @@ const SearchForm: React.FC = () => {
       )}
 
       {isMobile && (
-        <div className="flex flex-col gap-1 h-[50vh] col-span-9 border-2 border-black rounded-2xl p-1 overflow-y-scroll">
+        <div
+          className={cn(
+            cachedTheme?.bg,
+            cachedTheme?.borderColor,
+            'flex flex-col gap-1 h-[49vh] col-span-9 border-2 rounded-2xl p-1 overflow-y-scroll'
+          )}
+        >
           <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
 
           <div className="flex gap-4">

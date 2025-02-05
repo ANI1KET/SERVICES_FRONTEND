@@ -14,7 +14,6 @@ const Home = () => {
       <UpperLayout />
       <MiddleLayout>
         <UpperSearchBox />
-        <hr className="border-black" />
         <LowerSearchBox />
       </MiddleLayout>
       {/* <MiddleLayout

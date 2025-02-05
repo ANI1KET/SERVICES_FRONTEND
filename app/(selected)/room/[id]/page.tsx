@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { decodeURLPlaceQuery } from '../../ServerAction';
-import RoomDetailsLayout from '../component/RoomDetailsLayout';
+import RoomDetailsLayout from '../../../lib/ui/RoomDetailsLayout';
 
 export default async function SelectedRoom({
   params,

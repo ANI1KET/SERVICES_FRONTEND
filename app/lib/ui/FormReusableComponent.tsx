@@ -12,6 +12,8 @@ import {
   RoomWithMedia,
   FurnishingStatus,
 } from '@/app/types/types';
+import { cn } from '../utils/tailwindMerge';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 // InputField Component
 type InputFieldProps = {
@@ -34,25 +36,33 @@ export const InputField = ({
   register,
   errors,
   handleEnterPress,
-}: InputFieldProps) => (
-  <div>
-    <label htmlFor={id} className="block font-medium">
-      {label}
-    </label>
-    <input
-      id={id}
-      step={step}
-      type={type}
-      min={0}
-      {...register}
-      onKeyDown={handleEnterPress}
-      className="border rounded w-full p-1"
-    />
-    {errors[id] && (
-      <p className="text-red-500 text-sm mt-1">{errors[id]?.message}</p>
-    )}
-  </div>
-);
+}: InputFieldProps) => {
+  const cachedTheme = useThemeState();
+
+  return (
+    <div>
+      <label htmlFor={id} className="block font-medium">
+        {label}
+      </label>
+      <input
+        id={id}
+        step={step}
+        type={type}
+        min={0}
+        {...register}
+        onKeyDown={handleEnterPress}
+        className={cn(
+          cachedTheme?.activeBg,
+          'border rounded w-full p-1',
+          cachedTheme?.activeTextColor
+        )}
+      />
+      {errors[id] && (
+        <p className="text-red-500 text-sm mt-1">{errors[id]?.message}</p>
+      )}
+    </div>
+  );
+};
 
 // OptionalField Component
 type OptionalFieldProps = {
@@ -69,20 +79,28 @@ export const OptionalField = ({
   label,
   register,
   handleEnterPress,
-}: OptionalFieldProps) => (
-  <div>
-    <label htmlFor={id} className="block font-medium">
-      {label} (Optional)
-    </label>
-    <input
-      type="text"
-      id={id}
-      {...register}
-      onKeyDown={handleEnterPress}
-      className="border rounded w-full p-1"
-    />
-  </div>
-);
+}: OptionalFieldProps) => {
+  const cachedTheme = useThemeState();
+
+  return (
+    <div>
+      <label htmlFor={id} className="block font-medium">
+        {label} (Optional)
+      </label>
+      <input
+        type="text"
+        id={id}
+        {...register}
+        onKeyDown={handleEnterPress}
+        className={cn(
+          cachedTheme?.activeBg,
+          'border rounded w-full p-1',
+          cachedTheme?.activeTextColor
+        )}
+      />
+    </div>
+  );
+};
 
 // Radio Group
 type RadioGroupProps = {
@@ -199,30 +217,41 @@ export const TickCheckboxGroup = ({
   label,
   options,
   register,
-}: TickCheckboxGroupProps) => (
-  <div>
-    <span className="block font-medium">{label}</span>
-    <div className="grid grid-cols-3 lg:grid-cols-4 max-sm:grid-cols-3 max-xsm:grid-cols-2">
-      {options.map((value) => (
-        <label
-          key={value}
-          className="w-fit flex items-center border rounded-lg cursor-pointer "
-        >
-          <input
-            type="checkbox"
-            value={value}
-            {...register}
-            className="hidden peer"
-          />
-          <span className="font-bold px-1 border rounded-lg transition-colors duration-300 peer-checked:bg-black peer-checked:text-white">
-            ✓
-          </span>
-          <span>{value}</span>
-        </label>
-      ))}
+}: TickCheckboxGroupProps) => {
+  const cachedTheme = useThemeState();
+
+  return (
+    <div>
+      <span className="block font-medium">{label}</span>
+      <div className="grid grid-cols-3 lg:grid-cols-4 max-sm:grid-cols-3 max-xsm:grid-cols-2">
+        {options.map((value) => (
+          <label
+            key={value}
+            className="w-fit flex items-center border rounded-lg cursor-pointer "
+          >
+            <input
+              type="checkbox"
+              value={value}
+              {...register}
+              className="hidden peer"
+            />
+            <span
+              className={cn(
+                cachedTheme?.peerCheckedBg,
+                cachedTheme?.peerCheckedText,
+                'font-bold px-1 border rounded-lg transition-colors duration-300'
+              )}
+              style={{}}
+            >
+              ✓
+            </span>
+            <span>{value}</span>
+          </label>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // CheckedBoxProps Group
 type CheckedBoxProps = {
@@ -237,23 +266,33 @@ export const CheckedBox = ({
   register,
   value,
   onChange,
-}: CheckedBoxProps) => (
-  <div>
-    <label className="flex gap-2 font-medium">
-      {label}
-      <input
-        type="checkbox"
-        {...register}
-        checked={value}
-        onChange={onChange}
-        className="hidden peer"
-      />
-      <span className="font-bold px-1 border rounded-lg transition-colors duration-300 peer-checked:bg-black peer-checked:text-white">
-        ✓
-      </span>
-    </label>
-  </div>
-);
+}: CheckedBoxProps) => {
+  const cachedTheme = useThemeState();
+
+  return (
+    <div>
+      <label className="flex gap-2 font-medium cursor-pointer ">
+        {label}
+        <input
+          type="checkbox"
+          {...register}
+          checked={value}
+          onChange={onChange}
+          className="hidden peer"
+        />
+        <span
+          className={cn(
+            cachedTheme?.peerCheckedBg,
+            cachedTheme?.peerCheckedText,
+            'font-bold px-1 border rounded-lg transition-colors duration-300'
+          )}
+        >
+          ✓
+        </span>
+      </label>
+    </div>
+  );
+};
 
 // CustomCheckBox
 type CustomCheckboxGroupProps<T> = {
@@ -271,6 +310,7 @@ export const CustomCheckboxGroup = <T extends string>({
   className,
   defaultValue,
 }: CustomCheckboxGroupProps<T>) => {
+  const cachedTheme = useThemeState();
   const [checkedValues, setCheckedValues] = useState<T[]>([]);
 
   const handleChange = ({
@@ -303,7 +343,13 @@ export const CustomCheckboxGroup = <T extends string>({
               onChange={handleChange}
               checked={checkedValues.includes(value)}
             />
-            <span className="p-1 rounded-lg transition-colors duration-300 peer-checked:bg-black peer-checked:text-white">
+            <span
+              className={cn(
+                cachedTheme?.peerCheckedBg,
+                cachedTheme?.peerCheckedText,
+                'p-1 rounded-lg transition-colors duration-300'
+              )}
+            >
               {value}
             </span>
           </label>
@@ -368,10 +414,10 @@ export const PriceSlider: React.FC<PriceSliderProps> = ({
           width: '98%',
           margin: 'auto',
           '& .MuiSlider-thumb': {
-            backgroundColor: 'black',
+            backgroundColor: 'lightgreen',
           },
           '& .MuiSlider-track': {
-            backgroundColor: 'black',
+            backgroundColor: 'lightgreen',
           },
           '& .MuiSlider-rail': {
             backgroundColor: '#e0e0e0',
@@ -419,10 +465,10 @@ export const RatingSlider: React.FC<RatingSliderProps> = ({
           width: '98%',
           margin: 'auto',
           '& .MuiSlider-thumb': {
-            backgroundColor: 'black',
+            backgroundColor: 'lightgreen',
           },
           '& .MuiSlider-track': {
-            backgroundColor: 'black',
+            backgroundColor: 'lightgreen',
           },
           '& .MuiSlider-rail': {
             backgroundColor: '#e0e0e0',
@@ -469,10 +515,10 @@ export const CapacitySlider: React.FC<CapacitySliderProps> = ({
           width: '98%',
           margin: 'auto',
           '& .MuiSlider-thumb': {
-            backgroundColor: 'black',
+            backgroundColor: 'lightgreen',
           },
           '& .MuiSlider-track': {
-            backgroundColor: 'black',
+            backgroundColor: 'lightgreen',
           },
           '& .MuiSlider-rail': {
             backgroundColor: '#e0e0e0',
