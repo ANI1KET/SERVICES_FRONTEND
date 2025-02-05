@@ -240,17 +240,11 @@ const SearchForm: React.FC = () => {
                 border: 'none',
               },
             },
-            // '& .MuiInputLabel-root': {
-            //   color: 'green',
-            // },
-            // '& .MuiInputLabel-root.Mui-focused': {
-            //   color: 'green',
-            // },
             '& .MuiSelect-select': {
-              color: cachedTheme?.textColor,
+              color: 'text-green-200',
             },
             '& .MuiInputBase-input': {
-              color: cachedTheme?.textColor,
+              color: 'text-green-200',
             },
             '& .MuiSelect-icon': {
               color: cachedTheme?.selectIcon,
@@ -339,17 +333,11 @@ const SearchForm: React.FC = () => {
                 border: 'none',
               },
             },
-            // '& .MuiInputLabel-root': {
-            //   color: 'green',
-            // },
-            // '& .MuiInputLabel-root.Mui-focused': {
-            //   color: 'green',
-            // },
             '& .MuiSelect-select': {
-              color: cachedTheme?.textColor,
+              color: 'text-green-200',
             },
             '& .MuiInputBase-input': {
-              color: cachedTheme?.textColor,
+              color: 'text-green-200',
             },
             '& .MuiSelect-icon': {
               color: cachedTheme?.selectIcon,
