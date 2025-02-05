@@ -347,7 +347,13 @@ const SearchForm: React.FC = () => {
             //   color: 'green',
             // },
             '& .MuiSelect-select': {
-              color: cachedTheme?.textColor,
+              color: `${cachedTheme?.textColor} !important`,
+            },
+            '& .MuiSelect-select.Mui-disabled': {
+              color: `${cachedTheme?.textColor} !important`,
+            },
+            '& .Mui-focused .MuiSelect-select': {
+              color: `${cachedTheme?.textColor} !important`,
             },
             '& .MuiSelect-icon': {
               color: cachedTheme?.selectIcon,
