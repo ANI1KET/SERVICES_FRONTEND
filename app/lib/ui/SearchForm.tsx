@@ -218,6 +218,7 @@ const SearchForm: React.FC = () => {
 
       <div
         className={cn(
+          cachedTheme?.textColor,
           cachedTheme?.borderColor,
           'max-sm:h-[5vh] col-span-2 max-sm:col-span-3 place-content-center max-sm:border-2 max-sm:rounded-xl border-r-[1px]'
         )}
@@ -239,21 +240,18 @@ const SearchForm: React.FC = () => {
                 border: 'none',
               },
             },
-            '& .MuiInputLabel-root': {
-              color: 'green',
+            // '& .MuiInputLabel-root': {
+            //   color: 'green',
+            // },
+            // '& .MuiInputLabel-root.Mui-focused': {
+            //   color: 'green',
+            // },
+            '& .MuiSelect-select': {
+              color: 'green !important',
             },
-            '& .MuiInputLabel-root.Mui-focused': {
-              color: 'green',
+            '& .MuiInputBase-input': {
+              color: 'green !important',
             },
-            // '& .MuiSelect-select': {
-            //   color: `${cachedTheme?.textColor} !important`,
-            // },
-            // '& .MuiSelect-select.Mui-disabled': {
-            //   color: `${cachedTheme?.textColor} !important`,
-            // },
-            // '& .Mui-focused .MuiSelect-select': {
-            //   color: `${cachedTheme?.textColor} !important`,
-            // },
             '& .MuiSelect-icon': {
               color: cachedTheme?.selectIcon,
             },
@@ -319,6 +317,7 @@ const SearchForm: React.FC = () => {
 
       <div
         className={cn(
+          cachedTheme?.textColor,
           cachedTheme?.borderColor,
           `max-sm:h-[5vh] col-span-5 max-sm:col-span-6 place-content-center max-sm:border-2 max-sm:rounded-xl `
         )}
@@ -340,21 +339,18 @@ const SearchForm: React.FC = () => {
                 border: 'none',
               },
             },
-            '& .MuiInputLabel-root': {
-              color: 'green',
+            // '& .MuiInputLabel-root': {
+            //   color: 'green',
+            // },
+            // '& .MuiInputLabel-root.Mui-focused': {
+            //   color: 'green',
+            // },
+            '& .MuiSelect-select': {
+              color: 'green !important',
             },
-            '& .MuiInputLabel-root.Mui-focused': {
-              color: 'green',
+            '& .MuiInputBase-input': {
+              color: 'green !important',
             },
-            // '& .MuiSelect-select': {
-            //   color: `${cachedTheme?.textColor} !important`,
-            // },
-            // '& .MuiSelect-select.Mui-disabled': {
-            //   color: `${cachedTheme?.textColor} !important`,
-            // },
-            // '& .Mui-focused .MuiSelect-select': {
-            //   color: `${cachedTheme?.textColor} !important`,
-            // },
             '& .MuiSelect-icon': {
               color: cachedTheme?.selectIcon,
             },

@@ -129,7 +129,7 @@ export default function SignUp() {
         </form>
       </div>
       <p className="text-gray-500 text-sm mt-4">
-        Already have an account?
+        Already have an account?{'  '}
         <Link href="/auth/login" className={cn(cachedTheme?.textColor)}>
           Login
         </Link>
