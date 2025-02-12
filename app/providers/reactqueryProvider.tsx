@@ -19,9 +19,12 @@ export interface ThemeState {
   bg: string;
   activeBg: string;
   textColor: string;
+  activeTextColor: string;
   borderColor: string;
   svgIconColor: string;
-  activeTextColor: string;
+  // Input
+  inputBg: string;
+  inputColor: string;
   //
   hoverBg: string;
   peerCheckedBg: string;
@@ -29,9 +32,10 @@ export interface ThemeState {
   // MUI
   selectIcon: string;
   selectMenuBg: string;
-  selectMenuColor: string;
+  selectMenuTextColor: string;
   selectMenuHoverFocused: string;
   bottomBarActiveTextColor: string;
+  sliderRailColor: string;
 }
 
 const initialTabState: TabState = {
@@ -39,23 +43,50 @@ const initialTabState: TabState = {
 };
 
 const initialThemeState = {
-  bg: 'bg-neutral-900',
-  activeBg: 'bg-green-300',
-  svgIconColor: 'lightgreen',
-  textColor: 'text-green-200',
-  activeTextColor: 'text-black',
-  borderColor: 'border-green-200',
-  bottomBarActiveTextColor: 'text-green-400',
+  bg: 'bg-green-300',
+  textColor: 'text-black',
+  activeBg: 'bg-neutral-900',
+  activeTextColor: 'text-green-200',
+  svgIconColor: 'black',
+  borderColor: 'border-black',
+  bottomBarActiveTextColor: 'black',
+  // Input
+  inputBg: 'bg-green-100',
+  inputColor: 'text-black',
   //
-  hoverBg: 'hover:bg-neutral-800',
-  peerCheckedBg: 'peer-checked:bg-green-300',
-  peerCheckedText: 'peer-checked:text-black',
+  hoverBg: 'hover:bg-green-200',
+  peerCheckedBg: 'peer-checked:bg-black',
+  peerCheckedText: 'peer-checked:text-green-300',
   // MUI
-  selectMenuBg: '#1c2021',
-  selectIcon: 'lightgreen',
-  selectMenuColor: '#4eff5d',
+  selectIcon: 'black',
+  selectMenuBg: '#86EFAC',
+  sliderRailColor: 'black',
+  selectMenuTextColor: 'black',
   selectMenuHoverFocused: '#e7fce9',
 };
+
+// const initialThemeState = {
+//   bg: 'bg-neutral-900',
+//   textColor: 'text-green-200',
+//   activeBg: 'bg-green-300',
+//   activeTextColor: 'text-black',
+//   svgIconColor: 'lightgreen',
+//   borderColor: 'border-green-200',
+//   bottomBarActiveTextColor: 'text-green-400',
+//   // Input
+//   inputBg: 'bg-green-300',
+//   inputColor: 'text-black',
+//   //
+//   hoverBg: 'hover:bg-neutral-800',
+//   peerCheckedBg: 'peer-checked:bg-green-300',
+//   peerCheckedText: 'peer-checked:text-black',
+//   // MUI
+//   selectMenuBg: '#1c2021',
+//   selectIcon: '#86EFAC',
+//   selectMenuTextColor: '#86EFAC',
+//   selectMenuHoverFocused: '#e7fce9',
+//   sliderRailColor: '#e0e0e0',
+// };
 
 export type CityData = {
   [key: string]:

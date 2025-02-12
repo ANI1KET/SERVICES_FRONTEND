@@ -58,8 +58,8 @@ export default function SignUp() {
             placeholder="Name"
             {...register('name')}
             className={cn(
-              cachedTheme?.activeBg,
-              cachedTheme?.activeTextColor,
+              cachedTheme?.inputBg,
+              cachedTheme?.inputColor,
               'w-full p-2 rounded-md placeholder-gray-400'
             )}
           />
@@ -70,8 +70,8 @@ export default function SignUp() {
             placeholder="Email"
             {...register('email')}
             className={cn(
-              cachedTheme?.activeBg,
-              cachedTheme?.activeTextColor,
+              cachedTheme?.inputBg,
+              cachedTheme?.inputColor,
               'w-full p-2 rounded-md placeholder-gray-400'
             )}
           />
@@ -84,8 +84,8 @@ export default function SignUp() {
             placeholder="Phone Number"
             {...register('number')}
             className={cn(
-              cachedTheme?.activeBg,
-              cachedTheme?.activeTextColor,
+              cachedTheme?.inputBg,
+              cachedTheme?.inputColor,
               'w-full p-2 rounded-md placeholder-gray-400'
             )}
           />
@@ -98,8 +98,8 @@ export default function SignUp() {
             placeholder="Password"
             {...register('password')}
             className={cn(
-              cachedTheme?.activeBg,
-              cachedTheme?.activeTextColor,
+              cachedTheme?.inputBg,
+              cachedTheme?.inputColor,
               'w-full p-2 rounded-md placeholder-gray-400'
             )}
           />

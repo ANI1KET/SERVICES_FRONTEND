@@ -38,7 +38,7 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = ({ roomCardDetails }) => {
           <ContactIcon />
           Contact
         </span>
-        <span>{`+977-${roomCardDetails.roomNumber}`}</span>
+        <span>{`+977-${roomCardDetails.primaryContact}`}</span>
       </p>
       <p className="hidden max-xsm:block break-words">
         <span className="flex items-center gap-2 text-sm">

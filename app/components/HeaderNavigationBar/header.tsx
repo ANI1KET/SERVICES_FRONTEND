@@ -53,7 +53,7 @@ const Header: React.FC = () => {
             cachedTheme?.bg,
             cachedTheme?.textColor,
             cachedTheme?.borderColor,
-            'h-[5.5vh] w-[70vw] flex items-center justify-around border-r border-b'
+            'h-[5.5vh] w-[70vw] flex items-center justify-around border-b'
           )}
         />
         {/* <div className="h-[2.5vh] w-full text-xs text-center text-green-200">
@@ -66,7 +66,7 @@ const Header: React.FC = () => {
           cachedTheme?.bg,
           cachedTheme?.textColor,
           cachedTheme?.borderColor,
-          'h-[8vh] w-[18vw] flex justify-around items-center flex-row-reverse p-1 rounded-bl-2xl border-r border-b'
+          'h-[8vh] w-[18vw] flex justify-around items-center flex-row-reverse p-1 rounded-bl-2xl border-b border-l'
         )}
       >
         <div className="cursor-pointer relative group">
@@ -129,7 +129,10 @@ const Header: React.FC = () => {
                       cachedTheme?.hoverBg,
                       'p-2 rounded-lg cursor-pointer '
                     )}
-                    onClick={() => signOut({ redirect: false })}
+                    onClick={() => {
+                      signOut({ redirect: false });
+                      router.push('/');
+                    }}
                   >
                     Logout
                   </li>

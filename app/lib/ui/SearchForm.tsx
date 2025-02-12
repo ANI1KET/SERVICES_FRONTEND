@@ -279,7 +279,7 @@ const SearchForm: React.FC = () => {
             MenuProps={{
               PaperProps: {
                 sx: {
-                  color: cachedTheme?.selectMenuColor,
+                  color: cachedTheme?.selectMenuTextColor,
                   backgroundColor: cachedTheme?.selectMenuBg,
                 },
               },
@@ -361,7 +361,7 @@ const SearchForm: React.FC = () => {
             MenuProps={{
               PaperProps: {
                 sx: {
-                  color: cachedTheme?.selectMenuColor,
+                  color: cachedTheme?.selectMenuTextColor,
                   backgroundColor: cachedTheme?.selectMenuBg,
                 },
               },

@@ -43,13 +43,23 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
           </span>
           <span>{`${roomCardDetails.city}, ${roomCardDetails.location}`}</span>
         </p>
-        <hr className="hidden max-xsm:block col-span-2" />
-        <p className="hidden max-xsm:block border-r break-words">
+        <hr
+          className={cn(
+            cacheTheme?.borderColor,
+            'hidden max-xsm:block col-span-2'
+          )}
+        />
+        <p
+          className={cn(
+            cacheTheme?.borderColor,
+            'hidden max-xsm:block border-r break-words'
+          )}
+        >
           <span className="flex items-center gap-2 text-sm">
             <ContactIcon />
             Contact
           </span>
-          <span>{`+977-${roomCardDetails.roomNumber}`}</span>
+          <span>{`+977-${roomCardDetails.primaryContact}`}</span>
         </p>
         <p className="hidden max-xsm:block break-words">
           <span className="flex items-center gap-2 text-sm">
@@ -58,9 +68,14 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
           </span>
           <span>{`Rs.${roomCardDetails.price}`}</span>
         </p>
-        <hr className="hidden max-xsm:block col-span-2" />
+        <hr
+          className={cn(
+            cacheTheme?.borderColor,
+            'hidden max-xsm:block col-span-2'
+          )}
+        />
         {/*  */}
-        <p className="border-r break-words">
+        <p className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
           <span className="flex items-center gap-2 text-sm">
             <RoomTypeIcon />
             Room Type
@@ -74,8 +89,8 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
           </span>
           <span>{`${roomCardDetails.furnishingStatus}`}</span>
         </p>
-        <hr className="col-span-2" />
-        <p className="border-r break-words">
+        <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
+        <p className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
           <span className="flex items-center gap-2 text-sm">
             <CapacityIcon />
             Capacity
@@ -89,8 +104,8 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
           </span>
           <span>{`${roomCardDetails.postedBy}`}</span>
         </p>
-        <hr className="col-span-2" />
-        <p className="border-r break-words">
+        <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
+        <p className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
           <span className="flex items-center gap-2 text-sm">
             <ListedOnIcon />
             Listed On
@@ -104,7 +119,7 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
           </span>
           <span>{new Date(roomCardDetails.updatedAt).toDateString()}</span>
         </p>
-        <hr className="col-span-2" />
+        <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
         {/*  */}
         <p className="hidden max-xsm:block col-span-2 ">
           <span className="flex justify-center items-center gap-2 text-base font-semibold">
@@ -116,7 +131,12 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
             </span>
           )}
         </p>
-        <hr className="hidden max-xsm:block col-span-2" />
+        <hr
+          className={cn(
+            cacheTheme?.borderColor,
+            'hidden max-xsm:block col-span-2'
+          )}
+        />
       </div>
     </div>
   );

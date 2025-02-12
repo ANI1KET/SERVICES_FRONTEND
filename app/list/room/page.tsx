@@ -148,14 +148,28 @@ const Room = () => {
           />
           <InputField
             label="Contact"
-            id="roomNumber"
-            register={register('roomNumber', {
+            id="primaryContact"
+            register={register('primaryContact', {
               required: 'Enter your number',
               pattern: {
                 value: /^\d{10}$/,
                 message: 'The number must be exactly 10 digits',
               },
-              onBlur: () => trigger('roomNumber'),
+              onBlur: () => trigger('primaryContact'),
+            })}
+            errors={errors}
+            handleEnterPress={handleEnterPress}
+          />
+          <InputField
+            label="Owner Contact"
+            id="ownerContact"
+            register={register('ownerContact', {
+              required: 'Enter your number',
+              pattern: {
+                value: /^\d{10}$/,
+                message: 'The number must be exactly 10 digits',
+              },
+              onBlur: () => trigger('ownerContact'),
             })}
             errors={errors}
             handleEnterPress={handleEnterPress}

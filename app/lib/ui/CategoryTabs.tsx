@@ -3,9 +3,11 @@
 import React, { useCallback } from 'react';
 
 import {
-  useSetTabState,
   useTabState,
+  useThemeState,
+  useSetTabState,
 } from '@/app/providers/reactqueryProvider';
+import { cn } from '../utils/tailwindMerge';
 
 interface TabProps {
   children: React.ReactNode;
@@ -14,11 +16,17 @@ interface TabProps {
 }
 
 const Tab: React.FC<TabProps> = ({ children, isActive, onClick }) => {
+  const cachedTheme = useThemeState();
+
   return (
     <li
-      className={`cursor-pointer p-1 text-sm lg:text-base rounded-3xl transition-all duration-200 ${
-        isActive ? `text-black bg-green-300 scale-105 ` : ''
-      }`}
+      className={cn(
+        `cursor-pointer p-1 text-sm lg:text-base rounded-3xl transition-all duration-200, ${
+          isActive
+            ? `${cachedTheme?.activeTextColor} ${cachedTheme?.activeBg} scale-105 `
+            : ''
+        }`
+      )}
       onClick={onClick}
     >
       <span>{children}</span>

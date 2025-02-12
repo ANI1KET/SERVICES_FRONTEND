@@ -1,12 +1,18 @@
 'use server';
 
 import { AxiosError } from 'axios';
+// import { cookies } from 'next/headers';
+// import { headers } from 'next/headers';
 
 import axiosInstance from './axiosInstance';
 
 export async function getCategoryCitiesLocations() {
   'use server';
 
+  // const cookieStore = await cookies();
+  // console.log('1 ', cookieStore);
+  // const requestHeaders = await headers();
+  // console.log(Object.fromEntries(requestHeaders));
   try {
     const response = await axiosInstance.get(`/place/cities-locations`);
 

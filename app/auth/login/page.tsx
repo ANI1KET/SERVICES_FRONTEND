@@ -69,7 +69,7 @@ export default function Login() {
     setIsLoading(false);
 
     if (result?.ok) {
-      router.push(redirectUrl);
+      // router.push(redirectUrl);
     } else {
       console.error('Sign-in failed:', result?.error);
     }
@@ -140,8 +140,8 @@ export default function Login() {
                   placeholder="Email"
                   {...register('email')}
                   className={cn(
-                    cachedTheme?.activeBg,
-                    cachedTheme?.activeTextColor,
+                    cachedTheme?.inputBg,
+                    cachedTheme?.inputColor,
                     `w-full px-4 py-2 rounded-md focus:outline-none ${
                       errors.email ? 'border border-red-500' : ''
                     }`
@@ -157,8 +157,8 @@ export default function Login() {
                   placeholder="Password"
                   {...register('password')}
                   className={cn(
-                    cachedTheme?.activeBg,
-                    cachedTheme?.activeTextColor,
+                    cachedTheme?.inputBg,
+                    cachedTheme?.inputColor,
                     `w-full px-4 py-2 rounded-md focus:outline-none ${
                       errors.password ? 'border border-red-500' : ''
                     }`

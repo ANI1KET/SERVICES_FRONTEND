@@ -22,7 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-neutral-800">
+      <body className="bg-green-100">
+        {/* <body className="bg-neutral-800"> */}
         <ReactQueryProvider>
           <AuthProvider>
             {/* <DisableInteractions /> */}

@@ -17,8 +17,13 @@ export async function middleware(req: NextRequest) {
   }
 
   const requestedPath = req.nextUrl.pathname.split('/')[2];
-  const permission = token.permission.includes(requestedPath);
-  if (req.nextUrl.pathname.startsWith('/list/') && !permission) {
+  let permission = token.permission.includes(requestedPath);
+  if (req.nextUrl.pathname.startsWith('/list') && !permission) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
+
+  permission = token.role.toLowerCase() === requestedPath;
+  if (req.nextUrl.pathname.startsWith('/dashboard') && !permission) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
@@ -26,5 +31,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/list/:path*'],
+  matcher: ['/list/:path*', '/dashboard/:path*'],
 };

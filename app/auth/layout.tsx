@@ -35,7 +35,7 @@ export default function AuthLayout({
         >
           Login
         </Link>
-        <div className="border-l"></div>
+        <div className={cn('border-l', cachedTheme?.borderColor)}></div>
         <Link
           href="/auth/signup"
           className="w-full flex justify-center p-2 hover:scale-110"

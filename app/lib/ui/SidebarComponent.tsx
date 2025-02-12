@@ -5,11 +5,12 @@ import { IconMenu2, IconX } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState, createContext, useContext } from 'react';
 
-import { cn } from '../lib/utils/tailwindMerge';
+import { cn } from '../utils/tailwindMerge';
+import { useThemeState } from '../../providers/reactqueryProvider';
 
 interface Links {
-  label: string;
   href: string;
+  label: string;
   icon: React.JSX.Element | React.ReactNode;
 }
 
@@ -60,10 +61,10 @@ export const Sidebar = ({
   setOpen,
   animate,
 }: {
-  children: React.ReactNode;
   open?: boolean;
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   animate?: boolean;
+  children: React.ReactNode;
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <SidebarProvider open={open} setOpen={setOpen} animate={animate}>
@@ -86,13 +87,15 @@ export const DesktopSidebar = ({
   children,
   ...props
 }: React.ComponentProps<typeof motion.div>) => {
+  const cachedTheme = useThemeState();
   const { open, setOpen, animate } = useSidebar();
   return (
     <>
       <motion.div
         className={cn(
-          'h-full px-4 py-4 hidden  md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0',
-          className
+          className,
+          cachedTheme?.bg,
+          'h-full px-4 py-4 hidden md:flex md:flex-col w-[300px] flex-shrink-0'
         )}
         animate={{
           width: animate ? (open ? '300px' : '60px') : '300px',
@@ -112,18 +115,20 @@ export const MobileSidebar = ({
   children,
   ...props
 }: React.ComponentProps<'div'>) => {
+  const cachedTheme = useThemeState();
   const { open, setOpen } = useSidebar();
   return (
     <>
       <div
         className={cn(
-          'h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full'
+          cachedTheme?.bg,
+          'h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between w-full'
         )}
         {...props}
       >
         <div className="flex justify-end z-20 w-full">
           <IconMenu2
-            className="text-neutral-800 dark:text-neutral-200"
+            className={cn(cachedTheme?.textColor)}
             onClick={() => setOpen(!open)}
           />
         </div>
@@ -138,12 +143,16 @@ export const MobileSidebar = ({
                 ease: 'easeInOut',
               }}
               className={cn(
-                'fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between',
-                className
+                className,
+                cachedTheme?.bg,
+                'fixed h-full w-full inset-0 p-10 z-[100] flex flex-col justify-between'
               )}
             >
               <div
-                className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200"
+                className={cn(
+                  cachedTheme?.textColor,
+                  'absolute right-10 top-10 z-50'
+                )}
                 onClick={() => setOpen(!open)}
               >
                 <IconX />
@@ -166,13 +175,15 @@ export const SidebarLink = ({
   className?: string;
   props?: LinkProps;
 }) => {
+  const cachedTheme = useThemeState();
   const { open, animate } = useSidebar();
   return (
     <Link
       href={link.href}
       className={cn(
-        'flex items-center justify-start gap-2  group/sidebar py-2',
-        className
+        className,
+        cachedTheme?.textColor,
+        'flex items-center justify-start gap-2 group/sidebar py-2'
       )}
       {...props}
     >
@@ -183,7 +194,10 @@ export const SidebarLink = ({
           display: animate ? (open ? 'inline-block' : 'none') : 'inline-block',
           opacity: animate ? (open ? 1 : 0) : 1,
         }}
-        className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+        className={cn(
+          cachedTheme?.textColor,
+          'text-lg group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0'
+        )}
       >
         {link.label}
       </motion.span>

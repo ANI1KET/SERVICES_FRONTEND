@@ -42,11 +42,12 @@ export type Room = {
   kitchen: number;
   bathroom: number;
   roomtype: string;
-  roomNumber: string;
   mincapacity: number;
   maxcapacity: number;
+  ownerContact: string;
   amenities: Aminities[];
   price: string | number;
+  primaryContact: string;
   direction: string | null;
   furnishingStatus: FurnishingStatus;
 };

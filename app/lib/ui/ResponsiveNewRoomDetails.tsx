@@ -28,7 +28,12 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
         'max-xsm:hidden grid grid-cols-6 place-content-start mx-2 border-[1px] rounded-lg'
       )}
     >
-      <p className="col-span-2 border-r mr-2 ml-1 ">
+      <p
+        className={cn(
+          cacheTheme?.borderColor,
+          'col-span-2 border-r mr-2 ml-1 '
+        )}
+      >
         <span className="text-lg font-semibold flex items-center gap-1">
           <PriceIcon size={16} />
           Rs.{`${roomCardDetails?.price}`}
@@ -46,9 +51,14 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
         )}
       </span>
 
-      <span className="col-span-2 border-r mr-2 flex items-center gap-1 ml-2 ">
+      <span
+        className={cn(
+          cacheTheme?.borderColor,
+          'col-span-2 border-r mr-2 flex items-center gap-1 ml-2 '
+        )}
+      >
         <ContactIcon size={14} />
-        {`+977-${roomCardDetails?.roomNumber}`}
+        {`+977-${roomCardDetails?.primaryContact}`}
       </span>
 
       <span className="col-span-4 flex items-center gap-2 ">
@@ -56,7 +66,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
         {`${roomCardDetails?.roomtype}`} for Rent
       </span>
 
-      <hr className="col-span-6 border-1 " />
+      <hr className={cn(cacheTheme?.borderColor, 'col-span-6 border-1 ')} />
 
       <p className="flex items-center col-span-6 gap-2 ml-2">
         <span className="text-lg font-semibold col-span-1 ">Amenities:</span>

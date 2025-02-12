@@ -52,9 +52,9 @@ export const InputField = ({
         {...register}
         onKeyDown={handleEnterPress}
         className={cn(
-          cachedTheme?.activeBg,
-          'border rounded w-full p-1',
-          cachedTheme?.activeTextColor
+          cachedTheme?.inputBg,
+          cachedTheme?.inputColor,
+          'border rounded w-full p-1'
         )}
       />
       {errors[id] && (
@@ -93,9 +93,9 @@ export const OptionalField = ({
         {...register}
         onKeyDown={handleEnterPress}
         className={cn(
-          cachedTheme?.activeBg,
-          'border rounded w-full p-1',
-          cachedTheme?.activeTextColor
+          cachedTheme?.inputBg,
+          cachedTheme?.inputColor,
+          'border rounded w-full p-1'
         )}
       />
     </div>
@@ -182,22 +182,26 @@ export const FileInput = ({
   multiple = false,
   accept,
   error,
-}: FileInputProps) => (
-  <div>
-    <label htmlFor={id} className="block font-medium">
-      {label}
-    </label>
-    <input
-      type="file"
-      id={id}
-      {...register}
-      multiple={multiple}
-      accept={accept}
-      className="border rounded w-full p-2"
-    />
-    {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-  </div>
-);
+}: FileInputProps) => {
+  const cachedTheme = useThemeState();
+
+  return (
+    <div>
+      <label htmlFor={id} className="block font-medium">
+        {label}
+      </label>
+      <input
+        type="file"
+        id={id}
+        {...register}
+        multiple={multiple}
+        accept={accept}
+        className={cn(cachedTheme?.borderColor, 'border rounded w-full p-2')}
+      />
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+    </div>
+  );
+};
 
 // PlusCheckbox Group
 type TickCheckboxGroupProps = {
@@ -223,11 +227,19 @@ export const TickCheckboxGroup = ({
   return (
     <div>
       <span className="block font-medium">{label}</span>
-      <div className="grid grid-cols-3 lg:grid-cols-4 max-sm:grid-cols-3 max-xsm:grid-cols-2">
+      <div
+        className={cn(
+          cachedTheme?.borderColor,
+          'grid grid-cols-3 lg:grid-cols-4 max-sm:grid-cols-3 max-xsm:grid-cols-2'
+        )}
+      >
         {options.map((value) => (
           <label
             key={value}
-            className="w-fit flex items-center border rounded-lg cursor-pointer "
+            className={cn(
+              cachedTheme?.borderColor,
+              'w-fit flex items-center border rounded-lg cursor-pointer '
+            )}
           >
             <input
               type="checkbox"
@@ -237,9 +249,10 @@ export const TickCheckboxGroup = ({
             />
             <span
               className={cn(
+                cachedTheme?.borderColor,
                 cachedTheme?.peerCheckedBg,
                 cachedTheme?.peerCheckedText,
-                'font-bold px-1 border rounded-lg transition-colors duration-300'
+                'font-bold px-1 border-r rounded-lg transition-colors duration-300'
               )}
               style={{}}
             >
@@ -282,6 +295,7 @@ export const CheckedBox = ({
         />
         <span
           className={cn(
+            cachedTheme?.borderColor,
             cachedTheme?.peerCheckedBg,
             cachedTheme?.peerCheckedText,
             'font-bold px-1 border rounded-lg transition-colors duration-300'
@@ -334,7 +348,10 @@ export const CustomCheckboxGroup = <T extends string>({
         {options.map((value) => (
           <label
             key={value}
-            className="w-fit flex items-center border rounded-lg cursor-pointer"
+            className={cn(
+              cachedTheme?.borderColor,
+              'w-fit flex items-center border rounded-lg cursor-pointer'
+            )}
           >
             <input
               type="checkbox"
@@ -397,6 +414,7 @@ export const PriceSlider: React.FC<PriceSliderProps> = ({
   onChangeEnd,
   defaultValue,
 }) => {
+  const cachedTheme = useThemeState();
   const [price, setPrice] = useState<number[] | number>(
     defaultValue ?? [0, 10000]
   );
@@ -414,13 +432,13 @@ export const PriceSlider: React.FC<PriceSliderProps> = ({
           width: '98%',
           margin: 'auto',
           '& .MuiSlider-thumb': {
-            backgroundColor: 'lightgreen',
+            backgroundColor: cachedTheme?.selectIcon,
           },
           '& .MuiSlider-track': {
-            backgroundColor: 'lightgreen',
+            backgroundColor: cachedTheme?.selectIcon,
           },
           '& .MuiSlider-rail': {
-            backgroundColor: '#e0e0e0',
+            backgroundColor: cachedTheme?.sliderRailColor,
           },
         }}
         valueLabelDisplay="auto"
@@ -448,6 +466,7 @@ export const RatingSlider: React.FC<RatingSliderProps> = ({
   onChangeEnd,
   defaultValue,
 }) => {
+  const cachedTheme = useThemeState();
   const [rating, setRating] = useState<number[] | number>(
     defaultValue ?? [0, 5]
   );
@@ -465,13 +484,13 @@ export const RatingSlider: React.FC<RatingSliderProps> = ({
           width: '98%',
           margin: 'auto',
           '& .MuiSlider-thumb': {
-            backgroundColor: 'lightgreen',
+            backgroundColor: cachedTheme?.selectIcon,
           },
           '& .MuiSlider-track': {
-            backgroundColor: 'lightgreen',
+            backgroundColor: cachedTheme?.selectIcon,
           },
           '& .MuiSlider-rail': {
-            backgroundColor: '#e0e0e0',
+            backgroundColor: cachedTheme?.sliderRailColor,
           },
         }}
         valueLabelDisplay="auto"
@@ -498,6 +517,7 @@ export const CapacitySlider: React.FC<CapacitySliderProps> = ({
   onChangeEnd,
   defaultValue,
 }) => {
+  const cachedTheme = useThemeState();
   const [capacity, setCapacity] = useState<number[] | number>(
     defaultValue ?? [2, 20]
   );
@@ -515,13 +535,13 @@ export const CapacitySlider: React.FC<CapacitySliderProps> = ({
           width: '98%',
           margin: 'auto',
           '& .MuiSlider-thumb': {
-            backgroundColor: 'lightgreen',
+            backgroundColor: cachedTheme?.selectIcon,
           },
           '& .MuiSlider-track': {
-            backgroundColor: 'lightgreen',
+            backgroundColor: cachedTheme?.selectIcon,
           },
           '& .MuiSlider-rail': {
-            backgroundColor: '#e0e0e0',
+            backgroundColor: cachedTheme?.sliderRailColor,
           },
         }}
         valueLabelDisplay="auto"

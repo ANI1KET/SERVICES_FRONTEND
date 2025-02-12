@@ -1,6 +1,7 @@
 // import type { Metadata } from 'next';
-// import Link from 'next/link';
-import { SideBar } from './sidebar';
+
+import ApolloProviderWrapper from '../providers/ApolloProviderWrapper';
+import { SideNavBar } from '../components/SideNavigationBar/SideNavBar';
 
 // export const metadata: Metadata = {
 //   title: 'ROOM RENTAL',
@@ -14,24 +15,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <section className="relative ">
-      {/* <div className="relative w-[71vw] ml-[11.5vw] mr-[18.5vw] flex border-2 border-black rounded-xl max-sm:top-2 max-sm:w-2/3 max-sm:mx-auto bg-green-300">
-        <Link
-          href="/auth/login"
-          className="w-full flex justify-center p-2 hover:scale-110"
-        >
-          Login
-        </Link>
-        <div className="border-l border-black"></div>
-        <Link
-          href="/auth/signup"
-          className="w-full flex justify-center p-2 hover:scale-110"
-        >
-          Signup
-        </Link>
-      </div> */}
-      <SideBar />
-      {children}
-    </section>
+    <ApolloProviderWrapper>
+      <SideNavBar>{children}</SideNavBar>
+    </ApolloProviderWrapper>
   );
 }
