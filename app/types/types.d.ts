@@ -7,14 +7,13 @@ export type Permission =
   | 'rental'
   | 'restaurant';
 export type PostedBy = 'USER' | 'OWNER' | 'BROKER';
-export type Aminities = 'PARKING' | 'WIFI' | 'WATER';
 export type RoomType = 'FLAT' | '1BHK' | '2BHK' | '3BHK' | '4BHK';
 export type FurnishingStatus = 'UNFURNISHED' | 'SEMIFURNISHED' | 'FURNISHED';
 
 export type QueryFilters = {
   postedby: PostedBy[];
   roomtype: RoomType[];
-  amenities: Aminities[];
+  amenities: string[];
   price: number | number[];
   rating: number | number[];
   capacity: number | number[];
@@ -45,7 +44,7 @@ export type Room = {
   mincapacity: number;
   maxcapacity: number;
   ownerContact: string;
-  amenities: Aminities[];
+  amenities: string[];
   price: string | number;
   primaryContact: string;
   direction: string | null;

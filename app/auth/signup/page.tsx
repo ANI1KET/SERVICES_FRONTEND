@@ -111,9 +111,9 @@ export default function SignUp() {
             type="submit"
             disabled={isSubmitting}
             className={cn(
-              cachedTheme?.bg,
-              cachedTheme?.textColor,
+              cachedTheme?.activeBg,
               cachedTheme?.borderColor,
+              cachedTheme?.activeTextColor,
               `w-full py-2 border rounded-md shadow-md transition-colors ${
                 isSubmitting
                   ? 'opacity-50 cursor-not-allowed'

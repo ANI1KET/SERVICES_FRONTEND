@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-export const GET_USER_LISTED_ROOMS = gql`
-  query GetUserDetails($id: ID!, $offset: Int!, $limit: Int!) {
+export const GET_LISTED_ROOMS = gql`
+  query GetUserListedRoomDetails($id: ID!, $offset: Int!, $limit: Int!) {
     user(id: $id) {
       rooms(offset: $offset, limit: $limit) {
         id
@@ -9,24 +9,23 @@ export const GET_USER_LISTED_ROOMS = gql`
         name
         hall
         price
-        photos
-        videos
-        ratings
+        # photos
+        # videos
+        # ratings
         kitchen
         bedroom
-        roomtype
-        postedBy
-        verified
+        # roomtype
+        # postedBy
+        # verified
         location
-        location
-        bathroom
-        createdAt
+        # bathroom
+        # createdAt
         direction
-        updatedAt
+        # updatedAt
         amenities
         available
-        maxcapacity
-        mincapacity
+        # maxcapacity
+        # mincapacity
         ownerContact
         primaryContact
         furnishingStatus

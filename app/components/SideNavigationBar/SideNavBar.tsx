@@ -27,7 +27,7 @@ export function SideNavBar({ children }: { children: React.ReactNode }) {
         <SidebarBody
           className={cn(
             cachedTheme?.borderColor,
-            'border justify-between gap-10 rounded-r-3xl max-sm:rounded-r-none'
+            'border justify-between gap-10 max-sm:rounded-r-none'
           )}
         >
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">

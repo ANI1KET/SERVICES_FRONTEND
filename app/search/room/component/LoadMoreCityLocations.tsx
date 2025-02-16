@@ -6,7 +6,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   PostedBy,
   RoomType,
-  Aminities,
   SearchQueries,
   FurnishingStatus,
 } from '../../../types/types';
@@ -101,10 +100,10 @@ const LoadMoreCityLocations = () => {
           />
         </div>
 
-        <CustomCheckboxGroup<Aminities>
+        <CustomCheckboxGroup
           label="Amenities"
           options={['PARKING', 'WIFI', 'WATER']}
-          defaultValue={searchData?.filters.amenities as Aminities[]}
+          defaultValue={searchData?.filters.amenities as string[]}
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(amenity) => updateFilter('amenities', amenity)}
         />
@@ -169,7 +168,12 @@ const LoadMoreCityLocations = () => {
           }`
         )}
       >
-        <div className="flex flex-col gap-1 w-full h-[50vh] col-span-9 border-2 rounded-t-2xl p-2 overflow-y-scroll">
+        <div
+          className={cn(
+            cacheTheme?.borderColor,
+            'flex flex-col gap-1 w-full h-[50vh] col-span-9 border-2 rounded-t-2xl p-2 overflow-y-scroll'
+          )}
+        >
           <PriceSlider
             defaultValue={searchData?.filters.price}
             onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
@@ -189,10 +193,10 @@ const LoadMoreCityLocations = () => {
             />
           </div>
 
-          <CustomCheckboxGroup<Aminities>
+          <CustomCheckboxGroup
             label="Amenities"
             options={['PARKING', 'WIFI', 'WATER']}
-            defaultValue={searchData?.filters.amenities as Aminities[]}
+            defaultValue={searchData?.filters.amenities as string[]}
             className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
             onChange={(amenity) => updateFilter('amenities', amenity)}
           />
@@ -228,7 +232,10 @@ const LoadMoreCityLocations = () => {
           />
         </div>
         <div
-          className="cursor-pointer rounded-full p-1 backdrop-blur-3xl border-2 absolute bottom-[0.8vh] right-1"
+          className={cn(
+            cacheTheme?.borderColor,
+            'cursor-pointer rounded-full p-1 backdrop-blur-3xl border-2 absolute bottom-[0.8vh] right-1'
+          )}
           onClick={togglePanel}
         >
           <svg
@@ -255,7 +262,7 @@ const LoadMoreCityLocations = () => {
             cacheTheme?.bg,
             cacheTheme?.textColor,
             cacheTheme?.borderColor,
-            'hidden max-xsm:block fixed bottom-[8.5vh] right-1 z-10 p-2 text-xl rounded-lg border'
+            'hidden max-xsm:block fixed bottom-[8.5vh] right-1 p-2 text-xl rounded-lg border'
           )}
           onClick={togglePanel}
         >

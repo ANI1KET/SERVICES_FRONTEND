@@ -8,7 +8,6 @@ import {
   Room,
   RoomType,
   PostedBy,
-  Aminities,
   RoomWithMedia,
   FurnishingStatus,
 } from '@/app/types/types';
@@ -143,7 +142,7 @@ export const RadioGroup = ({
 // Checkbox Group
 type CheckboxGroupProps = {
   label: string;
-  options: Aminities[];
+  options: string[];
   register: ReturnType<UseFormRegister<Room>>;
 };
 
@@ -206,10 +205,10 @@ export const FileInput = ({
 // PlusCheckbox Group
 type TickCheckboxGroupProps = {
   label: string;
-  options: Aminities[] | PostedBy[] | RoomType[] | FurnishingStatus[];
+  options: string[] | PostedBy[] | RoomType[] | FurnishingStatus[];
   register: ReturnType<
     UseFormRegister<{
-      amenities: Aminities;
+      amenities: string;
       postedby: PostedBy;
       roomtype: RoomType;
       furnishingstatus: FurnishingStatus;

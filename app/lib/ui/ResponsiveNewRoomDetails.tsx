@@ -45,7 +45,13 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
         <HomeLocationIcon size={16} />
         {`${roomCardDetails?.city}, ${roomCardDetails?.location}`}
         {roomCardDetails?.verified && (
-          <span className="text-sm p-1 bg-green-500 rounded-lg ml-auto">
+          <span
+            className={cn(
+              cacheTheme?.activeBg,
+              cacheTheme?.activeTextColor,
+              'text-sm p-[2px] rounded-lg ml-auto'
+            )}
+          >
             Verified
           </span>
         )}
@@ -64,6 +70,34 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
       <span className="col-span-4 flex items-center gap-2 ">
         <RoomTypeIcon size={14} />
         {`${roomCardDetails?.roomtype}`} for Rent
+        <span
+          title={`${btoa(roomCardDetails.id)}`}
+          className={cn(
+            cacheTheme?.activeBg,
+            cacheTheme?.activeTextColor,
+            'text-sm p-[2px] rounded-lg ml-auto cursor-pointer'
+          )}
+          onClick={(e) => {
+            const target = e.currentTarget;
+            const originalText = target.innerText;
+            navigator.clipboard
+              .writeText(btoa(roomCardDetails.id))
+              .then(() => {
+                target.innerText = 'Copied';
+                setTimeout(() => {
+                  target.innerText = originalText;
+                }, 1000);
+              })
+              .catch(() => {
+                target.innerText = 'Failed';
+                setTimeout(() => {
+                  target.innerText = originalText;
+                }, 1000);
+              });
+          }}
+        >
+          Copy Id
+        </span>
       </span>
 
       <hr className={cn(cacheTheme?.borderColor, 'col-span-6 border-1 ')} />

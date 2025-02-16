@@ -216,7 +216,12 @@ const CategoryCardLayout: React.FC<{
           ></div>
           {isFetchingNextPage && (
             <div className="flex justify-center items-center">
-              <div className="w-8 h-8 border-4 border-t-transparent border-black rounded-full animate-spin"></div>
+              <div
+                className={cn(
+                  cachedTheme?.activeBg,
+                  'w-8 h-8 border-4 border-t-transparent rounded-full animate-spin'
+                )}
+              ></div>
             </div>
           )}
         </div>

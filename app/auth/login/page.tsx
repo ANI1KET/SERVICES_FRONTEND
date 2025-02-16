@@ -177,9 +177,9 @@ export default function Login() {
                 type="submit"
                 disabled={isLoading || isSubmitting}
                 className={cn(
-                  cachedTheme?.bg,
-                  cachedTheme?.textColor,
+                  cachedTheme?.activeBg,
                   cachedTheme?.borderColor,
+                  cachedTheme?.activeTextColor,
                   `w-full py-2 rounded-md shadow-md border transition-transform transform ${
                     isLoading || isSubmitting
                       ? 'opacity-50 cursor-not-allowed'
@@ -196,9 +196,9 @@ export default function Login() {
               disabled={isLoading}
               onClick={handleSignInGoogle}
               className={cn(
-                cachedTheme?.bg,
-                cachedTheme?.textColor,
+                cachedTheme?.activeBg,
                 cachedTheme?.borderColor,
+                cachedTheme?.activeTextColor,
                 `w-full border py-2 rounded-md shadow-md transition-transform transform mt-4 ${
                   isLoading
                     ? 'opacity-50 cursor-not-allowed'

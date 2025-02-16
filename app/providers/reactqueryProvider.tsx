@@ -36,6 +36,8 @@ export interface ThemeState {
   selectMenuHoverFocused: string;
   bottomBarActiveTextColor: string;
   sliderRailColor: string;
+  // DASHBOARD
+  labelColor: string;
 }
 
 const initialTabState: TabState = {
@@ -63,6 +65,8 @@ const initialThemeState = {
   sliderRailColor: 'black',
   selectMenuTextColor: 'black',
   selectMenuHoverFocused: '#e7fce9',
+  // DASHBOARD
+  labelColor: 'black',
 };
 
 // const initialThemeState = {
@@ -86,6 +90,8 @@ const initialThemeState = {
 //   selectMenuTextColor: '#86EFAC',
 //   selectMenuHoverFocused: '#e7fce9',
 //   sliderRailColor: '#e0e0e0',
+//   // DASHBOARD
+//   labelColor: '#86EFAC',
 // };
 
 export type CityData = {

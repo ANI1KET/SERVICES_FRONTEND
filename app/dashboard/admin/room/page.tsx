@@ -1,132 +1,85 @@
-// 'use client';
+// // 'use client';
 
-// import { useLazyQuery, useMutation } from '@apollo/client';
+// // import { useLazyQuery, useMutation } from '@apollo/client';
 
-// import { users } from '../../graphQL/userQuery';
-// import { updateRoom } from '../../graphQL/roomQuery';
+// // import { users } from '../../graphQL/userQuery';
+// // import { updateRoom } from '../../graphQL/roomQuery';
 
-// const Room = () => {
-//   // const { loading, data, error } = useQuery(gql(users));
-//   const [
-//     getUsers,
-//     { loading: loadingUsers, data: usersData, error: usersDataError },
-//   ] = useLazyQuery(users);
-//   const [
-//     update,
-//     { data: updatedRoomData },
-//     // { loading: updatingRoom, data: updatedRoomData, error: updatedRoomError },
-//   ] = useMutation(updateRoom);
+// // const Room = () => {
+// //   // const { loading, data, error } = useQuery(gql(users));
+// //   const [
+// //     getUsers,
+// //     { loading: loadingUsers, data: usersData, error: usersDataError },
+// //   ] = useLazyQuery(users);
+// //   const [
+// //     update,
+// //     { data: updatedRoomData },
+// //     // { loading: updatingRoom, data: updatedRoomData, error: updatedRoomError },
+// //   ] = useMutation(updateRoom);
 
-//   if (usersDataError) return <h1>Error Occured</h1>;
-//   return loadingUsers ? (
-//     <div>loading...</div>
-//   ) : (
-//     <>
-//       <div className="" onClick={() => getUsers()}>
-//         {JSON.stringify(usersData)}Users
-//       </div>
-//       <div
-//         className=""
-//         onClick={() =>
-//           update({
-//             variables: { id: '679c93ff9ad9169243fa449c', availability: true },
-//           })
-//         }
-//       >
-//         {JSON.stringify(updatedRoomData)}
-//         Update Room
-//       </div>
-//     </>
-//   );
+// //   if (usersDataError) return <h1>Error Occured</h1>;
+// //   return loadingUsers ? (
+// //     <div>loading...</div>
+// //   ) : (
+// //     <>
+// //       <div className="" onClick={() => getUsers()}>
+// //         {JSON.stringify(usersData)}Users
+// //       </div>
+// //       <div
+// //         className=""
+// //         onClick={() =>
+// //           update({
+// //             variables: { id: '679c93ff9ad9169243fa449c', availability: true },
+// //           })
+// //         }
+// //       >
+// //         {JSON.stringify(updatedRoomData)}
+// //         Update Room
+// //       </div>
+// //     </>
+// //   );
+// // };
+
+// // export default Room;
+
+// const AdminRoomDashboard = () => {
+//   return <div></div>;
 // };
 
-// export default Room;
+// export default AdminRoomDashboard;
 
 'use client';
 
 import { Room } from '@prisma/client';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { GET_USER_LISTED_ROOMS } from '../../graphQL/userQuery';
+import { LIMIT } from '../../variables';
+import { GET_LISTED_ROOMS } from '../../graphQL/userQuery';
+import MainLayout from '../../components/admin/room/MainLayout';
+import SearchLayout from '../../components/admin/room/SearchLayout';
 
-const LIMIT = 2;
-
-const AdminRoomDashboard = () => {
+const OwnerRoomDashboard = () => {
   const session = useSession();
-  const [hasMore, setHasMore] = useState(true);
-  const observerRef = useRef<HTMLDivElement | null>(null);
 
-  const { data, loading, error, fetchMore } = useQuery(GET_USER_LISTED_ROOMS, {
+  const { data, loading, error, fetchMore } = useQuery<{
+    user: { rooms: Room[] };
+  }>(GET_LISTED_ROOMS, {
     // fetchPolicy: 'cache-and-network',
     variables: { id: session.data?.user.userId, offset: 0, limit: LIMIT },
   });
-
-  const loadMoreData = useCallback(() => {
-    if (!hasMore) return;
-    fetchMore({
-      variables: {
-        limit: LIMIT,
-        id: session.data?.user.userId,
-        offset: data?.user.rooms.length || 0,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (fetchMoreResult.user.rooms.length < LIMIT) {
-          setHasMore(false);
-        }
-
-        return {
-          user: {
-            ...prev.user,
-            rooms: [...prev.user.rooms, ...fetchMoreResult.user.rooms],
-          },
-        };
-      },
-    });
-  }, [hasMore, fetchMore, session.data?.user.userId, data?.user.rooms.length]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMoreData();
-        }
-      },
-      {
-        root: null,
-        rootMargin: '300px',
-        threshold: 0,
-      }
-    );
-
-    const target = observerRef.current;
-    if (target) observer.observe(target);
-
-    return () => {
-      observer.disconnect();
-      // if (target) observer.unobserve(target);
-    };
-  }, [loadMoreData]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching users.</p>;
   return (
-    <div>
-      {data.user.rooms.map((room: Room) => (
-        <div key={room.id} className="ml-2">
-          <p>City: {room.city}</p>
-          <p>Location: {room.location}</p>
-        </div>
-      ))}
-      {hasMore && (
-        <div
-          ref={observerRef}
-          style={{ height: 50, background: 'transparent' }}
+    <div className="w-full overflow-x-hidden overflow-y-scroll">
+      <SearchLayout>
+        <MainLayout
+          data={data}
+          error={error}
+          loading={loading}
+          fetchMore={fetchMore}
         />
-      )}
+      </SearchLayout>
     </div>
   );
 };
 
-export default AdminRoomDashboard;
+export default OwnerRoomDashboard;

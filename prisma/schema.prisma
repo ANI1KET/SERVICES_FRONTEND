@@ -59,12 +59,6 @@ enum FurnishingStatusEnum {
   FURNISHED
 }
 
-enum Amenities {
-  WIFI
-  WATER
-  PARKING
-}
-
 model Room {
   id               String               @id @default(auto()) @map("_id") @db.ObjectId
   mincapacity      Int
@@ -87,9 +81,9 @@ model Room {
   kitchen          Int
   bathroom         Int
   roomtype         String
+  amenities        String[]             @default([])
   // ENUM
   furnishingStatus FurnishingStatusEnum
-  amenities        Amenities[]          @default([])
   // RELATIONSHIP
   reviews          RoomReview[]         @relation("RoomReviews")
   // RELATIONSHIP

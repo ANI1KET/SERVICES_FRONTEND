@@ -36,7 +36,6 @@ const RoomDetailsLayout: React.FC<{ city: string; roomId: string }> = ({
 
   const RoomDetails = findMatchingRoom(cachedData, roomId);
   if (!RoomDetails) return null;
-
   return (
     <div className="flex flex-col ">
       <div className="flex max-xsm:flex-col gap-1 p-2 relative mb-5 max-xsm:p-0 max-xsm:gap-0 ">
