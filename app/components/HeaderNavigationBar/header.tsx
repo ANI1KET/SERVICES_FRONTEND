@@ -32,8 +32,7 @@ const Header: React.FC = () => {
           router.push('/');
         }}
       >
-        {/* {'AfnoSansar'.split('').map((char, index) => ( */}
-        {'Aniket'.split('').map((char, index) => (
+        {'AfnoSansar'.split('').map((char, index) => (
           <motion.span
             key={index}
             initial={{ opacity: 0, y: 0 }}
