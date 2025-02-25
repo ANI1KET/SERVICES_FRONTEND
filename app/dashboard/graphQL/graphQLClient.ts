@@ -1,3 +1,5 @@
+'use client';
+
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 export const apolloclient = new ApolloClient({
