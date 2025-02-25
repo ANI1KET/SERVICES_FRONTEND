@@ -6,9 +6,11 @@ import React, { useEffect, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
 
 import {
+  GET_ROOM,
   GET_CITY_LOCATION_ROOMS,
   GET_LISTED_ROOMS_CITIES_LOCATIONS,
 } from '@/app/dashboard/graphQL/roomQuery';
+import RoomLayoutCard from './roomLayoutCard';
 import SearchedLayout from './SearchedLayout';
 import { MenuItem, Select } from '@mui/material';
 import { LIMIT } from '@/app/dashboard/variables';
@@ -19,7 +21,7 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
   const session = useSession();
   const cachedTheme = useThemeState();
 
-  const [isFilter, setIsFilter] = useState(false);
+  const [isFilter, setIsFilter] = useState({ cityLocation: false, id: false });
   const [filterRooms, setFilterRooms] = useState({
     id: '',
     city: '',
@@ -41,6 +43,10 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
   ] = useLazyQuery<{
     cityLocationRooms: Room[];
   }>(GET_CITY_LOCATION_ROOMS);
+  const [getRoomData, { data: RoomData }] = useLazyQuery<{ room: Room }>(
+    GET_ROOM,
+    { fetchPolicy: 'no-cache' }
+  );
 
   useEffect(() => {
     if (data?.listedRoomCitiesLocations) {
@@ -65,6 +71,10 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
     if (filterRooms.id) {
       try {
         const roomId = atob(filterRooms.id);
+        getRoomData({
+          variables: { id: roomId },
+        });
+        setIsFilter({ ...isFilter, id: true });
       } catch (error) {
         console.log(error);
       }
@@ -77,7 +87,7 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
           ...(filterRooms.location && { location: filterRooms.location }),
         },
       });
-      setIsFilter(true);
+      setIsFilter({ ...isFilter, cityLocation: true });
     }
   };
   return (
@@ -214,7 +224,7 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
         </button>
       </form>
 
-      {cityLocationRoomsData && isFilter && (
+      {RoomData && RoomData.room && isFilter.id && (
         <div>
           <svg
             width="30"
@@ -223,11 +233,39 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
             strokeWidth="2"
             className="mt-2"
             viewBox="0 0 24 24"
-            stroke="currentColor"
             strokeLinecap="round"
             strokeLinejoin="round"
+            stroke={cachedTheme?.selectIcon}
             xmlns="http://www.w3.org/2000/svg"
-            onClick={() => setIsFilter(false)}
+            onClick={() => setIsFilter({ ...isFilter, id: false })}
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+
+          <div className="grid lg:grid-cols-4 md:grid-cols-3 max-sm:grid-cols-2 max-xsm:grid-cols-1 gap-4 p-4">
+            <RoomLayoutCard
+              isFilter={isFilter}
+              room={RoomData.room}
+              setIsFilter={setIsFilter}
+            />
+          </div>
+        </div>
+      )}
+
+      {cityLocationRoomsData && isFilter.cityLocation && (
+        <div>
+          <svg
+            width="30"
+            height="30"
+            fill="none"
+            strokeWidth="2"
+            className="mt-2"
+            viewBox="0 0 24 24"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            stroke={cachedTheme?.selectIcon}
+            xmlns="http://www.w3.org/2000/svg"
+            onClick={() => setIsFilter({ ...isFilter, cityLocation: false })}
           >
             <path d="M15 18l-6-6 6-6" />
           </svg>
@@ -239,6 +277,8 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
           />
         </div>
       )}
+
+      <hr className={cn('border', cachedTheme?.borderColor)}></hr>
 
       {children}
 

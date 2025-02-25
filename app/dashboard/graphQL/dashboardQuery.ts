@@ -14,3 +14,28 @@ export const GET_LISTED_ROOM_STATS = gql`
     }
   }
 `;
+
+export const GET_BORKER_OWNER_STATS = gql`
+  query GetBrokerOwnerStats {
+    userCategoryStats {
+      BROKER {
+        total
+        users {
+          id
+          role
+          email
+          permission
+        }
+      }
+      OWNER {
+        total
+        users {
+          id
+          role
+          email
+          permission
+        }
+      }
+    }
+  }
+`;

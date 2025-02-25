@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import { LIMIT } from '../../variables';
 import { GET_LISTED_ROOMS } from '../../graphQL/userQuery';
 import MainLayout from '../../components/owner/room/MainLayout';
-import SearchLayout from '../../components/owner/room/SearchLayout';
+import SearchLayout from '../../components/broker/room/SearchLayout';
 
 const OwnerRoomDashboard = () => {
   const session = useSession();

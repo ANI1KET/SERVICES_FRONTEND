@@ -46,12 +46,12 @@ const initialTabState: TabState = {
 
 const initialThemeState = {
   bg: 'bg-green-300',
+  svgIconColor: 'black',
   textColor: 'text-black',
   activeBg: 'bg-neutral-900',
-  activeTextColor: 'text-green-200',
-  svgIconColor: 'black',
   borderColor: 'border-black',
   bottomBarActiveTextColor: 'black',
+  activeTextColor: 'text-green-200',
   // Input
   inputBg: 'bg-green-100',
   inputColor: 'text-black',
@@ -71,10 +71,10 @@ const initialThemeState = {
 
 // const initialThemeState = {
 //   bg: 'bg-neutral-900',
-//   textColor: 'text-green-200',
 //   activeBg: 'bg-green-300',
-//   activeTextColor: 'text-black',
 //   svgIconColor: 'lightgreen',
+//   textColor: 'text-green-200',
+//   activeTextColor: 'text-black',
 //   borderColor: 'border-green-200',
 //   bottomBarActiveTextColor: 'text-green-400',
 //   // Input
@@ -85,11 +85,11 @@ const initialThemeState = {
 //   peerCheckedBg: 'peer-checked:bg-green-300',
 //   peerCheckedText: 'peer-checked:text-black',
 //   // MUI
-//   selectMenuBg: '#1c2021',
 //   selectIcon: '#86EFAC',
+//   selectMenuBg: '#1c2021',
+//   sliderRailColor: '#e0e0e0',
 //   selectMenuTextColor: '#86EFAC',
 //   selectMenuHoverFocused: '#e7fce9',
-//   sliderRailColor: '#e0e0e0',
 //   // DASHBOARD
 //   labelColor: '#86EFAC',
 // };

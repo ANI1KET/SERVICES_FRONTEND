@@ -33,3 +33,30 @@ export const GET_LISTED_ROOMS = gql`
     }
   }
 `;
+
+export const UpdateUser = gql(`
+  mutation UpdateUserRolePermission(
+    $id: ID!,
+    $role:Role,
+    $permission: [Permission!]!
+  ) {
+    updateRolePermission(
+      id: $id,
+      role:$role,
+      permission:$permission
+    ) {
+      message
+    }
+  }
+`);
+
+export const GET_USER_BY_EMAIL_NUMBER = gql(`
+  query UserByEmailOrNumber($email:String,$number:String) {
+    userByEmailOrNumber(email:$email,number:$number) {
+      id
+      role
+      email
+      permission
+    }
+  }
+`);

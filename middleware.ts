@@ -17,13 +17,18 @@ export async function middleware(req: NextRequest) {
   }
 
   const requestedPath = req.nextUrl.pathname.split('/')[2];
-  let permission = token.permission.includes(requestedPath);
-  if (req.nextUrl.pathname.startsWith('/list') && !permission) {
+  let hasPermission = token.permission.includes(requestedPath);
+  if (req.nextUrl.pathname.startsWith('/list') && !hasPermission) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
-  permission = token.role.toLowerCase() === requestedPath;
-  if (req.nextUrl.pathname.startsWith('/dashboard') && !permission) {
+  hasPermission = token.role.toLowerCase() === requestedPath;
+  if (req.nextUrl.pathname.startsWith('/dashboard') && !hasPermission) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
+
+  const path = req.nextUrl.pathname.split('/')[3];
+  if (path && !token.permission.includes(path)) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 

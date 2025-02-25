@@ -61,18 +61,20 @@ export default function Login() {
     );
     const redirectUrl = callbackUrl ? decodeURIComponent(callbackUrl) : '/';
 
-    const result = await signIn('google', {
+    // const result =
+    await signIn('google', {
       // redirect: false,
       callbackUrl: redirectUrl,
     });
 
     setIsLoading(false);
 
-    if (result?.ok) {
-      // router.push(redirectUrl);
-    } else {
-      console.error('Sign-in failed:', result?.error);
-    }
+    // if (result?.ok) {
+    //   // router.push(redirectUrl);
+    // } else {
+    //   console.error('Sign-in failed');
+    //   // console.error('Sign-in failed:', result?.error);
+    // }
   };
 
   const handleSignOut = async () => {
