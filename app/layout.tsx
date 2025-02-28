@@ -1,4 +1,5 @@
 import './globals.css';
+import Script from 'next/script';
 import type { Metadata } from 'next';
 
 import Footer from './components/Footer/footer';
@@ -22,6 +23,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-N3S708NG1H"
+        ></Script>
+        <Script>
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-N3S708NG1H');
+          `}
+        </Script>
+      </head>
       <body className="bg-green-100">
         {/* <body className="bg-neutral-800"> */}
         <ReactQueryProvider>

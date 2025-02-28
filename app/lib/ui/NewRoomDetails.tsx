@@ -41,7 +41,38 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
               </span>
             )}
           </span>
-          <span>{`${roomCardDetails.city}, ${roomCardDetails.location}`}</span>
+          <span className="flex ">
+            {`${roomCardDetails.city}, ${roomCardDetails.location}`}
+
+            <span
+              title={`${btoa(roomCardDetails.id)}`}
+              className={cn(
+                cacheTheme?.activeBg,
+                cacheTheme?.activeTextColor,
+                'text-sm p-[2px] rounded-lg ml-auto cursor-pointer'
+              )}
+              onClick={(e) => {
+                const target = e.currentTarget;
+                const originalText = target.innerText;
+                navigator.clipboard
+                  .writeText(btoa(roomCardDetails.id))
+                  .then(() => {
+                    target.innerText = 'Copied';
+                    setTimeout(() => {
+                      target.innerText = originalText;
+                    }, 1000);
+                  })
+                  .catch(() => {
+                    target.innerText = 'Failed';
+                    setTimeout(() => {
+                      target.innerText = originalText;
+                    }, 1000);
+                  });
+              }}
+            >
+              Copy Id
+            </span>
+          </span>
         </p>
         <hr
           className={cn(

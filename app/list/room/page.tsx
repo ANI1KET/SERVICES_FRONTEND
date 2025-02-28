@@ -49,8 +49,8 @@ const Room = () => {
       }),
     onSuccess: (response) => {
       queryClient.setQueryData(['CategoryDetails', 'room'], response);
-      reset();
       router.push(`/listed/room/${btoa(response.id)}`);
+      reset();
     },
     onError: (error) => {
       console.error('Mutation failed:', error);
