@@ -43,17 +43,29 @@ const RoomLayoutCard = ({
 
   const handleUpdate = useCallback(
     async (roomId: string) => {
-      if (!editedRooms[roomId]) return;
+      const updateData = editedRooms[roomId];
+
+      if (!updateData || Object.keys(updateData).length === 0) return;
+
+      const filteredAmenities = updateData?.amenities?.filter(
+        (amenity) => amenity.trim() !== ''
+      );
 
       try {
         await updateRoom({
-          variables: { id: roomId, ...editedRooms[roomId] },
+          variables: {
+            id: roomId,
+            ...updateData,
+            ...(filteredAmenities?.length
+              ? { amenities: filteredAmenities }
+              : {}),
+          },
         });
 
         const roomToUpdate = client.readFragment({
           id: `Room:${roomId}`,
           fragment: gql`
-            fragment ExistingRoom on Room {
+            fragment RoomData on Room {
               id
               city
               name
@@ -71,13 +83,11 @@ const RoomLayoutCard = ({
             }
           `,
         });
-        const newAmenities = (editedRooms[roomId]?.amenities ?? []).filter(
-          (amenity) => amenity?.trim() !== ''
-        );
+        const newAmenities = filteredAmenities ?? [];
         client.writeFragment({
           id: `Room:${roomId}`,
           fragment: gql`
-            fragment UpdatedRoom on Room {
+            fragment RoomData on Room {
               id
               city
               name
@@ -96,8 +106,8 @@ const RoomLayoutCard = ({
           `,
           data: {
             ...roomToUpdate,
-            ...editedRooms[roomId],
-            amenities: [...roomToUpdate?.amenities, ...newAmenities],
+            ...updateData,
+            amenities: [...(roomToUpdate.amenities ?? []), ...newAmenities],
           },
         });
       } catch (error) {
