@@ -56,9 +56,7 @@ const RoomLayoutCard = ({
           variables: {
             id: roomId,
             ...updateData,
-            ...(filteredAmenities?.length
-              ? { amenities: filteredAmenities }
-              : {}),
+            ...(filteredAmenities ? { amenities: filteredAmenities } : {}),
           },
         });
 

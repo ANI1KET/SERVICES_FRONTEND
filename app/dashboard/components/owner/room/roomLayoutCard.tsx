@@ -25,7 +25,7 @@ const RoomLayoutCard = ({
   const client = useApolloClient();
   const cachedTheme = useThemeState();
 
-  const [update] = useMutation(UpdateRoom);
+  const [updateRoom] = useMutation(UpdateRoom);
   const [deleteRoom] = useMutation(DeleteRoom);
   const [editedRooms, setEditedRooms] = useState<Record<string, Partial<Room>>>(
     {}
@@ -43,17 +43,27 @@ const RoomLayoutCard = ({
 
   const handleUpdate = useCallback(
     async (roomId: string) => {
-      if (!editedRooms[roomId]) return;
+      const updateData = editedRooms[roomId];
+
+      if (!updateData || Object.keys(updateData).length === 0) return;
+
+      const filteredAmenities = updateData?.amenities?.filter(
+        (amenity) => amenity.trim() !== ''
+      );
 
       try {
-        await update({
-          variables: { id: roomId, ...editedRooms[roomId] },
+        await updateRoom({
+          variables: {
+            id: roomId,
+            ...updateData,
+            ...(filteredAmenities ? { amenities: filteredAmenities } : {}),
+          },
         });
 
         const roomToUpdate = client.readFragment({
           id: `Room:${roomId}`,
           fragment: gql`
-            fragment ExistingRoom on Room {
+            fragment RoomData on Room {
               id
               city
               name
@@ -71,13 +81,11 @@ const RoomLayoutCard = ({
             }
           `,
         });
-        const newAmenities = (editedRooms[roomId]?.amenities ?? []).filter(
-          (amenity) => amenity?.trim() !== ''
-        );
+        const newAmenities = filteredAmenities ?? [];
         client.writeFragment({
           id: `Room:${roomId}`,
           fragment: gql`
-            fragment UpdatedRoom on Room {
+            fragment RoomData on Room {
               id
               city
               name
@@ -96,8 +104,8 @@ const RoomLayoutCard = ({
           `,
           data: {
             ...roomToUpdate,
-            ...editedRooms[roomId],
-            amenities: [...roomToUpdate?.amenities, ...newAmenities],
+            ...updateData,
+            amenities: [...(roomToUpdate.amenities ?? []), ...newAmenities],
           },
         });
       } catch (error) {
@@ -110,7 +118,7 @@ const RoomLayoutCard = ({
         });
       }
     },
-    [editedRooms, update, client]
+    [editedRooms, updateRoom, client]
   );
 
   const handleDelete = useCallback(
