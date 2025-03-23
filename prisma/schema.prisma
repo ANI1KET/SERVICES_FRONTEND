@@ -1,8 +1,226 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// // This is your Prisma schema file,
+// // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "mongodb"
+//   url      = env("DATABASE_URL")
+// }
+
+// enum Role {
+//   USER
+//   ADMIN
+//   OWNER
+//   BROKER
+// }
+
+// enum Permission {
+//   room
+//   land
+//   store
+//   hostel
+//   repair
+//   rental
+//   restaurant
+// }
+
+// model User {
+//   id          String       @id @default(auto()) @map("_id") @db.ObjectId
+//   name        String
+//   email       String       @unique
+//   image       String?
+//   number      String?
+//   password    String?
+//   // ENUM
+//   role        Role         @default(USER)
+//   permission  Permission[] @default([])
+//   // RELATIONSHIP
+//   rooms       Room[]       @relation("UserRooms")
+//   roomReviews RoomReview[] @relation("RoomReviews")
+
+//   store        Store[]       @relation("UserStores")
+//   storeReviews StoreReview[] @relation("StoreReviews")
+//   // TIMESTAMPS
+//   createdAt    DateTime      @default(now())
+//   updatedAt    DateTime      @updatedAt
+
+//   @@index([role])
+//   @@index([permission])
+//   @@index([role, permission])
+//   @@map("Users")
+// }
+
+// enum FurnishingStatusEnum {
+//   FURNISHED
+//   UNFURNISHED
+//   SEMIFURNISHED
+// }
+
+// model Room {
+//   id               String               @id @default(auto()) @map("_id") @db.ObjectId
+//   mincapacity      Int
+//   maxcapacity      Int
+//   price            Float
+//   name             String
+//   ownerContact     String
+//   primaryContact   String
+//   city             String
+//   location         String
+//   direction        String?
+//   videos           String?
+//   photos           String[]
+//   ratings          Float                @default(0)
+//   available        Boolean              @default(true)
+//   postedBy         Role                 @default(USER)
+//   verified         Boolean              @default(false)
+//   bedroom          Int
+//   hall             Int
+//   kitchen          Int
+//   bathroom         Int
+//   roomtype         String
+//   amenities        String[]             @default([])
+//   // ENUM
+//   furnishingStatus FurnishingStatusEnum
+//   // RELATIONSHIP
+//   reviews          RoomReview[]         @relation("RoomReviews")
+//   // RELATIONSHIP
+//   user             User                 @relation(fields: [userId], references: [id], name: "UserRooms")
+//   userId           String               @db.ObjectId
+//   // 
+//   createdAt        DateTime             @default(now())
+//   updatedAt        DateTime             @updatedAt
+
+//   @@index([city])
+//   @@index([userId])
+//   @@map("Rooms")
+// }
+
+// model RoomReview {
+//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+//   rating    Float
+//   comment   String
+//   // RELATIONSHIP 
+//   room      Room     @relation(fields: [roomId], references: [id], name: "RoomReviews")
+//   roomId    String   @db.ObjectId
+//   // RELATIONSHIP 
+//   user      User     @relation(fields: [userId], references: [id], name: "RoomReviews")
+//   userId    String   @db.ObjectId
+//   // 
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([userId])
+//   // @@index([roomId])
+//   @@map("Room_Reviews")
+// }
+
+// enum StoreTypeEnum {
+//   CLOTHING
+//   FOOTWEAR
+//   JEWELRY
+//   COSMETICS
+//   GADGETS
+//   FURNITURE
+//   SPORTS
+//   GROCERY
+//   PHARMACY
+//   FITNESS
+//   SPA
+//   SALON
+//   PETS
+//   STATIONERY
+//   HARDWARE
+//   ELECTRONICS
+//   GARDENING
+// }
+
+// model Store {
+//   id           String          @id @default(auto()) @map("_id") @db.ObjectId
+//   name         String
+//   storeNumber  String          @unique
+//   description  String?
+//   city         String
+//   direction    String?
+//   location     String
+//   postedBy     Role            @default(USER)
+//   photos       String[]
+//   videos       String?
+//   ratings      Float           @default(0)
+//   verified     Boolean?
+//   // ENUM
+//   storeType    StoreTypeEnum[]
+//   // RELATIONSHIP
+//   user         User            @relation(fields: [userId], references: [id], name: "UserStores")
+//   userId       String          @db.ObjectId
+//   // RELATIONSHIP 
+//   storeReviews StoreReview[]   @relation("StoreReviews")
+//   // 
+//   createdAt    DateTime        @default(now())
+//   updatedAt    DateTime        @updatedAt
+
+//   @@index([city])
+//   @@index([userId])
+//   @@map("Stores")
+// }
+
+// model StoreReview {
+//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+//   rating    Float
+//   comment   String
+//   // RELATIONSHIP 
+//   user      User     @relation(fields: [userId], references: [id], name: "StoreReviews")
+//   userId    String   @db.ObjectId
+//   // RELATIONSHIP 
+//   store     Store    @relation(fields: [roomId], references: [id], name: "StoreReviews")
+//   roomId    String   @db.ObjectId
+//   // 
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([userId])
+//   @@map("Store_Reviews")
+// }
+
+// model Hostel {
+//   id        String  @id @default(auto()) @map("_id") @db.ObjectId
+//   city      String
+//   direction String?
+//   location  String
+// }
+
+// model Restaurant {
+//   id        String  @id @default(auto()) @map("_id") @db.ObjectId
+//   city      String
+//   direction String?
+//   location  String
+// }
+
+// model Land {
+//   id        String  @id @default(auto()) @map("_id") @db.ObjectId
+//   city      String
+//   direction String?
+//   location  String
+// }
+
+// model Repair {
+//   id        String  @id @default(auto()) @map("_id") @db.ObjectId
+//   city      String
+//   direction String?
+//   location  String
+// }
+
+// model Rental {
+//   id        String  @id @default(auto()) @map("_id") @db.ObjectId
+//   city      String
+//   direction String?
+//   location  String
+// }
 
 generator client {
   provider = "prisma-client-js"
@@ -30,22 +248,37 @@ enum Permission {
   restaurant
 }
 
-model User {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  email       String       @unique
-  image       String?
-  number      String?
-  password    String?
-  // ENUM
-  role        Role         @default(USER)
-  permission  Permission[] @default([])
+model Subscription {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  permissions Json     @default("{}")
   // RELATIONSHIP
-  rooms       Room[]       @relation("UserRooms")
-  roomReviews RoomReview[] @relation("RoomReviews")
+  userId      String   @unique @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // TIMESTAMPS
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
 
+  @@map("Subscriptions")
+}
+
+model User {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String        @unique
+  image        String?
+  number       String?
+  password     String?
+  // ENUM
+  role         Role          @default(USER)
+  permission   Permission[]  @default([])
+  // RELATIONSHIP
+  rooms        Room[]        @relation("UserRooms")
+  roomReviews  RoomReview[]  @relation("RoomReviews")
+  // RELATIONSHIP
   store        Store[]       @relation("UserStores")
   storeReviews StoreReview[] @relation("StoreReviews")
+  // RELATIONSHIP
+  subscription Subscription?
   // TIMESTAMPS
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -85,6 +318,7 @@ model Room {
   bathroom         Int
   roomtype         String
   amenities        String[]             @default([])
+  isActive         Boolean              @default(true)
   // ENUM
   furnishingStatus FurnishingStatusEnum
   // RELATIONSHIP
@@ -98,6 +332,7 @@ model Room {
 
   @@index([city])
   @@index([userId])
+  @@index([isActive])
   @@map("Rooms")
 }
 
@@ -153,6 +388,7 @@ model Store {
   videos       String?
   ratings      Float           @default(0)
   verified     Boolean?
+  isActive     Boolean         @default(true)
   // ENUM
   storeType    StoreTypeEnum[]
   // RELATIONSHIP
@@ -166,6 +402,7 @@ model Store {
 
   @@index([city])
   @@index([userId])
+  @@index([isActive])
   @@map("Stores")
 }
 
@@ -192,6 +429,7 @@ model Hostel {
   city      String
   direction String?
   location  String
+  isActive  Boolean @default(true)
 }
 
 model Restaurant {
@@ -199,6 +437,7 @@ model Restaurant {
   city      String
   direction String?
   location  String
+  isActive  Boolean @default(true)
 }
 
 model Land {
@@ -206,6 +445,7 @@ model Land {
   city      String
   direction String?
   location  String
+  isActive  Boolean @default(true)
 }
 
 model Repair {
@@ -213,6 +453,7 @@ model Repair {
   city      String
   direction String?
   location  String
+  isActive  Boolean @default(true)
 }
 
 model Rental {
@@ -220,4 +461,5 @@ model Rental {
   city      String
   direction String?
   location  String
+  isActive  Boolean @default(true)
 }

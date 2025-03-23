@@ -34,16 +34,44 @@ export const GET_LISTED_ROOMS = gql`
   }
 `;
 
-export const UpdateUser = gql(`
+export const UPDATE_USER = gql(`
   mutation UpdateUserRolePermission(
-    $id: ID!,
     $role:Role,
-    $permission: [Permission!]!
+    $userId: ID!,
+    $durationInDays:Int!,
+    $permission: Permission!
   ) {
     updateRolePermission(
-      id: $id,
       role:$role,
-      permission:$permission
+      userId: $userId,
+      permission:$permission,
+      durationInDays:$durationInDays,
+    ) {
+      message
+    }
+  }
+`);
+
+export const DOWNGRADE_USER = gql(`
+  mutation DowngradeUserPermission(
+    $userId: ID!,
+    $permission: Permission!
+  ) {
+    downgradePermission(
+      userId: $userId,
+      permission:$permission,
+    ) {
+      message
+    }
+  }
+`);
+
+export const REMOVE_USER_SUBS = gql(`
+  mutation DowngradeUserPermission(
+    $userId: ID!,
+  ) {
+    removeUserSubs(
+      userId: $userId,
     ) {
       message
     }
