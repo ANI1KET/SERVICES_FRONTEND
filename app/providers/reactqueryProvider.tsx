@@ -8,7 +8,6 @@ import {
 } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { NewListedRoom } from '../types/types';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export interface TabState {
@@ -177,12 +176,6 @@ export function useDeleteTabState() {
       return remainingTabs;
     });
   };
-}
-
-export function useGetNewRoomDetails(category: string) {
-  const queryClient = useQueryClient();
-
-  return queryClient.getQueryData<NewListedRoom>(['CategoryDetails', category]);
 }
 
 export function useThemeState() {

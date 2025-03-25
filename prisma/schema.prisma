@@ -261,6 +261,14 @@ model Subscription {
   @@map("Subscriptions")
 }
 
+model SavedRooms {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String[]
+  // RELATIONSHIP
+  broker   User     @relation(fields: [brokerId], references: [id], name: "UserSavedRooms")
+  brokerId String   @db.ObjectId
+}
+
 model User {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
   name         String
@@ -277,6 +285,8 @@ model User {
   // RELATIONSHIP
   store        Store[]       @relation("UserStores")
   storeReviews StoreReview[] @relation("StoreReviews")
+  // RELATIONSHIP
+  savedroom    SavedRooms[]  @relation("UserSavedRooms")
   // RELATIONSHIP
   subscription Subscription?
   // TIMESTAMPS

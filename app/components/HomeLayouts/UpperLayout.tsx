@@ -2,11 +2,12 @@ import Image from 'next/image';
 
 const UpperLayout = () => {
   return (
-    <section className="relative h-[50vh]">
+    <section className="relative h-[45vh]">
       <Image
-        src="/a.jpeg"
-        alt="Image description"
         fill
+        src="/a.jpeg"
+        loading="lazy"
+        alt="Image description"
         className="object-cover"
       />
     </section>

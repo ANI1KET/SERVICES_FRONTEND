@@ -1,6 +1,6 @@
 // import axiosInstance from '../lib/utils/axiosInstance';
 
-export const decodeURLPlaceQuery = (query: string) => {
+export const decodeURLPlaceQuery = (query: string): Record<string, string> => {
   try {
     const urlDecoded = decodeURIComponent(query);
     const decoded = atob(urlDecoded);
@@ -9,7 +9,7 @@ export const decodeURLPlaceQuery = (query: string) => {
     return { id, city };
   } catch (error) {
     console.error('Error decoding query parameter:', error);
-    return null;
+    return {};
   }
 };
 

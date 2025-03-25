@@ -1,16 +1,8 @@
 'use client';
 
-import {
-  PriceIcon,
-  FurnishIcon,
-  ContactIcon,
-  ListedOnIcon,
-  CapacityIcon,
-  PostedByIcon,
-  RoomTypeIcon,
-  UpdatedOnIcon,
-  HomeLocationIcon,
-} from '@/app/lib/icon/svg';
+import { useCallback } from 'react';
+
+import { PriceIcon, FurnishIcon, CapacityIcon } from '@/app/lib/icon/svg';
 import { NewListedRoom } from '@/app/types/types';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { cn } from '@/app/lib/utils/tailwindMerge';
@@ -22,6 +14,16 @@ interface NewRoomCardProps {
 const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
   const cacheTheme = useThemeState();
 
+  const timeAgo = useCallback((date: string): string => {
+    const now = new Date();
+    const past = new Date(date);
+    const diffMs = now.getTime() - past.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    return `${diffDays} days ago`;
+  }, []);
   return (
     <div
       className={cn(
@@ -31,25 +33,59 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
       )}
     >
       <div className="w-full h-full grid grid-cols-2 gap-2 ">
-        <p className="hidden max-xsm:block col-span-2 ">
-          <span className="flex items-center gap-2 text-sm">
-            <HomeLocationIcon />
-            Address
-            {roomCardDetails.verified && (
-              <span className="bg-green-500 p-[2px] rounded-lg ml-auto">
-                Verified
-              </span>
-            )}
-          </span>
-          <span className="flex ">
-            {`${roomCardDetails.city}, ${roomCardDetails.location}`}
+        <div className="hidden max-xsm:grid col-span-2 grid-cols-3 gap-1">
+          <p className="text-sm col-span-1">📌 Address</p>
+
+          <p className="text-sm col-span-2 text-right ">
+            <span
+              className={cn(
+                'text-sm p-[2px] rounded-lg cursor-pointer mr-1',
+                cacheTheme?.activeBg,
+                cacheTheme?.activeTextColor
+              )}
+              onClick={(e) => {
+                const target = e.currentTarget;
+                const originalText = target.innerText;
+
+                try {
+                  const existingRooms = JSON.parse(
+                    localStorage.getItem('SavedRooms') || '[]'
+                  );
+                  if (!existingRooms.includes(roomCardDetails.userId)) {
+                    existingRooms.push(roomCardDetails.userId);
+                  }
+
+                  localStorage.setItem(
+                    'SavedRooms',
+                    JSON.stringify(existingRooms)
+                  );
+                  target.innerText = 'Saved';
+                } catch (error) {
+                  if (
+                    error instanceof DOMException &&
+                    error.name === 'QuotaExceededError'
+                  ) {
+                    alert('Storage is full! Please clear some data.');
+                  } else {
+                    alert('Failed to save data.');
+                  }
+                  target.innerText = 'Failed';
+                }
+
+                setTimeout(() => {
+                  target.innerText = originalText;
+                }, 1000);
+              }}
+            >
+              Save
+            </span>
 
             <span
               title={`${btoa(roomCardDetails.id)}`}
               className={cn(
                 cacheTheme?.activeBg,
                 cacheTheme?.activeTextColor,
-                'text-sm p-[2px] rounded-lg ml-auto cursor-pointer'
+                'text-sm p-[2px] rounded-lg cursor-pointer mr-1'
               )}
               onClick={(e) => {
                 const target = e.currentTarget;
@@ -72,33 +108,46 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
             >
               Copy Id
             </span>
-          </span>
-        </p>
+            {roomCardDetails.verified && (
+              <span
+                className={cn(
+                  cacheTheme?.activeBg,
+                  cacheTheme?.activeTextColor,
+                  'p-[2px] rounded-lg '
+                )}
+              >
+                Verified
+              </span>
+            )}
+          </p>
+
+          <p className="col-span-3 ">
+            {`${roomCardDetails.city}, ${roomCardDetails.location}`}
+            {roomCardDetails?.direction && ` ( ${roomCardDetails?.direction} )`}
+          </p>
+        </div>
         <hr
           className={cn(
             cacheTheme?.borderColor,
             'hidden max-xsm:block col-span-2'
           )}
         />
-        <p
+        <div
           className={cn(
             cacheTheme?.borderColor,
             'hidden max-xsm:block border-r break-words'
           )}
         >
-          <span className="flex items-center gap-2 text-sm">
-            <ContactIcon />
-            Contact
-          </span>
-          <span>{`+977-${roomCardDetails.primaryContact}`}</span>
-        </p>
-        <p className="hidden max-xsm:block break-words">
-          <span className="flex items-center gap-2 text-sm">
+          <p className="flex items-center gap-2 text-sm">📞 Contact</p>
+          <p>{`+977-${roomCardDetails.primaryContact}`}</p>
+        </div>
+        <div className="hidden max-xsm:block break-words">
+          <p className="flex items-center gap-2 text-sm">
             <PriceIcon />
             Price
-          </span>
-          <span>{`Rs.${roomCardDetails.price}`}</span>
-        </p>
+          </p>
+          <p>{`Rs.${roomCardDetails.price}`}/month</p>
+        </div>
         <hr
           className={cn(
             cacheTheme?.borderColor,
@@ -106,62 +155,69 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
           )}
         />
         {/*  */}
-        <p className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
-          <span className="flex items-center gap-2 text-sm">
-            <RoomTypeIcon />
-            Room Type
-          </span>
-          <span>{`${roomCardDetails.roomtype}`}</span>
-        </p>
-        <p className="break-words">
-          <span className="flex items-center gap-2 text-sm">
-            <FurnishIcon />
-            Furinshing
-          </span>
-          <span>{`${roomCardDetails.furnishingStatus}`}</span>
-        </p>
+        <div className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
+          <p className="flex items-center gap-2 text-sm">🏷️ Name</p>
+          <p>{roomCardDetails.name}</p>
+        </div>
+        <div className="break-words">
+          <p className="flex items-center gap-2 text-sm">👤 Posted By</p>
+          <p>{`${roomCardDetails.postedBy}`}</p>
+        </div>
         <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
-        <p className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
-          <span className="flex items-center gap-2 text-sm">
+        <div className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
+          <p className="flex items-center gap-2 text-sm">
             <CapacityIcon />
             Capacity
-          </span>
-          <span>{`${roomCardDetails.mincapacity}-${roomCardDetails.maxcapacity}`}</span>
-        </p>
-        <p className="break-words">
-          <span className="flex items-center gap-2 text-sm">
-            <PostedByIcon />
-            Posted By
-          </span>
-          <span>{`${roomCardDetails.postedBy}`}</span>
-        </p>
+          </p>
+          <p>{`${roomCardDetails.mincapacity}-${roomCardDetails.maxcapacity}`}</p>
+        </div>
+        <div className="break-words">
+          <p className="flex items-center gap-2 text-sm">
+            <FurnishIcon />
+            Furinshing
+          </p>
+          <p>{`${roomCardDetails.furnishingStatus}`}</p>
+        </div>
         <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
-        <p className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
-          <span className="flex items-center gap-2 text-sm">
-            <ListedOnIcon />
-            Listed On
-          </span>
-          <span>{new Date(roomCardDetails.createdAt).toDateString()}</span>
-        </p>
-        <p className="break-words ">
-          <span className="flex items-center gap-2 text-sm">
-            <UpdatedOnIcon />
-            Updated On
-          </span>
-          <span>{new Date(roomCardDetails.updatedAt).toDateString()}</span>
-        </p>
+        <div className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
+          <p className="flex items-center gap-2 text-sm">🏘️ Room Type</p>
+          <p>{`${roomCardDetails.roomtype} `}</p>
+          <p className="max-xsm:block hidden">
+            {(() => {
+              let details = '';
+              const appendDetail = (count: number, singular: string) => {
+                if (count > 0) {
+                  if (details) details += ', ';
+                  details += `${count} ${singular}${count > 1 ? 's' : ''}`;
+                }
+              };
+
+              appendDetail(roomCardDetails.bedroom, 'Bedroom');
+              appendDetail(roomCardDetails.hall, 'Hall');
+              appendDetail(roomCardDetails.kitchen, 'Kitchen');
+              appendDetail(roomCardDetails.bathroom, 'Bathroom');
+
+              return details ? `(${details})` : '';
+            })()}
+          </p>
+        </div>
+        <div className="break-words ">
+          <p className="flex items-center gap-2 text-sm">📅 Updated On</p>
+          <p>{timeAgo(roomCardDetails.updatedAt)}</p>
+          {/* <span>{new Date(roomCardDetails.updatedAt).toDateString()}</span> */}
+        </div>
         <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
         {/*  */}
-        <p className="hidden max-xsm:block col-span-2 ">
-          <span className="flex justify-center items-center gap-2 text-base font-semibold">
+        <div className="hidden max-xsm:block col-span-2 ">
+          <p className="flex justify-center items-center gap-2 text-base font-semibold">
             Amenities
-          </span>
+          </p>
           {roomCardDetails.amenities && (
-            <span className="col-span-2 break-words">
+            <p className="col-span-2 break-words">
               {roomCardDetails.amenities.join(', ')}
-            </span>
+            </p>
           )}
-        </p>
+        </div>
         <hr
           className={cn(
             cacheTheme?.borderColor,

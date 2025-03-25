@@ -1,22 +1,40 @@
 'use client';
 
-// import { useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 import { NewListedRoom } from '@/app/types/types';
 import VideoPlayer from '@/app/lib/ui/VideoPlayer';
 import ImageSlider from '../../../lib/ui/ImageSlider';
+import { fetchNewRoomDetails } from '../../ServerAction';
 import NewRoomDetails from '../../../lib/ui/NewRoomDetails';
-import { useGetNewRoomDetails } from '@/app/providers/reactqueryProvider';
+import { decodeURLPlaceQuery } from '@/app/lib/utils/decodeURL';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import ResponsiveNewRoomDetails from '../../../lib/ui/ResponsiveNewRoomDetails';
 
 const Room = () => {
-  // const params = useParams();
-  // const id = params.id;
-  // const roomId = decodeURLPlaceQuery(id as string);
+  const params = useParams();
+  const queryClient = useQueryClient();
+  const roomId = params?.id ? decodeURLPlaceQuery(params.id as string) : null;
 
-  const newRoomDetails = useGetNewRoomDetails('room');
+  const {
+    data: newRoomDetails,
+    isLoading,
+    error,
+  } = useQuery<NewListedRoom>({
+    queryKey: ['CategoryDetails', 'room'],
+    queryFn: () =>
+      roomId
+        ? fetchNewRoomDetails('room', roomId)
+        : Promise.reject('No room ID'),
+    enabled: !!roomId,
+    staleTime: 1000 * 60 * 10,
+    initialData: () =>
+      queryClient.getQueryData<NewListedRoom>(['CategoryDetails', 'room']),
+  });
+
   if (!newRoomDetails) return null;
-
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error fetching room details.</div>;
   return (
     <div className="flex flex-col ">
       <div className="flex max-xsm:flex-col gap-1 p-2 relative mb-5 max-xsm:p-0 max-xsm:gap-0 ">

@@ -38,7 +38,7 @@ const RoomDetailsLayout: React.FC<{ city: string; roomId: string }> = ({
   if (!RoomDetails) return null;
   return (
     <div className="flex flex-col ">
-      <div className="flex max-xsm:flex-col gap-1 p-2 relative mb-5 max-xsm:p-0 max-xsm:gap-0 ">
+      <div className="flex max-xsm:flex-col gap-1 p-2 relative max-xsm:p-0 max-xsm:gap-0 ">
         <VideoPlayer videoUrl={RoomDetails?.videos} />
 
         <NewRoomDetails roomCardDetails={RoomDetails as NewListedRoom} />

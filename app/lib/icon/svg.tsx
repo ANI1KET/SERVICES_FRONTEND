@@ -4685,31 +4685,6 @@ export const ArrowRightIcon: React.FC<{
   );
 };
 
-export const HomeLocationIcon: React.FC<{
-  className?: string;
-  size?: number;
-}> = ({ className = '', size = 16 }) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={`${size}`}
-      height={`${size}`}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="skyblue"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`lucide lucide-map-pin-house ${className}`}
-    >
-      <path d="M15 22a1 1 0 0 1-1-1v-4a1 1 0 0 1 .445-.832l3-2a1 1 0 0 1 1.11 0l3 2A1 1 0 0 1 22 17v4a1 1 0 0 1-1 1z" />
-      <path d="M18 10a8 8 0 0 0-16 0c0 4.993 5.539 10.193 7.399 11.799a1 1 0 0 0 .601.2" />
-      <path d="M18 22v-3" />
-      <circle cx="10" cy="10" r="3" />
-    </svg>
-  );
-};
-
 export const FurnishIcon: React.FC<{
   className?: string;
   size?: number;
@@ -4796,37 +4771,6 @@ export const PostedByIcon: React.FC<{
   );
 };
 
-export const ListedOnIcon: React.FC<{
-  className?: string;
-  size?: number;
-}> = ({ className = '', size = 16 }) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={`${size}`}
-      height={`${size}`}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="grey"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`lucide lucide-calendar-days ${className}`}
-    >
-      <path d="M8 2v4" />
-      <path d="M16 2v4" />
-      <rect width="18" height="18" x="3" y="4" rx="2" />
-      <path d="M3 10h18" />
-      <path d="M8 14h.01" />
-      <path d="M12 14h.01" />
-      <path d="M16 14h.01" />
-      <path d="M8 18h.01" />
-      <path d="M12 18h.01" />
-      <path d="M16 18h.01" />
-    </svg>
-  );
-};
-
 export const UpdatedOnIcon: React.FC<{
   className?: string;
   size?: number;
@@ -4868,51 +4812,6 @@ export const CapacityIcon: React.FC<{
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M32.1 12.1c3.3 0 5.9-2.6 5.9-5.9C38 2.9 35.4.3 32.1.3S26.2 3 26.2 6.2c0 3.3 2.6 5.9 5.9 5.9zm0-9.8c2.2 0 3.9 1.8 3.9 3.9 0 2.2-1.8 3.9-3.9 3.9-2.2 0-3.9-1.8-3.9-3.9 0-2.1 1.7-3.9 3.9-3.9zM18 11c3 0 5.4-2.4 5.4-5.4S21 .3 18 .3s-5.4 2.4-5.4 5.4S15 11 18 11zm0-8.7c1.9 0 3.4 1.5 3.4 3.4C21.4 7.5 19.9 9 18 9s-3.4-1.5-3.4-3.4c0-1.8 1.5-3.3 3.4-3.3zm22.6 3.4c0 .3 0 .6.1.8C41.1 9 43.3 11 46 11c.9 0 1.8-.3 2.5-.7.1 0 .1-.1.2-.1.1-.1.2-.1.3-.2 1.5-1 2.4-2.6 2.4-4.5 0-3-2.4-5.4-5.4-5.4-3 0-5.4 2.4-5.4 5.4v.2zM46 2.3c1.9 0 3.4 1.5 3.4 3.4 0 1.1-.6 2.1-1.4 2.7-.6.4-1.2.6-1.9.6-1.9 0-3.4-1.5-3.4-3.3 0-1.9 1.5-3.4 3.3-3.4zm6.1 40.5v-9.2c.3.1.7.2 1.1.2 1.7 0 3-1.4 3-3.2V19c0-.8-.1-1.5-.4-2.2 0-.2 0-.4-.1-.6-.9-2-2.8-3.3-4.8-3.5h-9.4c-1.5 0-2.9.6-3.9 1.6H27c-.3 0-.6 0-.8.1-1.1-1-2.5-1.6-3.9-1.6h-8.7c-3.2 0-5.9 2.8-5.9 6.3v11.6c0 .8.3 1.6.9 2.2.6.6 1.3 1 2.2 1 .4 0 .7-.1 1.1-.2v9.2c-5.9 2.3-9.1 5.4-9.1 8.9C2.8 58.6 15.7 64 32.1 64s29.3-5.4 29.3-12.2c-.1-3.6-3.4-6.7-9.3-9zM41.6 14.7h8.8c2.1 0 3.9 1.9 3.9 4.3v11.5c0 .7-.5 1.2-1.1 1.2-.3 0-.6-.2-.7-.3-.2-.2-.3-.6-.3-.9V23c0-.5-.4-1-1-1-.5 0-1 .4-1 1v24.4c0 1-.7 1.8-1.6 1.8-.9 0-1.6-.8-1.6-1.8V33.9c0-.5-.4-1-1-1-.5 0-1 .4-1 1v13.4c0 1-.7 1.8-1.6 1.8-.5 0-.9-.3-1.1-.5-.3-.4-.5-.8-.5-1.3v-10c1-.6 1.7-1.7 1.7-3v-13c0-2.7-1.4-5-3.5-6.2.5-.3 1.1-.4 1.6-.4zm-14.5 1.6H37c2.5 0 4.5 2.2 4.5 5v13c0 .8-.6 1.5-1.3 1.5-.7 0-1.3-.7-1.3-1.5v-8.5c0-.5-.4-1-1-1-.5 0-1 .4-1 1v27.5c0 1.2-.9 2.2-1.9 2.2-1 0-1.9-1-1.9-2.2V38.1c0-.5-.4-1-1-1-.5 0-1 .4-1 1v15.1c0 1.2-.9 2.2-1.9 2.2s-1.9-1-1.9-2.2V25.7c0-.5-.4-1-1-1-.5 0-1 .4-1 1v8.5c0 .8-.6 1.5-1.3 1.5-.7 0-1.3-.7-1.3-1.5v-13c-.1-2.7 2-4.9 4.4-4.9zM11.8 30.6c0 .7-.5 1.2-1.1 1.2-.3 0-.5-.1-.7-.3-.2-.2-.3-.6-.3-.9V19c0-2.4 1.7-4.3 3.9-4.3h8.7c.6 0 1.2.2 1.7.4-2 1.2-3.4 3.5-3.4 6.1v13c0 1.2.6 2.3 1.5 2.9v10.2c0 1-.7 1.8-1.6 1.8-.4 0-.8-.2-1.1-.5-.3-.3-.5-.8-.5-1.3V33.9c0-.5-.4-1-1-1-.5 0-1 .4-1 1v13.4c0 1-.7 1.8-1.6 1.8-.9 0-1.6-.8-1.6-1.8V23c0-.5-.4-1-1-1-.5 0-1 .4-1 1l.1 7.6zM32 61.9c-16.3 0-27.3-5.3-27.3-10.2 0-2.4 2.6-4.9 7.1-6.8v2.4c0 2.1 1.6 3.8 3.6 3.8 1 0 1.9-.5 2.6-1.2.7.7 1.6 1.1 2.6 1.1 2 0 3.6-1.7 3.6-3.8v-9.6c.4 0 .8-.1 1.1-.3V53c0 2.3 1.8 4.2 3.9 4.2 1.2 0 2.2-.6 2.9-1.4.7.9 1.7 1.4 2.9 1.4 2.1 0 3.9-1.9 3.9-4.1V37.5c.3.1.6.2 1 .3v9.6c0 1 .4 1.9 1 2.7.7.7 1.6 1.1 2.6 1.1s1.9-.5 2.6-1.2c.7.7 1.6 1.2 2.6 1.2 2 0 3.6-1.7 3.6-3.8V45c4.6 1.9 7.2 4.3 7.2 6.8-.2 4.8-11.2 10.1-27.5 10.1z"></path>
-    </svg>
-  );
-};
-
-export const ContactIcon: React.FC<{
-  className?: string;
-  size?: number;
-}> = ({ className = '', size = 16 }) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={`${size}`}
-      height={`${size}`}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`lucide lucide-phone ${className}`}
-    >
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
-  );
-};
-
-export const RoomTypeIcon: React.FC<{
-  className?: string;
-  size?: number;
-}> = ({ className = '', size = 16 }) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={`${size}`}
-      height={`${size}`}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`lucide lucide-house ${className}`}
-    >
-      <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
-      <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
     </svg>
   );
 };

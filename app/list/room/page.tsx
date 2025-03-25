@@ -25,8 +25,8 @@ const Room = () => {
   const { data: session, status } = useSession();
 
   const {
+    // reset,
     watch,
-    reset,
     trigger,
     register,
     handleSubmit: handleFormSubmit,
@@ -50,7 +50,7 @@ const Room = () => {
     onSuccess: (response) => {
       queryClient.setQueryData(['CategoryDetails', 'room'], response);
       router.push(`/listed/room/${btoa(response.id)}`);
-      reset();
+      // reset();
     },
     onError: (error) => {
       console.error('Mutation failed:', error);

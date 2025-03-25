@@ -9,7 +9,7 @@ import ImageLoop from '@/app/lib/ui/ImageLoop';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { getCategoryDetails } from './ServerAction';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-import { CapacityIcon, HomeLocationIcon, PriceIcon } from '@/app/lib/icon/svg';
+import { CapacityIcon, PriceIcon } from '@/app/lib/icon/svg';
 
 const PAGE_SIZE = 10;
 
@@ -187,23 +187,16 @@ const CategoryCardLayout: React.FC<{
                     title={`Posted By : ${item.postedBy}${
                       item.verified ? ' (Verified)' : ''
                     }`}
-                    className={`row-span-1 col-span-1 text-xl flex justify-end ${
-                      item.verified ? 'text-green-400' : ''
-                    }`}
+                    className={`row-span-1 col-span-1 text-xl flex justify-end`}
                   >
-                    <span>
-                      {item.postedBy}
-                      {'  '}
-                      {item.verified ? '✓' : ''}
-                    </span>
+                    {item.postedBy}
                   </p>
                   <p
                     title={`${item.location}`}
                     className={`row-span-1 col-span-2 text-xl flex justify-start `}
                   >
                     <span className="flex items-center gap-1 truncate ">
-                      <HomeLocationIcon size={20} />
-                      {item.location}
+                      📌 {item.location}
                     </span>
                   </p>
                 </div>
