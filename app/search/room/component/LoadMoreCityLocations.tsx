@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   PostedBy,
@@ -24,6 +24,7 @@ import { useFilterUpdater, useInfiniteRoomQuery } from '../../CustomHooks';
 const LoadMoreCityLocations = () => {
   const cacheTheme = useThemeState();
   const queryClient = useQueryClient();
+
   const { data: searchData } = useQuery<SearchQueries>({
     queryKey: ['searchData'],
     enabled: false,
@@ -31,11 +32,13 @@ const LoadMoreCityLocations = () => {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
     useInfiniteRoomQuery(queryClient);
-
   const updateFilter = useFilterUpdater(queryClient, refetch);
-  const observerRef = useRef<HTMLDivElement | null>(null);
 
+  const observerRef = useRef<HTMLDivElement | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+
+  const memoizedPages = useMemo(() => data?.pages ?? [], [data?.pages]);
+
   const handleLoadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
@@ -70,7 +73,7 @@ const LoadMoreCityLocations = () => {
   return (
     <div
       className={
-        'grid gap-2 grid-cols-[3fr_6fr] max-sm:grid-cols-[2fr_4fr] max-xsm:grid-cols-[1fr] m-1 mb-6'
+        'grid gap-2 grid-cols-[3fr_8fr] max-sm:grid-cols-[2fr_4fr] max-xsm:grid-cols-[1fr] m-1 mb-6'
       }
     >
       <div
@@ -78,7 +81,7 @@ const LoadMoreCityLocations = () => {
           cacheTheme?.bg,
           cacheTheme?.textColor,
           cacheTheme?.borderColor,
-          'h-fit max-sm:h-[90vh] max-sm:overflow-y-scroll sticky top-[8.5vh] max-sm:top-1 flex flex-col gap-4 max-xsm:hidden p-1 border-2 rounded-xl '
+          'h-[90vh] overflow-y-scroll sticky top-[8.5vh] xl:overflow-y-hidden xl:h-fit max-sm:top-1 flex flex-col gap-4 max-xsm:hidden p-1 border-2 rounded-xl '
         )}
       >
         <PriceSlider
@@ -86,7 +89,7 @@ const LoadMoreCityLocations = () => {
           onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
         />
 
-        <div className="flex gap-4 mx-1 max-sm:flex-col">
+        <div className="grid xl:grid-cols-2 lg:grid-cols-1 gap-4 mx-1">
           <RatingSlider
             defaultValue={searchData?.filters.rating}
             onChangeEnd={(ratingRange) => updateFilter('rating', ratingRange)}
@@ -104,7 +107,7 @@ const LoadMoreCityLocations = () => {
           label="Amenities"
           options={['PARKING', 'WIFI', 'WATER']}
           defaultValue={searchData?.filters.amenities as string[]}
-          className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
+          className="grid xl:grid-cols-3 lg:grid-cols-2 "
           onChange={(amenity) => updateFilter('amenities', amenity)}
         />
         <CustomCheckboxGroup<RoomType>
@@ -127,7 +130,7 @@ const LoadMoreCityLocations = () => {
             searchData?.filters.furnishingstatus as FurnishingStatus[]
           }
           options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
-          className="grid grid-cols-3 lg:grid-cols-auto-fit] lg:min-[300px] max-sm:grid-cols-2"
+          className="grid xl:grid-cols-3 lg:grid-cols-2 "
           onChange={(furnishingStatus) =>
             updateFilter('furnishingstatus', furnishingStatus)
           }
@@ -139,7 +142,7 @@ const LoadMoreCityLocations = () => {
         />
       </div>
       <div className="">
-        {data?.pages.map((roomDetails, pageIndex) => (
+        {memoizedPages.map((roomDetails, pageIndex) => (
           <CityLocationsData
             key={pageIndex}
             category="room"

@@ -171,6 +171,15 @@ const BottomBar = () => {
                       Dashboard
                     </li>
                   )}
+                  <li
+                    className={cn(
+                      cachedTheme?.borderColor,
+                      'p-2 cursor-pointer border-t-2 rounded-lg'
+                    )}
+                    onClick={() => router.push('/profile')}
+                  >
+                    Profile
+                  </li>
                 </>
               ) : (
                 <>
@@ -193,12 +202,15 @@ const BottomBar = () => {
               )}
               <li
                 className={cn(
+                  cachedTheme?.hoverBg,
                   cachedTheme?.borderColor,
-                  'p-2 cursor-pointer border-t-2 rounded-lg'
+                  'p-2 rounded-lg cursor-pointer border-t-2 '
                 )}
-                onClick={() => router.push('/profile')}
+                onClick={() => {
+                  router.push('/interested');
+                }}
               >
-                Profile
+                Interested
               </li>
             </ul>
           </div>

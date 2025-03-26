@@ -1,6 +1,7 @@
 import Link from 'next/link';
 // import Image from 'next/image';
-import ReactPlayer from 'react-player';
+import dynamic from 'next/dynamic';
+import { memo, useMemo } from 'react';
 
 import ImageLoop from '../../../lib/ui/ImageLoop';
 import { NewListedRoom } from '@/app/types/types';
@@ -9,26 +10,27 @@ import RoomDetailsLayout from './/RoomDetailsLayout';
 import AutoScrollCarousel from './AutoScrollCarousel';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
-const CityLocationsData = ({
-  category,
-  cityLocationsData,
-}: {
+const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
+
+interface CityLocationsDataProps {
   category: string;
   cityLocationsData: NewListedRoom[];
-}) => {
-  const cachedTheme = useThemeState();
+}
 
-  return (
-    <>
-      {cityLocationsData &&
-        cityLocationsData.map((roomDetails) => (
-          <Link
-            key={roomDetails.id}
-            href={`/${category}/${btoa(roomDetails.id)}`}
-          >
-            <div className="w-full grid grid-cols-9 mb-5 ">
+const CityLocationsData = memo(
+  ({ category, cityLocationsData }: CityLocationsDataProps) => {
+    const cachedTheme = useThemeState();
+
+    const roomElements = useMemo(() => {
+      return cityLocationsData.map((roomDetails) => {
+        const encodedId = btoa(roomDetails.id);
+        const memoizedPhotos = roomDetails.photos;
+
+        return (
+          <Link key={roomDetails.id} href={`/${category}/${encodedId}`}>
+            <div className="w-full grid grid-cols-9 mb-5">
               {roomDetails.videos ? (
-                <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9 aspect-video ">
+                <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9 aspect-video">
                   <ReactPlayer
                     loop
                     muted
@@ -47,34 +49,14 @@ const CityLocationsData = ({
                       },
                     }}
                     style={{ pointerEvents: 'none' }}
-                    url={roomDetails.videos as string}
+                    url={roomDetails.videos}
                   />
-                  <AutoScrollCarousel photos={roomDetails.photos} />
-                  {/* <div className="flex overflow-x-scroll">
-                    {roomDetails.photos.map((image, index) => (
-                      // <div
-                      //   key={index}
-                      //   className="relative min-w-[25%] max-sm:min-w-[33.33%] aspect-square"
-                      // >
-                      //   <Image
-                      //     fill
-                      //     loading="lazy"
-                      //     src={image}
-                      //     alt={`Slide ${index}`}
-                      //     style={{
-                      //       objectFit: 'fill',
-                      //       objectPosition: 'center',
-                      //     }}
-                      //     sizes="100%"
-                      //   />
-                      // </div>
-                    ))}
-                  </div> */}
+                  <AutoScrollCarousel photos={memoizedPhotos} />
                 </div>
               ) : (
                 <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9">
                   <div className="relative aspect-square max-xsm:aspect-video">
-                    <ImageLoop images={roomDetails.photos} />
+                    <ImageLoop images={memoizedPhotos} />
                   </div>
                 </div>
               )}
@@ -83,18 +65,20 @@ const CityLocationsData = ({
                   cachedTheme?.bg,
                   cachedTheme?.textColor,
                   cachedTheme?.borderColor,
-                  'col-span-6 max-sm:col-span-5 max-xsm:col-span-9 p-1 border-2 rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl '
+                  'col-span-6 max-sm:col-span-5 max-xsm:col-span-9 p-1 border-2 rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl'
                 )}
               >
-                <RoomDetailsLayout
-                  roomCardDetails={roomDetails as NewListedRoom}
-                />
+                <RoomDetailsLayout roomCardDetails={roomDetails} />
               </div>
             </div>
           </Link>
-        ))}
-    </>
-  );
-};
+        );
+      });
+    }, [cityLocationsData, category, cachedTheme]);
 
+    return <>{roomElements}</>;
+  }
+);
+
+CityLocationsData.displayName = 'CityLocationsData';
 export default CityLocationsData;

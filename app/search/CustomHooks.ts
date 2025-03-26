@@ -5,7 +5,7 @@ import {
   QueryObserverResult,
 } from '@tanstack/react-query';
 import { throttle } from 'lodash';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { getCityLocations } from './ServerAction';
 import { NewListedRoom, QueryFilters, SearchQueries } from '../types/types';
@@ -13,18 +13,18 @@ import { NewListedRoom, QueryFilters, SearchQueries } from '../types/types';
 const PAGE_SIZE = 10;
 
 export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
+  const cachedData = queryClient.getQueryData<SearchQueries>(['searchData']);
+
   return useInfiniteQuery({
     queryKey: [`search/room`],
     queryFn: ({ pageParam = 0 }) => {
-      const cachedData = queryClient.getQueryData<SearchQueries>([
-        'searchData',
-      ]);
+      if (!cachedData) return [];
 
       return getCityLocations({
         category: 'room',
         offset: pageParam,
-        decodedCity: cachedData?.city as string,
-        decodedLocations: cachedData?.locations as string[],
+        decodedCity: cachedData.city,
+        decodedLocations: cachedData.locations,
         decodedURLQueryFilters: cachedData?.filters as QueryFilters,
       });
     },
@@ -40,20 +40,14 @@ export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
   });
 };
 
+const throttledRefetch = throttle((refetch: () => void) => refetch(), 1000);
+
 export const useFilterUpdater = (
   queryClient: QueryClient,
   refetch: () => Promise<
     QueryObserverResult<InfiniteData<NewListedRoom[], unknown>, Error>
   >
 ) => {
-  const debouncedRefetch = useMemo(
-    () =>
-      throttle(() => {
-        refetch();
-      }, 1000),
-    [refetch]
-  );
-
   return useCallback(
     <K extends keyof SearchQueries['filters']>(
       key: K,
@@ -70,8 +64,8 @@ export const useFilterUpdater = (
         };
       });
 
-      debouncedRefetch();
+      throttledRefetch(refetch);
     },
-    [debouncedRefetch, queryClient]
+    [queryClient, refetch]
   );
 };

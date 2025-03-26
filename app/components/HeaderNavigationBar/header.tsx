@@ -101,12 +101,24 @@ const Header: React.FC = () => {
                   cachedTheme?.borderColor,
                   'p-2 cursor-pointer border-b rounded-lg'
                 )}
-                onClick={() => router.push('/profile')}
+                onClick={() => {
+                  router.push('/interested');
+                }}
               >
-                Profile
+                Interested
               </li>
               {session ? (
                 <>
+                  <li
+                    className={cn(
+                      cachedTheme?.hoverBg,
+                      cachedTheme?.borderColor,
+                      'p-2 cursor-pointer border-b rounded-lg'
+                    )}
+                    onClick={() => router.push('/profile')}
+                  >
+                    Profile
+                  </li>
                   {session.user.role !== 'USER' && (
                     <li
                       className={cn(
@@ -130,7 +142,7 @@ const Header: React.FC = () => {
                     )}
                     onClick={() => {
                       signOut({ redirect: false });
-                      router.push('/');
+                      // router.push('/');
                     }}
                   >
                     Logout
@@ -172,7 +184,19 @@ const Header: React.FC = () => {
           >
             List Property
           </span>
-          {session?.user.role === 'USER' ? (
+          {!session ? (
+            <span
+              className={cn(
+                'absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl text-base text-center border transition-all group-hover:scale-100',
+                cachedTheme?.bg,
+                cachedTheme?.textColor,
+                cachedTheme?.borderColor
+              )}
+              onClick={() => router.push('/auth/login')}
+            >
+              Login
+            </span>
+          ) : session.user.role === 'USER' ? (
             <span
               className={cn(
                 'absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl text-base border transition-all group-hover:scale-100',
@@ -210,19 +234,6 @@ const Header: React.FC = () => {
                 ))}
               </p>
             )
-          )}
-          {!session && (
-            <span
-              className={cn(
-                'absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl text-base text-center border transition-all group-hover:scale-100',
-                cachedTheme?.bg,
-                cachedTheme?.textColor,
-                cachedTheme?.borderColor
-              )}
-              onClick={() => router.push('/auth/login')}
-            >
-              Login
-            </span>
           )}
         </div>
       </div>

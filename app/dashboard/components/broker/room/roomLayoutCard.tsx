@@ -33,10 +33,13 @@ const RoomLayoutCard = ({
 
   const handleChange = useCallback(
     (roomId: string, field: keyof Room, value: number | string | boolean) => {
-      setEditedRooms((prev) => ({
-        ...prev,
-        [roomId]: { ...prev[roomId], [field]: value },
-      }));
+      setEditedRooms((prev) => {
+        if (prev[roomId]?.[field] === value) return prev;
+        return {
+          ...prev,
+          [roomId]: { ...prev[roomId], [field]: value },
+        };
+      });
     },
     []
   );

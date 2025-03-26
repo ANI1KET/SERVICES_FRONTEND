@@ -4747,56 +4747,6 @@ export const FurnishIcon: React.FC<{
   );
 };
 
-export const PostedByIcon: React.FC<{
-  className?: string;
-  size?: number;
-}> = ({ className = '', size = 16 }) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={`${size}`}
-      height={`${size}`}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentcolor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`lucide lucide-user-round-check ${className}`}
-    >
-      <path d="M2 21a8 8 0 0 1 13.292-6" />
-      <circle cx="10" cy="8" r="5" />
-      <path d="m16 19 2 2 4-4" />
-    </svg>
-  );
-};
-
-export const UpdatedOnIcon: React.FC<{
-  className?: string;
-  size?: number;
-}> = ({ className = '', size = 16 }) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={`${size}`}
-      height={`${size}`}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentcolor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={`lucide lucide-calendar-check-2 ${className}`}
-    >
-      <path d="M8 2v4" />
-      <path d="M16 2v4" />
-      <path d="M21 14V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8" />
-      <path d="M3 10h18" />
-      <path d="m16 20 2 2 4-4" />
-    </svg>
-  );
-};
-
 export const CapacityIcon: React.FC<{
   className?: string;
   size?: number;

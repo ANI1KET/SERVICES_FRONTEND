@@ -386,22 +386,33 @@ export const CustomCheckbox = ({
   label,
   defaultValue,
   onChange,
-}: CustomCheckboxProps) => (
-  <div>
-    <label className="flex gap-2 font-medium">
-      {label}
-      <input
-        type="checkbox"
-        defaultChecked={defaultValue}
-        onChange={(event) => onChange(event.target.checked)}
-        className="hidden peer"
-      />
-      <span className="font-bold px-1 border rounded-lg transition-colors duration-300 peer-checked:bg-black peer-checked:text-white">
-        ✓
-      </span>
-    </label>
-  </div>
-);
+}: CustomCheckboxProps) => {
+  const cachedTheme = useThemeState();
+
+  return (
+    <div>
+      <label className="flex gap-2 font-medium cursor-pointer">
+        {label}
+        <input
+          type="checkbox"
+          defaultChecked={defaultValue}
+          onChange={(event) => onChange(event.target.checked)}
+          className="hidden peer"
+        />
+        <span
+          className={cn(
+            cachedTheme?.borderColor,
+            cachedTheme?.peerCheckedBg,
+            cachedTheme?.peerCheckedText,
+            'font-bold px-1 border rounded-lg transition-colors duration-300 '
+          )}
+        >
+          ✓
+        </span>
+      </label>
+    </div>
+  );
+};
 
 // Price Slider
 type PriceSliderProps = {

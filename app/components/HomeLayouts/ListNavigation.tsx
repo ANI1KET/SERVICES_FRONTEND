@@ -20,11 +20,23 @@ const ListNavigation = () => {
       className={cn(
         cachedTheme?.activeBg,
         cachedTheme?.activeTextColor,
-        'cursor-pointer fixed top-0 right-0 m-1 p-1 rounded-3xl shadow-md group'
+        'cursor-pointer fixed top-0 right-0 m-1 p-1 rounded-3xl shadow-md group z-10'
       )}
     >
       List Property
-      {session?.user.role === 'USER' ? (
+      {!session ? (
+        <Link
+          href={'/auth/login'}
+          className={cn(
+            cachedTheme?.bg,
+            cachedTheme?.textColor,
+            cachedTheme?.borderColor,
+            'absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl text-base text-center border transition-all group-hover:scale-100'
+          )}
+        >
+          Login
+        </Link>
+      ) : session?.user.role === 'USER' ? (
         <Link
           href={'/upgrade'}
           className={cn(
@@ -61,19 +73,6 @@ const ListNavigation = () => {
             ))}
           </p>
         )
-      )}
-      {!session && (
-        <Link
-          href={'/auth/login'}
-          className={cn(
-            cachedTheme?.bg,
-            cachedTheme?.textColor,
-            cachedTheme?.borderColor,
-            'absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl text-base text-center transition-all group-hover:scale-100 border'
-          )}
-        >
-          Login
-        </Link>
       )}
     </div>
   );

@@ -58,13 +58,13 @@
 // export default ImageSlider;
 
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 
 interface ImageSliderProps {
   photos: string[];
 }
 
-const ImageSlider: React.FC<ImageSliderProps> = ({ photos }) => {
+const ImageSlider: React.FC<ImageSliderProps> = memo(({ photos }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isAnimatingRef = useRef(false); // To prevent overlap in scroll events
 
@@ -131,6 +131,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ photos }) => {
       ))}
     </div>
   );
-};
+});
 
+ImageSlider.displayName = 'ImageSlider';
 export default ImageSlider;

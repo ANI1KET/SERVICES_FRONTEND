@@ -1,7 +1,7 @@
 // import type { Metadata } from 'next';
 
 import ApolloProviderWrapper from '../providers/ApolloProviderWrapper';
-import { SideNavBar } from '../components/SideNavigationBar/SideNavBar';
+import LayoutComponent from './layoutComponent';
 
 // export const metadata: Metadata = {
 //   title: 'ROOM RENTAL',
@@ -9,14 +9,14 @@ import { SideNavBar } from '../components/SideNavigationBar/SideNavBar';
 //   keywords: ['rent', 'room', 'accommodation'],
 // };
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <ApolloProviderWrapper>
-      <SideNavBar>{children}</SideNavBar>
+      <LayoutComponent>{children}</LayoutComponent>
     </ApolloProviderWrapper>
   );
 }

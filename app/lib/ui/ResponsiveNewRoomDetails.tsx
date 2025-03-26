@@ -1,9 +1,12 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
+
 import { PriceIcon } from '@/app/lib/icon/svg';
 import { NewListedRoom } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
+import { pushSavedRoom } from '@/app/(selected)/room/ServerAction';
 
 interface NewRoomCardProps {
   roomCardDetails: NewListedRoom;
@@ -13,51 +16,77 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
   roomCardDetails,
 }) => {
   const cacheTheme = useThemeState();
-  console.log(roomCardDetails);
+  const { data: session } = useSession();
 
   return (
     <div>
       <div className="text-right m-2 max-xsm:hidden">
-        <span
-          className={cn(
-            'text-sm p-[2px] rounded-lg cursor-pointer mr-1',
-            cacheTheme?.activeBg,
-            cacheTheme?.activeTextColor
-          )}
-          onClick={(e) => {
-            const target = e.currentTarget;
-            const originalText = target.innerText;
+        {session ? (
+          session?.user.role === 'USER' ? (
+            <button
+              className={cn(
+                'text-sm p-[2px] rounded-lg cursor-pointer mr-1',
+                cacheTheme?.activeBg,
+                cacheTheme?.activeTextColor
+              )}
+              onClick={async (e) => {
+                const target = e.currentTarget;
+                const originalText = target.innerText;
 
-            try {
-              const existingRooms = JSON.parse(
-                localStorage.getItem('SavedRooms') || '[]'
-              );
-              if (!existingRooms.includes(roomCardDetails.userId)) {
-                existingRooms.push(roomCardDetails.userId);
-              }
+                try {
+                  target.innerText = 'Interested';
 
-              localStorage.setItem('SavedRooms', JSON.stringify(existingRooms));
-              target.innerText = 'Saved';
-            } catch (error) {
-              if (
-                error instanceof DOMException &&
-                error.name === 'QuotaExceededError'
-              ) {
-                alert('Storage is full! Please clear some data.');
-              } else {
-                alert('Failed to save data.');
-              }
-              target.innerText = 'Failed';
-            }
+                  const existingRooms = JSON.parse(
+                    localStorage.getItem('InterestedRooms') || '[]'
+                  );
+                  if (existingRooms.includes(roomCardDetails.id)) {
+                    return;
+                  }
 
-            setTimeout(() => {
-              target.innerText = originalText;
-            }, 1000);
-          }}
-        >
-          Save
-        </span>
-        <span
+                  await pushSavedRoom({
+                    roomId: roomCardDetails.id,
+                    listerId: roomCardDetails.userId,
+                    userId: session.user.userId as string,
+                  });
+
+                  existingRooms.push(roomCardDetails.id);
+                  localStorage.setItem(
+                    'InterestedRooms',
+                    JSON.stringify(existingRooms)
+                  );
+
+                  target.innerText = originalText;
+                } catch (error) {
+                  if (
+                    error instanceof DOMException &&
+                    error.name === 'QuotaExceededError'
+                  ) {
+                    alert('Storage is full! Please clear some data.');
+                  } else {
+                    console.log('Failed to save data.');
+                  }
+                  target.innerText = 'Failed';
+                }
+              }}
+            >
+              Interest
+            </button>
+          ) : null
+        ) : (
+          <button
+            title="Login to proceed"
+            className={cn(
+              cacheTheme?.activeBg,
+              cacheTheme?.activeTextColor,
+              'text-sm p-[2px] rounded-lg cursor-pointer mr-1'
+            )}
+            onClick={(e) => (e.currentTarget.innerText = 'Login required')}
+          >
+            Interest
+          </button>
+        )}
+
+        <button
           title={`${btoa(roomCardDetails.id)}`}
           className={cn(
             cacheTheme?.activeBg,
@@ -71,12 +100,11 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
               .writeText(btoa(roomCardDetails.id))
               .then(() => {
                 target.innerText = 'Copied';
-                setTimeout(() => {
-                  target.innerText = originalText;
-                }, 1000);
               })
               .catch(() => {
                 target.innerText = 'Failed';
+              })
+              .finally(() => {
                 setTimeout(() => {
                   target.innerText = originalText;
                 }, 1000);
@@ -84,7 +112,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
           }}
         >
           Copy Id
-        </span>
+        </button>
       </div>
 
       <div
