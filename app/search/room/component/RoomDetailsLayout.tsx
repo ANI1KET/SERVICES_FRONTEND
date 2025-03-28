@@ -4,7 +4,9 @@ import { memo } from 'react';
 
 import { NewListedRoom } from '@/app/types/types';
 import { timeAgo } from '@/app/lib/utils/timeCalculation';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { PriceIcon, FurnishIcon, CapacityIcon } from '@/app/lib/icon/svg';
+import { cn } from '@/app/lib/utils/tailwindMerge';
 
 interface RoomDetailsProps {
   roomCardDetails: NewListedRoom;
@@ -12,13 +14,21 @@ interface RoomDetailsProps {
 
 const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
   ({ roomCardDetails }) => {
+    const cachedTheme = useThemeState();
+
     return (
       <div className="w-full h-full grid grid-cols-2 gap-2 text-2xl max-sm:text-sm">
         <p className="hidden max-xsm:block col-span-2 ">
           <span className="flex items-center gap-2 text-sm">
             📞 Contact
             {roomCardDetails.verified && (
-              <span className="bg-green-400 p-[2px] rounded-lg ml-auto">
+              <span
+                className={cn(
+                  cachedTheme?.activeBg,
+                  cachedTheme?.activeTextColor,
+                  'p-[2px] rounded-lg ml-auto'
+                )}
+              >
                 Verified
               </span>
             )}
