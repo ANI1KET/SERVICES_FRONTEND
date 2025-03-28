@@ -116,7 +116,14 @@ const CategoryCardLayout: React.FC<{
                 }
               >
                 {item.videos ? (
-                  <div className="w-[20vw] max-sm:w-[50vw] max-xsm:w-screen aspect-video ">
+                  <div
+                    className={cn(
+                      'xl:w-[20vw] aspect-video ',
+                      'md:w-[25vw] ',
+                      'max-sm:w-[50vw] ',
+                      'max-xsm:w-screen '
+                    )}
+                  >
                     <ReactPlayer
                       loop
                       muted
@@ -139,7 +146,14 @@ const CategoryCardLayout: React.FC<{
                     />
                   </div>
                 ) : (
-                  <div className="w-[20vw] max-sm:w-[50vw] max-xsm:w-screen relative aspect-video -z-10">
+                  <div
+                    className={cn(
+                      'xl:w-[20vw] relative aspect-video -z-10 ',
+                      'md:w-[25vw] ',
+                      'max-sm:w-[50vw] ',
+                      'max-xsm:w-screen '
+                    )}
+                  >
                     {item.photos && item.photos.length > 0 && (
                       <ImageLoop images={item.photos} />
                     )}
@@ -150,7 +164,10 @@ const CategoryCardLayout: React.FC<{
                     cachedTheme?.bg,
                     cachedTheme?.textColor,
                     cachedTheme?.borderColor,
-                    'w-[20vw] max-sm:w-[50vw] max-xsm:w-screen grid grid-rows-2 grid-cols-2 gap-1 p-1 border-r-[1px] border-l-[1px] border-b-[1px] rounded-b-md'
+                    'xl:w-[20vw] grid grid-rows-2 grid-cols-2 gap-1 p-1 border-r-[1px] border-l-[1px] border-b-[1px] rounded-b-md',
+                    'md:w-[25vw] ',
+                    'max-sm:w-[50vw] ',
+                    'max-xsm:w-screen '
                   )}
                 >
                   <p

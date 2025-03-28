@@ -62,7 +62,7 @@ const InterestedRoom = () => {
       </p>
     );
   return (
-    <div className="grid lg:grid-cols-4 md:grid-cols-3 max-sm:grid-cols-2 max-xsm:grid-cols-1 gap-4 p-4 overflow-y-auto">
+    <div className="w-full grid grid-cols-4 md:grid-cols-3 max-sm:grid-cols-2 max-xsm:grid-cols-1 p-2 gap-2 overflow-y-scroll">
       <h3 className="lg:col-span-4 md:col-span-3 max-sm:col-span-2 max-xsm:col-span-1 text-xl text-center font-semibold">
         My Interested Rooms
       </h3>
@@ -110,19 +110,25 @@ const RoomCard = memo(
       <div
         className={cn(
           cachedTheme?.borderColor,
-          'grid grid-cols-4 gap-2 p-2 relative rounded-xl shadow-lg border hover:shadow-2xl transform transition-all'
+          'grid grid-cols-4 p-1 relative rounded-xl shadow-lg border hover:shadow-2xl transform transition-all'
         )}
       >
-        <h3 className={cn(cachedTheme?.textColor, 'col-span-4 font-medium')}>
+        <h3
+          className={cn(cachedTheme?.textColor, 'col-span-4 p-1 font-medium')}
+        >
           {room.name}({room.city})
         </h3>
 
-        <div className={cn(cachedTheme?.textColor, 'col-span-4 font-medium')}>
+        <div
+          className={cn(cachedTheme?.textColor, 'col-span-4 p-1 font-medium')}
+        >
           🌍 {room.location}
         </div>
 
         {room.direction && (
-          <div className={cn(cachedTheme?.textColor, 'col-span-4 font-medium')}>
+          <div
+            className={cn(cachedTheme?.textColor, 'col-span-4 p-1 font-medium')}
+          >
             📌 {room.direction}
           </div>
         )}
@@ -130,12 +136,12 @@ const RoomCard = memo(
         <div
           className={cn(
             cachedTheme?.textColor,
-            'col-span-2 flex items-center font-medium'
+            'col-span-2 p-1 flex items-center font-medium'
           )}
         >
           Rs.{room.price}/month
         </div>
-        <div className="col-span-2 flex justify-end">
+        <div className="col-span-2 p-1 flex justify-end">
           {room.available ? (
             <span className="text-green-500">Available</span>
           ) : (
@@ -145,14 +151,17 @@ const RoomCard = memo(
 
         <div
           title="Owner"
-          className={cn('col-span-2 flex items-center', cachedTheme?.textColor)}
+          className={cn(
+            'col-span-2 p-1 flex items-center',
+            cachedTheme?.textColor
+          )}
         >
           👤
           <p className="bg-transparent outline-none">{room.postedBy}</p>
         </div>
         <div
           className={cn(
-            'col-span-2 flex justify-end items-center',
+            'col-span-2 p-1 flex justify-end items-center',
             cachedTheme?.textColor
           )}
         >
@@ -161,16 +170,19 @@ const RoomCard = memo(
         </div>
 
         <div
-          className={cn(cachedTheme?.textColor, 'col-span-2 flex items-center')}
+          className={cn(
+            cachedTheme?.textColor,
+            'col-span-2 p-1 flex items-center'
+          )}
         >
           🏡{'  '}
           {room.roomtype}
         </div>
-        <div className="col-span-2 flex justify-end">
+        <div className="col-span-2 p-1 flex justify-end">
           🛏️ {room?.furnishingStatus}
         </div>
 
-        <div className="col-span-3 flex gap-1 overflow-x-scroll">
+        <div className="col-span-3 p-1 flex gap-1 overflow-x-scroll">
           🌟
           {room &&
             room.amenities.map((amenity, index) => (
@@ -186,7 +198,7 @@ const RoomCard = memo(
               </span>
             ))}
         </div>
-        <div className="col-span-1 flex justify-end">
+        <div className="col-span-1 p-1 flex justify-end">
           🧑‍🤝‍🧑 {room.mincapacity}-{room.maxcapacity}
         </div>
 

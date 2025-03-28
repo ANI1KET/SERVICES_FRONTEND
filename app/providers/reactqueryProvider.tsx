@@ -49,8 +49,8 @@ const initialThemeState = {
   bg: 'bg-green-300',
   svgIconColor: 'black',
   textColor: 'text-black',
-  ringColor: 'green',
-  activeRingColor: 'black',
+  ringColor: 'hover:ring-green',
+  activeRingColor: 'hover:ring-black',
   activeBg: 'bg-neutral-900',
   borderColor: 'border-black',
   bottomBarActiveTextColor: 'black',
@@ -74,9 +74,9 @@ const initialThemeState = {
 
 // const initialThemeState = {
 //   bg: 'bg-neutral-900',
-//   ringColor: 'black',
+//   ringColor: 'hover:ring-black',
 //   activeBg: 'bg-green-300',
-//   activeRingColor: 'green',
+//   activeRingColor: 'hover:ring-green',
 //   svgIconColor: 'lightgreen',
 //   textColor: 'text-green-200',
 //   activeTextColor: 'text-black',
