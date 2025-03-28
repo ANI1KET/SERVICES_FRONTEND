@@ -127,12 +127,22 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
                 className={cn(
                   cacheTheme?.activeBg,
                   cacheTheme?.activeTextColor,
-                  'p-[2px] rounded-lg '
+                  'p-[2px] rounded-lg mr-1'
                 )}
               >
                 Verified
               </span>
             )}
+            <span
+              className={cn(
+                'text-sm p-[2px] rounded-lg',
+                cacheTheme?.activeBg,
+                cacheTheme?.activeTextColor,
+                roomCardDetails.available ? '' : 'text-red-500'
+              )}
+            >
+              {roomCardDetails.available ? 'Available' : 'Not Available'}
+            </span>
           </p>
 
           <p className="col-span-3 ">

@@ -58,9 +58,9 @@ const InterestedRoom = () => {
       </p>
     );
   return (
-    <div className="h-fit grid lg:grid-cols-4 md:grid-cols-3 max-sm:grid-cols-2 max-xsm:grid-cols-1 gap-4 p-4">
-      <h3 className="col-span-4 text-xl text-center font-semibold">
-        Interested Rooms
+    <div className="grid lg:grid-cols-4 md:grid-cols-3 max-sm:grid-cols-2 max-xsm:grid-cols-1 gap-4 p-4 overflow-y-auto">
+      <h3 className="lg:col-span-4 md:col-span-3 max-sm:col-span-2 max-xsm:col-span-1 text-xl text-center font-semibold">
+        My Interested Rooms
       </h3>
 
       {data?.map((room) => (

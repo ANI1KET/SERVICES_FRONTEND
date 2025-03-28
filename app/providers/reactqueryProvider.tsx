@@ -21,6 +21,8 @@ export interface ThemeState {
   activeTextColor: string;
   borderColor: string;
   svgIconColor: string;
+  activeRingColor: string;
+  ringColor: string;
   // Input
   inputBg: string;
   inputColor: string;
@@ -47,6 +49,8 @@ const initialThemeState = {
   bg: 'bg-green-300',
   svgIconColor: 'black',
   textColor: 'text-black',
+  ringColor: 'green',
+  activeRingColor: 'black',
   activeBg: 'bg-neutral-900',
   borderColor: 'border-black',
   bottomBarActiveTextColor: 'black',
@@ -70,7 +74,9 @@ const initialThemeState = {
 
 // const initialThemeState = {
 //   bg: 'bg-neutral-900',
+//   ringColor: 'black',
 //   activeBg: 'bg-green-300',
+//   activeRingColor: 'green',
 //   svgIconColor: 'lightgreen',
 //   textColor: 'text-green-200',
 //   activeTextColor: 'text-black',

@@ -133,6 +133,15 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
             <PriceIcon size={16} />
             Rs.{`${roomCardDetails?.price}`}
             <span className="text-sm ">/month</span>
+            <span
+              className={cn(
+                'text-sm p-[2px] rounded-lg text-right ml-auto',
+                cacheTheme?.activeBg,
+                cacheTheme?.activeTextColor
+              )}
+            >
+              {roomCardDetails.available ? '✅ Available' : '❌ Not Available'}
+            </span>
           </span>
         </p>
 

@@ -92,7 +92,12 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
         </p>
         <hr className="col-span-2" />
         <p className="break-words col-span-2 text-lg max-sm:text-sm">
-          <span className="flex items-center gap-2 ">📌 Location</span>
+          <span className="flex items-center justify-between w-full">
+            <span className="w-1/2">📌 Location</span>
+            <span className="w-1/2">
+              {roomCardDetails.available ? '✅ Available' : '❌ Not Available'}
+            </span>
+          </span>
           <span>
             {`${roomCardDetails?.city}, ${roomCardDetails?.location}`}
             {roomCardDetails?.direction && ` ( ${roomCardDetails?.direction} )`}

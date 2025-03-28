@@ -9,6 +9,7 @@ import { RoomStats } from '../types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { GET_LISTED_ROOM_STATS } from '../graphQL/dashboardQuery';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
+import UsersInsterestedRooms from '../components/owner/UsersInsterestedRooms';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -88,7 +89,7 @@ const Admin = () => {
         Room Statistics
       </h1>
 
-      <div className="flex flex-wrap justify-around mb-2">
+      <div className="flex flex-wrap justify-around mb-4">
         <div className="">
           <Pie data={totalRoomChartData} options={chartOptions} />
         </div>
@@ -98,7 +99,18 @@ const Admin = () => {
         </div>
       </div>
 
-      <hr className={cn(cachedTheme?.bg, 'h-[2px]')}></hr>
+      <div className="">
+        <h1
+          className={cn(
+            cachedTheme?.textColor,
+            'text-2xl text-center font-bold'
+          )}
+        >
+          Interested Rooms by Users
+        </h1>
+
+        <UsersInsterestedRooms />
+      </div>
     </div>
   );
 };
