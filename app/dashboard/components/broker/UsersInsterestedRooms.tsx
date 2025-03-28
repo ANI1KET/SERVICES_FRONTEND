@@ -1,12 +1,6 @@
 import React from 'react';
 import { useSession } from 'next-auth/react';
-import {
-  gql,
-  Reference,
-  StoreObject,
-  useMutation,
-  useQuery,
-} from '@apollo/client';
+import { Reference, StoreObject, useMutation, useQuery } from '@apollo/client';
 
 import {
   DELETE_INTERESTED_USER,
@@ -69,7 +63,7 @@ const UsersInsterestedRooms: React.FC = React.memo(() => {
     </section>
   );
 });
-
+UsersInsterestedRooms.displayName = 'UsersInsterestedRooms';
 export default UsersInsterestedRooms;
 
 const RoomCard = React.memo(({ roomData }: { roomData: RoomData }) => {
@@ -141,6 +135,7 @@ const RoomCard = React.memo(({ roomData }: { roomData: RoomData }) => {
     </div>
   );
 });
+RoomCard.displayName = 'RoomCard';
 
 const UserCard = React.memo(
   ({ id, interest }: { id: string; interest: InterestedBy }) => {
@@ -230,3 +225,4 @@ const UserCard = React.memo(
     );
   }
 );
+UserCard.displayName = 'UserCard';
