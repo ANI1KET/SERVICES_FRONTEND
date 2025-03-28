@@ -31,20 +31,24 @@ const InterestedRoom = () => {
   });
 
   const removeRoom = useCallback(
-    (roomId: string) => {
-      setInterestedRooms((prevRooms) => {
-        const updatedRooms = prevRooms.filter((id) => id !== roomId);
-        localStorage.setItem('InterestedRooms', JSON.stringify(updatedRooms));
-        return updatedRooms;
-      });
+    async (roomId: string) => {
+      try {
+        await deleteInterestedRoom(roomId);
 
-      queryClient.setQueryData<NewListedRoom[]>(
-        ['interestedRooms'],
-        (oldData) =>
-          oldData ? oldData.filter((room) => room.id !== roomId) : []
-      );
+        setInterestedRooms((prevRooms) => {
+          const updatedRooms = prevRooms.filter((id) => id !== roomId);
+          localStorage.setItem('InterestedRooms', JSON.stringify(updatedRooms));
+          return updatedRooms;
+        });
 
-      deleteInterestedRoom(roomId);
+        queryClient.setQueryData<NewListedRoom[]>(
+          ['interestedRooms'],
+          (oldData) =>
+            oldData ? oldData.filter((room) => room.id !== roomId) : []
+        );
+      } catch (error) {
+        console.error('Failed to delete room:', error);
+      }
     },
     [queryClient]
   );

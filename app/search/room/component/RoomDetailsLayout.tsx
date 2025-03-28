@@ -2,9 +2,9 @@
 
 import { memo } from 'react';
 
-import { PriceIcon, FurnishIcon, CapacityIcon } from '@/app/lib/icon/svg';
 import { NewListedRoom } from '@/app/types/types';
 import { timeAgo } from '@/app/lib/utils/timeCalculation';
+import { PriceIcon, FurnishIcon, CapacityIcon } from '@/app/lib/icon/svg';
 
 interface RoomDetailsProps {
   roomCardDetails: NewListedRoom;
@@ -16,25 +16,26 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
       <div className="w-full h-full grid grid-cols-2 gap-2 text-2xl max-sm:text-sm">
         <p className="hidden max-xsm:block col-span-2 ">
           <span className="flex items-center gap-2 text-sm">
-            📌 Address
+            📞 Contact
             {roomCardDetails.verified && (
               <span className="bg-green-400 p-[2px] rounded-lg ml-auto">
                 Verified
               </span>
             )}
           </span>
-          <span>{`${roomCardDetails.city}, ${roomCardDetails.location}`}</span>
+          <span>{`+977-${roomCardDetails.primaryContact}`}</span>
         </p>
         <hr className="hidden max-xsm:block col-span-2" />
-        <p className="hidden max-xsm:block border-r break-words">
+        {/* <p className="hidden max-xsm:block border-r break-words">
           <span className="flex items-center gap-2 text-sm">📞 Contact</span>
           <span>{`+977-${roomCardDetails.primaryContact}`}</span>
         </p>
         <p className="hidden max-xsm:block break-words">
           <span className="flex items-center gap-2 text-sm">📅 Listed On</span>
+          <span>{timeAgo(roomCardDetails.createdAt)}</span>
           <span>{new Date(roomCardDetails.createdAt).toDateString()}</span>
         </p>
-        <hr className="hidden max-xsm:block col-span-2" />
+        <hr className="hidden max-xsm:block col-span-2" /> */}
         {/*  */}
         <p className="break-words border-r text-lg max-sm:text-sm">
           <span className="flex items-center gap-2 ">
