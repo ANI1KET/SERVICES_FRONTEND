@@ -1,5 +1,5 @@
 import { throttle } from 'lodash';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { QueryClient, useInfiniteQuery } from '@tanstack/react-query';
 
 import { PAGE_SIZE } from '../lib/reusableConst';
@@ -35,25 +35,21 @@ export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
 };
 
 export const useFilterUpdater = (queryClient: QueryClient) => {
-  const [_, setPendingFilters] = useState<Partial<SearchQueries['filters']>>(
-    {}
-  );
+  const [, setPendingFilters] = useState<Partial<SearchQueries['filters']>>({});
 
-  const throttledUpdateCache = useCallback(
-    throttle((filtersToApply: Partial<SearchQueries['filters']>) => {
-      queryClient.setQueryData<SearchQueries>(['searchData'], (prevData) => {
-        if (!prevData) return undefined;
-        return {
-          ...prevData,
-          filters: {
-            ...prevData.filters,
-            ...filtersToApply,
-          },
-        };
-      });
+  const throttledUpdateCache = useMemo(
+    () =>
+      throttle((filtersToApply: Partial<SearchQueries['filters']>) => {
+        queryClient.setQueryData<SearchQueries>(['searchData'], (prevData) => {
+          if (!prevData) return undefined;
+          return {
+            ...prevData,
+            filters: { ...prevData.filters, ...filtersToApply },
+          };
+        });
 
-      setPendingFilters({});
-    }, 1000),
+        setPendingFilters({});
+      }, 1000),
     [queryClient]
   );
 

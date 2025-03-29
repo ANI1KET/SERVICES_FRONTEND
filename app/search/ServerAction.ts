@@ -21,13 +21,6 @@ export const getCityLocations = async ({
 }): Promise<NewListedRoom[]> => {
   'use server';
 
-  console.log({
-    category,
-    offset,
-    decodedCity,
-    decodedLocations,
-    decodedURLQueryFilters,
-  });
   try {
     const response = await axiosInstance.get(`/place/${category}`, {
       params: {
