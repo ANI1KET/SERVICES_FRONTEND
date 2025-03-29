@@ -35,9 +35,9 @@ export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
 };
 
 export const useFilterUpdater = (queryClient: QueryClient) => {
-  const [pendingFilters, setPendingFilters] = useState<
-    Partial<SearchQueries['filters']>
-  >({});
+  const [_, setPendingFilters] = useState<Partial<SearchQueries['filters']>>(
+    {}
+  );
 
   const throttledUpdateCache = useCallback(
     throttle((filtersToApply: Partial<SearchQueries['filters']>) => {
