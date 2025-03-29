@@ -29,7 +29,7 @@ const CityLocationsData = memo(
         return (
           <Link key={roomDetails.id} href={`/${category}/${encodedId}`}>
             <div className="w-full grid grid-cols-9 mb-5">
-              {/* {roomDetails.videos ? (
+              {roomDetails.videos ? (
                 <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9 aspect-video">
                   <ReactPlayer
                     loop
@@ -59,7 +59,7 @@ const CityLocationsData = memo(
                     <ImageLoop images={memoizedPhotos} />
                   </div>
                 </div>
-              )} */}
+              )}
               <div
                 className={cn(
                   cachedTheme?.bg,

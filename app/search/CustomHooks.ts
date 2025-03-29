@@ -47,13 +47,13 @@ export const useFilterUpdater = (queryClient: QueryClient) => {
           ...prevData,
           filters: {
             ...prevData.filters,
-            ...filtersToApply, // Merge all pending filter changes
+            ...filtersToApply,
           },
         };
       });
 
-      setPendingFilters({}); // Reset pending filters after updating cache
-    }, 5000), // Adjust throttle time as needed
+      setPendingFilters({});
+    }, 1000),
     [queryClient]
   );
 
@@ -64,7 +64,7 @@ export const useFilterUpdater = (queryClient: QueryClient) => {
     ) => {
       setPendingFilters((prev) => {
         const newFilters = { ...prev, [key]: value };
-        throttledUpdateCache(newFilters); // Pass the latest filters to be applied
+        throttledUpdateCache(newFilters);
         return newFilters;
       });
     },
