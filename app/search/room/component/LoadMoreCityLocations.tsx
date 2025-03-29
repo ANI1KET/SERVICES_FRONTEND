@@ -30,9 +30,9 @@ const LoadMoreCityLocations = () => {
     enabled: false,
   });
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteRoomQuery(queryClient);
-  const updateFilter = useFilterUpdater(queryClient, refetch);
+  const updateFilter = useFilterUpdater(queryClient);
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);

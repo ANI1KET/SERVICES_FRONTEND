@@ -2,10 +2,9 @@
 
 import axios from 'axios';
 
+import { PAGE_SIZE } from '../lib/reUsableConst';
 import axiosInstance from '../lib/utils/axiosInstance';
 import { NewListedRoom, QueryFilters } from '../types/types';
-
-const PAGE_SIZE = 10;
 
 export const getCityLocations = async ({
   category,
@@ -22,6 +21,13 @@ export const getCityLocations = async ({
 }): Promise<NewListedRoom[]> => {
   'use server';
 
+  console.log({
+    category,
+    offset,
+    decodedCity,
+    decodedLocations,
+    decodedURLQueryFilters,
+  });
   try {
     const response = await axiosInstance.get(`/place/${category}`, {
       params: {

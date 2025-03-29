@@ -8,10 +8,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import ImageLoop from '@/app/lib/ui/ImageLoop';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { getCategoryDetails } from './ServerAction';
+import { PAGE_SIZE } from '@/app/lib/reUsableConst';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { CapacityIcon, PriceIcon } from '@/app/lib/icon/svg';
-
-const PAGE_SIZE = 10;
 
 const CategoryCardLayout: React.FC<{
   city: string;

@@ -1,22 +1,16 @@
-import {
-  QueryClient,
-  InfiniteData,
-  useInfiniteQuery,
-  QueryObserverResult,
-} from '@tanstack/react-query';
 import { throttle } from 'lodash';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { QueryClient, useInfiniteQuery } from '@tanstack/react-query';
 
+import { PAGE_SIZE } from '../lib/reUsableConst';
 import { getCityLocations } from './ServerAction';
-import { NewListedRoom, QueryFilters, SearchQueries } from '../types/types';
-
-const PAGE_SIZE = 10;
+import { QueryFilters, SearchQueries } from '../types/types';
 
 export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
   const cachedData = queryClient.getQueryData<SearchQueries>(['searchData']);
 
   return useInfiniteQuery({
-    queryKey: [`search/room`],
+    queryKey: ['search/room', cachedData?.city, cachedData?.filters],
     queryFn: ({ pageParam = 0 }) => {
       if (!cachedData) return [];
 
@@ -25,47 +19,57 @@ export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
         offset: pageParam,
         decodedCity: cachedData.city,
         decodedLocations: cachedData.locations,
-        decodedURLQueryFilters: cachedData?.filters as QueryFilters,
+        decodedURLQueryFilters: cachedData.filters as QueryFilters,
       });
     },
     getNextPageParam: (lastPage, allPages) => {
       const currentOffset = allPages.length * PAGE_SIZE;
       return lastPage.length === PAGE_SIZE ? currentOffset : undefined;
     },
+    staleTime: 0,
+    gcTime: 60000,
     initialPageParam: 0,
-    // gcTime: 1000 * 60 * 10,
-    // staleTime: 1000 * 60 * 10,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
 };
 
-const throttledRefetch = throttle((refetch: () => void) => refetch(), 1000);
+export const useFilterUpdater = (queryClient: QueryClient) => {
+  const [pendingFilters, setPendingFilters] = useState<
+    Partial<SearchQueries['filters']>
+  >({});
 
-export const useFilterUpdater = (
-  queryClient: QueryClient,
-  refetch: () => Promise<
-    QueryObserverResult<InfiniteData<NewListedRoom[], unknown>, Error>
-  >
-) => {
-  return useCallback(
-    <K extends keyof SearchQueries['filters']>(
-      key: K,
-      value: SearchQueries['filters'][K]
-    ) => {
+  const throttledUpdateCache = useCallback(
+    throttle((filtersToApply: Partial<SearchQueries['filters']>) => {
       queryClient.setQueryData<SearchQueries>(['searchData'], (prevData) => {
         if (!prevData) return undefined;
         return {
           ...prevData,
           filters: {
             ...prevData.filters,
-            [key]: value,
+            ...filtersToApply, // Merge all pending filter changes
           },
         };
       });
 
-      throttledRefetch(refetch);
-    },
-    [queryClient, refetch]
+      setPendingFilters({}); // Reset pending filters after updating cache
+    }, 5000), // Adjust throttle time as needed
+    [queryClient]
   );
+
+  const updateFilter = useCallback(
+    <K extends keyof SearchQueries['filters']>(
+      key: K,
+      value: SearchQueries['filters'][K]
+    ) => {
+      setPendingFilters((prev) => {
+        const newFilters = { ...prev, [key]: value };
+        throttledUpdateCache(newFilters); // Pass the latest filters to be applied
+        return newFilters;
+      });
+    },
+    [throttledUpdateCache]
+  );
+
+  return updateFilter;
 };
