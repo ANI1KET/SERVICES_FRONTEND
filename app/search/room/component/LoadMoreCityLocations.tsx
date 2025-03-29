@@ -142,13 +142,18 @@ const LoadMoreCityLocations = () => {
         />
       </div>
       <div className="">
-        {memoizedPages.map((roomDetails, pageIndex) => (
-          <CityLocationsData
-            key={pageIndex}
-            category="room"
-            cityLocationsData={roomDetails}
-          />
-        ))}
+        {memoizedPages?.[0]?.length === 0 ? (
+          <div className="flex justify-center items-center">No Rooms Found</div>
+        ) : (
+          memoizedPages.map((roomDetails, pageIndex) => (
+            <CityLocationsData
+              key={pageIndex}
+              category="room"
+              cityLocationsData={roomDetails}
+            />
+          ))
+        )}
+
         <div ref={observerRef} className="h-1"></div>
         {isFetchingNextPage && (
           <div className="flex justify-center items-center">
