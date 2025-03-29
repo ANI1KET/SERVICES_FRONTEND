@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-import { PAGE_SIZE } from '../lib/reUsableConst';
+import { PAGE_SIZE } from '../lib/reusableConst';
 import axiosInstance from '../lib/utils/axiosInstance';
 import { NewListedRoom, QueryFilters } from '../types/types';
 

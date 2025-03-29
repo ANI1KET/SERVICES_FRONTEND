@@ -2,7 +2,7 @@ import { throttle } from 'lodash';
 import { useCallback, useState } from 'react';
 import { QueryClient, useInfiniteQuery } from '@tanstack/react-query';
 
-import { PAGE_SIZE } from '../lib/reUsableConst';
+import { PAGE_SIZE } from '../lib/reusableConst';
 import { getCityLocations } from './ServerAction';
 import { QueryFilters, SearchQueries } from '../types/types';
 

@@ -1,7 +1,7 @@
 'use server';
 
 import { RoomData } from '@/app/types/types';
-import { PAGE_SIZE } from '@/app/lib/reUsableConst';
+import { PAGE_SIZE } from '@/app/lib/reusableConst';
 import axiosInstance from '@/app/lib/utils/axiosInstance';
 
 export const getCategoryDetails = async ({
