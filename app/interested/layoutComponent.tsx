@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { Permission } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 
 import { cn } from '../lib/utils/tailwindMerge';
@@ -27,16 +28,18 @@ const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
         >
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <div className="flex flex-col gap-2">
-              {['room', 'store'].map((link, idx) => (
-                <SidebarLink
-                  key={idx}
-                  link={{
-                    href: `/interested/${link}`,
-                    icon: DashboardPermissionTabs[link],
-                    label: link.charAt(0).toUpperCase() + link.slice(1),
-                  }}
-                />
-              ))}
+              {['room', 'hostel', 'property', 'vehicle', 'reMarketItem'].map(
+                (link, idx) => (
+                  <SidebarLink
+                    key={idx}
+                    link={{
+                      href: `/interested/${link}`,
+                      icon: DashboardPermissionTabs[link as Permission],
+                      label: link.charAt(0).toUpperCase() + link.slice(1),
+                    }}
+                  />
+                )
+              )}
             </div>
           </div>
           <div>

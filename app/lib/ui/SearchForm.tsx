@@ -106,13 +106,6 @@ const SearchForm: React.FC = () => {
 
     if (!city) return;
 
-    // const submitButton = document.querySelector(
-    //   '.searchSubmit'
-    // ) as HTMLButtonElement;
-    // if (submitButton) {
-    //   submitButton.disabled = true;
-    // }
-
     const locations = selectedLocation.includes(location)
       ? selectedLocation
       : [...selectedLocation, location].filter(Boolean);

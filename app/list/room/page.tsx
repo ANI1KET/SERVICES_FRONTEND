@@ -42,7 +42,7 @@ const Room = () => {
 
   const roomCreation = useMutation({
     mutationFn: (
-      data: RoomWithMediaUrl & { postedBy: PostedBy; userId: string }
+      data: RoomWithMediaUrl & { postedBy: PostedBy; listerId: string }
     ) =>
       SubmitRoomDetails({
         ...data,
@@ -105,7 +105,7 @@ const Room = () => {
         ...data,
         photos: uploadImageUrls,
         videos: uploadVideoUrl ?? null,
-        userId: session?.user.userId as string,
+        listerId: session?.user.userId as string,
         postedBy: session?.user.role as PostedBy,
       });
     } catch (error) {

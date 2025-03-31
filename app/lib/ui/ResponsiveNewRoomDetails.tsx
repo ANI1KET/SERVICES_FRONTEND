@@ -45,7 +45,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
 
                   await pushSavedRoom({
                     roomId: roomCardDetails.id,
-                    listerId: roomCardDetails.userId,
+                    listerId: roomCardDetails.listerId,
                     userId: session.user.userId as string,
                   });
 

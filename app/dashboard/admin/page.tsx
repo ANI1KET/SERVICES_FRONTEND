@@ -340,12 +340,10 @@ const DetailComponent = memo(
 
     const missingPermissions = [
       'room',
-      'land',
-      'store',
       'hostel',
-      'rental',
-      'repair',
-      'restaurant',
+      'vehicle',
+      'property',
+      'reMarketItem',
     ].filter((perm) => !user.permission.includes(perm));
     return (
       <div

@@ -1,14 +1,7 @@
-export type Permission =
-  | 'room'
-  | 'land'
-  | 'store'
-  | 'hostel'
-  | 'repair'
-  | 'rental'
-  | 'restaurant';
-export type PostedBy = 'USER' | 'OWNER' | 'BROKER';
+import { FurnishingStatusEnum } from '@prisma/client';
+
+export type PostedBy = 'OWNER' | 'BROKER';
 export type RoomType = 'FLAT' | '1BHK' | '2BHK' | '3BHK' | '4BHK';
-export type FurnishingStatus = 'UNFURNISHED' | 'SEMIFURNISHED' | 'FURNISHED';
 
 export type QueryFilters = {
   postedby: PostedBy[];
@@ -18,7 +11,7 @@ export type QueryFilters = {
   rating: number | number[];
   capacity: number | number[];
   verified: boolean | undefined;
-  furnishingstatus: FurnishingStatus[];
+  furnishingstatus: FurnishingStatusEnum[];
 };
 
 export type SearchQuery = {
@@ -63,8 +56,8 @@ export type RoomWithMediaUrl = Room & {
 
 export type NewListedRoom = RoomWithMediaUrl & {
   id: string;
-  userId: string;
   ratings: number;
+  listerId: string;
   postedBy: string;
   createdAt: string;
   updatedAt: string;

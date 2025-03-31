@@ -3,6 +3,7 @@
 import {
   Unmasked,
   ApolloError,
+  useReactiveVar,
   ApolloQueryResult,
   OperationVariables,
   FetchMoreQueryOptions,
@@ -12,8 +13,9 @@ import { useSession } from 'next-auth/react';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import RoomLayoutCard from './roomLayoutCard';
-import { LIMIT } from '@/app/dashboard/variables';
+import { LIMIT } from '@/app/lib/reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { deletedRoomIds } from '@/app/dashboard/graphQL/cache';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 type ChildComponentProps = {
@@ -47,13 +49,15 @@ const MainLayout: React.FC<ChildComponentProps> = ({
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [hasMore, setHasMore] = useState(true);
 
+  const deletedRoomIdsCount = useReactiveVar(deletedRoomIds);
+
   const loadMoreData = useCallback(() => {
     if (!hasMore) return;
     fetchMore({
       variables: {
         limit: LIMIT,
         id: session.data?.user.userId,
-        offset: data?.user.rooms.length || 0,
+        offset: (data?.user.rooms.length || 0) + deletedRoomIdsCount.size,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (fetchMoreResult.user.rooms.length < LIMIT) {
@@ -116,10 +120,9 @@ const MainLayout: React.FC<ChildComponentProps> = ({
   );
 };
 
-const MemoizedRoomLayoutCard = memo(
-  ({ room }: { room: Room }) => <RoomLayoutCard room={room} />,
-  (prevProps, nextProps) => prevProps.room.id === nextProps.room.id
-);
+const MemoizedRoomLayoutCard = memo(({ room }: { room: Room }) => {
+  return <RoomLayoutCard room={room} />;
+});
 MemoizedRoomLayoutCard.displayName = 'MemoizedRoomLayoutCard';
 
 export default MainLayout;

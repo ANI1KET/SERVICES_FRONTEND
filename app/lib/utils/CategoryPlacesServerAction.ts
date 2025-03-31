@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 
 import axiosInstance from './axiosInstance';
 
-export async function getCategoryCitiesLocations() {
+export async function getCategoryCitiesLocations(category: string) {
   'use server';
 
   // const cookieStore = await cookies();
@@ -14,7 +14,9 @@ export async function getCategoryCitiesLocations() {
   // const requestHeaders = await headers();
   // console.log(Object.fromEntries(requestHeaders));
   try {
-    const response = await axiosInstance.get(`/place/cities-locations`);
+    const response = await axiosInstance.get(
+      `/place/cities-locations/${category}`
+    );
 
     return response.data;
   } catch (error: unknown) {

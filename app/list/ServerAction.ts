@@ -266,7 +266,7 @@ export async function uploadChunkVideo({
 }
 
 export async function SubmitRoomDetails(
-  formData: RoomWithMediaUrl & { postedBy: PostedBy; userId: string }
+  formData: RoomWithMediaUrl & { postedBy: PostedBy; listerId: string }
 ) {
   'use server';
   try {

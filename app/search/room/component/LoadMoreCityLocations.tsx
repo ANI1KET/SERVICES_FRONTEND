@@ -1,14 +1,10 @@
 'use client';
 
+import { FurnishingStatusEnum } from '@prisma/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import {
-  PostedBy,
-  RoomType,
-  SearchQueries,
-  FurnishingStatus,
-} from '../../../types/types';
+import { PostedBy, RoomType, SearchQueries } from '../../../types/types';
 import {
   PriceSlider,
   RatingSlider,
@@ -120,14 +116,14 @@ const LoadMoreCityLocations = () => {
         <CustomCheckboxGroup<PostedBy>
           label="Posted By"
           defaultValue={searchData?.filters.postedby as PostedBy[]}
-          options={['OWNER', 'BROKER', 'USER']}
+          options={['OWNER', 'BROKER']}
           className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
           onChange={(postedBy) => updateFilter('postedby', postedBy)}
         />
-        <CustomCheckboxGroup<FurnishingStatus>
+        <CustomCheckboxGroup<FurnishingStatusEnum>
           label="Furnishing Status"
           defaultValue={
-            searchData?.filters.furnishingstatus as FurnishingStatus[]
+            searchData?.filters.furnishingstatus as FurnishingStatusEnum[]
           }
           options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
           className="grid xl:grid-cols-3 lg:grid-cols-2 "
@@ -218,14 +214,14 @@ const LoadMoreCityLocations = () => {
           <CustomCheckboxGroup<PostedBy>
             label="Posted By"
             defaultValue={searchData?.filters.postedby as PostedBy[]}
-            options={['OWNER', 'BROKER', 'USER']}
+            options={['OWNER', 'BROKER']}
             className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
             onChange={(postedBy) => updateFilter('postedby', postedBy)}
           />
-          <CustomCheckboxGroup<FurnishingStatus>
+          <CustomCheckboxGroup<FurnishingStatusEnum>
             label="Furnishing Status"
             defaultValue={
-              searchData?.filters.furnishingstatus as FurnishingStatus[]
+              searchData?.filters.furnishingstatus as FurnishingStatusEnum[]
             }
             options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
             className="grid grid-cols-3 lg:grid-cols-auto-fit] lg:min-[300px] max-sm:grid-cols-2"

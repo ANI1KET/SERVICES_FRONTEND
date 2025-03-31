@@ -3,31 +3,74 @@
 import ReactPlayer from 'react-player';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import ImageLoop from '@/app/lib/ui/ImageLoop';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { getCategoryDetails } from './ServerAction';
 import { PAGE_SIZE } from '@/app/lib/reusableConst';
-import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { CapacityIcon, PriceIcon } from '@/app/lib/icon/svg';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 const CategoryCardLayout: React.FC<{
   city: string;
   title: string;
+  route: string;
   cities: { [key: string]: string[] };
-}> = ({ city, cities, title }) => {
+}> = ({ city, cities, title, route }) => {
   const router = useRouter();
   const cachedTheme = useThemeState();
-  const [City, setCity] = useState(city);
+  const [City, setCity] = useState(city || 'Kathmandu');
+
+  // const defaultRooms: RoomData[] = [
+  //   {
+  //     id: 'default-room-1',
+  //     userId: 'default-user',
+  //     ratings: 0,
+  //     postedBy: 'Admin',
+  //     createdAt: new Date().toISOString(),
+  //     updatedAt: new Date().toISOString(),
+  //     verified: false,
+  //     available: true,
+  //     name: 'Default Room',
+  //     city: 'Default City',
+  //     location: 'Default Location',
+  //     bedroom: 1,
+  //     hall: 1,
+  //     kitchen: 1,
+  //     bathroom: 1,
+  //     roomtype: 'Single',
+  //     mincapacity: 1,
+  //     maxcapacity: 2,
+  //     ownerContact: '0000000000',
+  //     primaryContact: '0000000000',
+  //     direction: null,
+  //     furnishingStatus: 'Unfurnished',
+  //     amenities: ['WiFi', 'Parking'],
+  //     price: '1000',
+  //     photos: [],
+  //     videos: null,
+  //     user: {
+  //       role: 'guest',
+  //     },
+  //     roomReviews: [],
+  //   },
+  // ];
+
+  // const preloadedData = useMemo(() => {
+  //   return {
+  //     pages: [defaultRooms],
+  //     pageParams: [0],
+  //   };
+  // }, []);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: [`${title}${City}`],
+      queryKey: [`${route}${City}`],
       queryFn: ({ pageParam = 0 }) =>
         getCategoryDetails({
           city: City,
-          category: title,
+          category: route,
           offset: pageParam,
         }),
       getNextPageParam: (lastPage, allPages) => {
@@ -38,6 +81,7 @@ const CategoryCardLayout: React.FC<{
       gcTime: 1000 * 60 * 10,
       staleTime: 1000 * 60 * 10,
       refetchOnReconnect: false,
+      // initialData: preloadedData,
       refetchOnWindowFocus: false,
     });
 
@@ -78,7 +122,7 @@ const CategoryCardLayout: React.FC<{
           'text-2xl font-semibold text-center'
         )}
       >
-        {title.charAt(0).toUpperCase() + title.slice(1)}s
+        {title}
       </p>
       <div
         className={cn(

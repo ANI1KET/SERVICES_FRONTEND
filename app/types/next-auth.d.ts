@@ -1,6 +1,6 @@
 import 'next-auth';
 import { DefaultSession } from 'next-auth';
-import { PostedBy, Permission } from './types';
+import { Permission, Role } from '@prisma/client';
 
 declare module 'next-auth' {
   interface User {
@@ -13,7 +13,7 @@ declare module 'next-auth' {
   interface Session {
     user: {
       id?: string;
-      role?: PostedBy;
+      role?: Role;
       userId?: string;
       number?: string;
       access_token?: string;

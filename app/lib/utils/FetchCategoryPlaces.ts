@@ -14,7 +14,7 @@ export function FetchCategoryCitiesLocations(category: string) {
   return useQuery({
     queryKey: ['getCategoryCitiesLocations'],
     queryFn: async () => {
-      const CitiesLocationsData = await getCategoryCitiesLocations();
+      const CitiesLocationsData = await getCategoryCitiesLocations(category);
 
       const newCacheData = queryClient.setQueryData(
         ['getCategoryCitiesLocations'],
@@ -57,7 +57,7 @@ export function FetchCategoryCityLocations() {
 
       queryClient.setQueryData(['getCategoryCitiesLocations'], (cachedData) => {
         return {
-          // ...(cachedData as CityData),
+          ...(cachedData as CityData),
           city: city,
           [category]: {
             ...(cachedData?.[category] as Record<string, string[]>),

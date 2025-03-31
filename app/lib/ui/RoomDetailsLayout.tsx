@@ -4,7 +4,7 @@ import ImageSlider from '@/app/lib/ui/ImageSlider';
 import VideoPlayer from '@/app/lib/ui/VideoPlayer';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import NewRoomDetails from '@/app/lib/ui/NewRoomDetails';
-import { NewListedRoom, RoomData } from '@/app/types/types';
+import { NewListedRoom, RoomData, SearchQueries } from '@/app/types/types';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import ResponsiveNewRoomDetails from '@/app/lib/ui/ResponsiveNewRoomDetails';
@@ -32,7 +32,17 @@ const RoomDetailsLayout: React.FC<{ city: string; roomId: string }> = ({
 
   const cachedData = city
     ? queryClient.getQueryData<InfiniteData<RoomData[]>>([`room${city}`])
-    : queryClient.getQueryData<InfiniteData<RoomData[]>>([`search/room`]);
+    : (() => {
+        const searchData = queryClient.getQueryData<SearchQueries>([
+          'searchData',
+        ]);
+        if (!searchData) return undefined;
+        return queryClient.getQueryData<InfiniteData<RoomData[]>>([
+          'search/room',
+          searchData.city,
+          searchData.filters,
+        ]);
+      })();
 
   const RoomDetails = findMatchingRoom(cachedData, roomId);
   if (!RoomDetails) return null;

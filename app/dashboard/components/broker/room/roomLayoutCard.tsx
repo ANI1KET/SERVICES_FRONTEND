@@ -5,14 +5,11 @@ import { MenuItem, Select } from '@mui/material';
 import { useApolloClient, useMutation } from '@apollo/client';
 
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { deletedRoomIds } from '@/app/dashboard/graphQL/cache';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { DeleteRoom, UpdateRoom } from '@/app/dashboard/graphQL/roomQuery';
 
-const RoomLayoutCard = ({
-  room,
-  isFilter,
-  setIsFilter,
-}: {
+const RoomLayoutCard: React.FC<{
   room: Room;
   setIsFilter?: React.Dispatch<
     React.SetStateAction<{
@@ -21,7 +18,7 @@ const RoomLayoutCard = ({
     }>
   >;
   isFilter?: { cityLocation: boolean; id: boolean };
-}) => {
+}> = ({ room, isFilter, setIsFilter }) => {
   const client = useApolloClient();
   const cachedTheme = useThemeState();
 
@@ -55,62 +52,56 @@ const RoomLayoutCard = ({
       );
 
       try {
-        await updateRoom({
-          variables: {
-            id: roomId,
-            ...updateData,
-            ...(filteredAmenities ? { amenities: filteredAmenities } : {}),
-          },
-        });
+        // await updateRoom({
+        //   variables: {
+        //     id: roomId,
+        //     ...updateData,
+        //     ...(filteredAmenities ? { amenities: filteredAmenities } : {}),
+        //   },
+        // });
+
+        const ROOM_FRAGMENT = gql`
+          fragment RoomData on Room {
+            id
+            city
+            name
+            hall
+            price
+            kitchen
+            bedroom
+            location
+            direction
+            amenities
+            available
+            ownerContact
+            primaryContact
+            furnishingStatus
+          }
+        `;
 
         const roomToUpdate = client.readFragment({
           id: `Room:${roomId}`,
-          fragment: gql`
-            fragment RoomData on Room {
-              id
-              city
-              name
-              hall
-              price
-              kitchen
-              bedroom
-              location
-              direction
-              amenities
-              available
-              ownerContact
-              primaryContact
-              furnishingStatus
-            }
-          `,
+          fragment: ROOM_FRAGMENT,
         });
-        const newAmenities = filteredAmenities ?? [];
-        client.writeFragment({
-          id: `Room:${roomId}`,
-          fragment: gql`
-            fragment RoomData on Room {
-              id
-              city
-              name
-              hall
-              price
-              kitchen
-              bedroom
-              location
-              direction
-              amenities
-              available
-              ownerContact
-              primaryContact
-              furnishingStatus
-            }
-          `,
-          data: {
-            ...roomToUpdate,
-            ...updateData,
-            amenities: [...(roomToUpdate.amenities ?? []), ...newAmenities],
-          },
-        });
+
+        if (roomToUpdate) {
+          const updatedAmenities = [
+            ...new Set([
+              ...(roomToUpdate.amenities ?? []),
+              ...(filteredAmenities ?? []),
+            ]),
+          ];
+
+          client.writeFragment({
+            id: `Room:${roomId}`,
+            fragment: ROOM_FRAGMENT,
+            data: {
+              ...roomToUpdate,
+              ...updateData,
+              amenities: updatedAmenities,
+            },
+          });
+        }
       } catch (error) {
         console.error(`Failed to update room :`, error);
       } finally {
@@ -127,13 +118,15 @@ const RoomLayoutCard = ({
   const handleDelete = useCallback(
     async (roomId: string) => {
       try {
-        await deleteRoom({
-          variables: { id: roomId },
-        });
+        // await deleteRoom({
+        //   variables: { id: roomId },
+        // });
 
         client.cache.evict({ id: `Room:${roomId}` });
         // client.cache.evict({ fieldName: 'room', args: { id: roomId } });
         client.cache.gc();
+
+        deletedRoomIds(new Set([...deletedRoomIds(), room.id]));
 
         if (isFilter) setIsFilter?.({ ...isFilter, id: false });
       } catch (error) {

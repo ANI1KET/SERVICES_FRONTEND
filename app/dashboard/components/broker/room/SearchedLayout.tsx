@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import RoomLayoutCard from './roomLayoutCard';
-import { LIMIT } from '@/app/dashboard/variables';
+import { LIMIT } from '@/app/lib/reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 

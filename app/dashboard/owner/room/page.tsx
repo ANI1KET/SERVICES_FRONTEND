@@ -4,9 +4,9 @@ import { Room } from '@prisma/client';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
-import { LIMIT } from '../../variables';
+import { LIMIT } from '@/app/lib/reusableConst';
 import { GET_LISTED_ROOMS } from '../../graphQL/userQuery';
-import MainLayout from '../../components/owner/room/MainLayout';
+import MainLayout from '../../components/broker/room/MainLayout';
 import SearchLayout from '../../components/broker/room/SearchLayout';
 
 const OwnerRoomDashboard = () => {

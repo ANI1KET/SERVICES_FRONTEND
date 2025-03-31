@@ -12,8 +12,8 @@ import {
 } from '@/app/dashboard/graphQL/roomQuery';
 import RoomLayoutCard from './roomLayoutCard';
 import SearchedLayout from './SearchedLayout';
+import { LIMIT } from '@/app/lib/reusableConst';
 import { MenuItem, Select } from '@mui/material';
-import { LIMIT } from '@/app/dashboard/variables';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 

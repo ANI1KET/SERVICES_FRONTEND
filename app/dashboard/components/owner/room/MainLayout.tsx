@@ -3,17 +3,19 @@
 import {
   Unmasked,
   ApolloError,
+  useReactiveVar,
   ApolloQueryResult,
   OperationVariables,
   FetchMoreQueryOptions,
 } from '@apollo/client';
 import { Room } from '@prisma/client';
 import { useSession } from 'next-auth/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import RoomLayoutCard from './roomLayoutCard';
-import { LIMIT } from '@/app/dashboard/variables';
+import { LIMIT } from '@/app/lib/reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { deletedRoomIds } from '@/app/dashboard/graphQL/cache';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 type ChildComponentProps = {
@@ -38,15 +40,16 @@ type ChildComponentProps = {
 
 const MainLayout: React.FC<ChildComponentProps> = ({
   data,
-  loading,
   error,
+  loading,
   fetchMore,
 }) => {
   const session = useSession();
   const cachedTheme = useThemeState();
   const observerRef = useRef<HTMLDivElement | null>(null);
-
   const [hasMore, setHasMore] = useState(true);
+
+  const deletedRoomIdsCount = useReactiveVar(deletedRoomIds);
 
   const loadMoreData = useCallback(() => {
     if (!hasMore) return;
@@ -54,7 +57,7 @@ const MainLayout: React.FC<ChildComponentProps> = ({
       variables: {
         limit: LIMIT,
         id: session.data?.user.userId,
-        offset: data?.user.rooms.length || 0,
+        offset: (data?.user.rooms.length || 0) + deletedRoomIdsCount.size,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (fetchMoreResult.user.rooms.length < LIMIT) {
@@ -100,7 +103,7 @@ const MainLayout: React.FC<ChildComponentProps> = ({
   return (
     <div className="grid lg:grid-cols-4 md:grid-cols-3 max-sm:grid-cols-2 max-xsm:grid-cols-1 gap-4 p-4">
       {data?.user.rooms.map((room: Room) => (
-        <RoomLayoutCard key={room.id} room={room} />
+        <MemoizedRoomLayoutCard key={room.id} room={room} />
       ))}
 
       {hasMore && (
@@ -116,5 +119,10 @@ const MainLayout: React.FC<ChildComponentProps> = ({
     </div>
   );
 };
+
+const MemoizedRoomLayoutCard = memo(({ room }: { room: Room }) => {
+  return <RoomLayoutCard room={room} />;
+});
+MemoizedRoomLayoutCard.displayName = 'MemoizedRoomLayoutCard';
 
 export default MainLayout;

@@ -45,10 +45,7 @@ const UsersInsterestedRooms: React.FC = React.memo(() => {
     <section
       className={cn(
         cachedTheme?.textColor,
-        'grid gap-y-2 p-1 h-[36vh] overflow-y-scroll',
-        'grid-cols-3 ',
-        'max-sm:grid-cols-2 ',
-        'max-xsm:grid-cols-1 max-sm:text-sm max-sm:h-[32vh] max-xsm:h-full max-xsm:gap-y-0 '
+        'grid grid-cols-3 gap-y-2 p-1 max-sm:text-sm h-[36vh] overflow-y-scroll'
       )}
     >
       {data &&
@@ -56,7 +53,7 @@ const UsersInsterestedRooms: React.FC = React.memo(() => {
           <React.Fragment key={index}>
             <RoomCard roomData={roomData} />
 
-            <div className="col-span-2 max-sm:col-span-1 flex items-center overflow-x-auto whitespace-nowrap max-xsm:py-2 max-xsm:mb-2">
+            <div className="col-span-2 flex items-center overflow-x-auto whitespace-nowrap">
               {roomData.interestedBy.map((interest, j) => (
                 <UserCard key={j} interest={interest} id={roomData.id} />
               ))}
@@ -77,7 +74,7 @@ const RoomCard = React.memo(({ roomData }: { roomData: RoomData }) => {
       className={cn(
         cachedTheme?.bg,
         cachedTheme?.borderColor,
-        `col-span-1 border rounded-lg transition-transform duration-200 hover:ring-1 ${cachedTheme?.activeRingColor}`
+        `col-span-1 border rounded-lg transition-transform duration-200 hover:ring-1 hover:ring-${cachedTheme?.activeRingColor}`
       )}
     >
       <h3 className={cn(cachedTheme?.borderColor, 'border-b p-1')}>
@@ -191,7 +188,7 @@ const UserCard = React.memo(
         className={cn(
           cachedTheme?.bg,
           cachedTheme?.borderColor,
-          `p-1 border-y border-r max-xsm:border-l transition-transform duration-200 hover:scale-105 hover:ring-1 ${cachedTheme?.activeRingColor}`
+          `p-1 border-y border-r transition-transform duration-200 hover:scale-105 hover:ring-1 hover:ring-${cachedTheme?.activeRingColor}`
         )}
       >
         <p className={cn(cachedTheme?.borderColor, 'p-1 border-b')}>

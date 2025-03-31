@@ -1,118 +1,61 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useState } from 'react';
 
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import CategoryCardLayout from './LowerLayout/CategoryCardLayout';
 import SearchPanel from '../BottomNavigationBar/PanelComponent/SearchPanel';
-import { CityData, useThemeState } from '@/app/providers/reactqueryProvider';
+import { useTabState, useThemeState } from '@/app/providers/reactqueryProvider';
+import { FetchCategoryCitiesLocations } from '@/app/lib/utils/FetchCategoryPlaces';
 
 const LowerLayout = () => {
   const cachedTheme = useThemeState();
-  const queryClient = useQueryClient();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [cachedData, setCachedData] = useState<CityData | undefined>();
+  const tabState = useTabState();
+  const category = tabState?.['CategoryTab'] as string;
 
   const togglePanel = useCallback(() => {
     setIsPanelOpen((prev) => !prev);
   }, []);
 
-  useEffect(() => {
-    const handleCacheUpdate = (event: { query?: { queryKey?: unknown[] } }) => {
-      if (event.query?.queryKey?.[0] === 'getCategoryCitiesLocations') {
-        const updatedData = queryClient.getQueryData<CityData>([
-          'getCategoryCitiesLocations',
-        ]);
-
-        if (updatedData) {
-          setCachedData(updatedData);
-        }
-      }
-    };
-
-    const unsubscribe = queryClient
-      .getQueryCache()
-      .subscribe(handleCacheUpdate);
-
-    return () => {
-      unsubscribe();
-    };
-  }, [queryClient]);
+  const { data: CitiesLocations } = FetchCategoryCitiesLocations(category);
   return (
     // <section className="max-sm:pt-[0] pt-[8vh] flex flex-row">
     <section className="max-sm:pt-[0] pt-[8vh] ">
       {/* <div className="w-[80vw] "> */}
       <div className=" ">
         {/* Rooms */}
-        {(cachedData?.['room'] as { [key: string]: string[] }) && (
-          <CategoryCardLayout
-            title="room"
-            key={'RoomCities'}
-            city={cachedData?.city as string}
-            cities={cachedData?.['room'] as { [key: string]: string[] }}
-          />
-        )}
+        <CategoryCardLayout
+          route="room"
+          title="Rooms"
+          key={'RoomCities'}
+          city={CitiesLocations?.city as string}
+          cities={CitiesLocations?.['room'] as { [key: string]: string[] }}
+        />
 
-        {/* Stores */}
-        {(cachedData?.['store'] as { [key: string]: string[] }) && (
-          <CategoryCardLayout
-            title="store"
-            key={'StoreCities'}
-            city={cachedData?.city as string}
-            cities={cachedData?.['store'] as { [key: string]: string[] }}
-          />
-        )}
+        {/* Hostels */}
+        {/* <CategoryCardLayout route="hostel" title="Hostels" key={'HostelCities'} 
+          city={CitiesLocations?.city as string}
+          cities={CitiesLocations?.['hostel'] as { [key: string]: string[] }}
+          /> */}
 
-        {/* Hostel */}
-        {(cachedData?.['hostel'] as { [key: string]: string[] }) && (
-          <CategoryCardLayout
-            title="hostel"
-            key={'HostelCities'}
-            city={cachedData?.city as string}
-            cities={cachedData?.['hostel'] as { [key: string]: string[] }}
-          />
-        )}
+        {/* Properties */}
+        {/* <CategoryCardLayout route="property" title="Properties" key={'PorpertyCities'} 
+          city={CitiesLocations?.city as string}
+          cities={CitiesLocations?.['property'] as { [key: string]: string[] }}
+          /> */}
 
-        {/* Restaurant */}
-        {(cachedData?.['restaurant'] as { [key: string]: string[] }) && (
-          <CategoryCardLayout
-            title="restaurant"
-            key={'RestaurantCities'}
-            city={cachedData?.city as string}
-            cities={cachedData?.['restaurant'] as { [key: string]: string[] }}
-          />
-        )}
+        {/* Vehicles */}
+        {/* <CategoryCardLayout route="vehicle" title="Vehicles" key={'VehicleCities'} 
+          city={CitiesLocations?.city as string}
+          cities={CitiesLocations?.['vehicle'] as { [key: string]: string[] }}
+          /> */}
 
-        {/* Land */}
-        {(cachedData?.['land'] as { [key: string]: string[] }) && (
-          <CategoryCardLayout
-            title="land"
-            key={'LandCities'}
-            city={cachedData?.city as string}
-            cities={cachedData?.['land'] as { [key: string]: string[] }}
-          />
-        )}
-
-        {/* Repair */}
-        {(cachedData?.['repair'] as { [key: string]: string[] }) && (
-          <CategoryCardLayout
-            title="repair"
-            key={'RepairCities'}
-            city={cachedData?.city as string}
-            cities={cachedData?.['repair'] as { [key: string]: string[] }}
-          />
-        )}
-
-        {/* Rental */}
-        {(cachedData?.['rental'] as { [key: string]: string[] }) && (
-          <CategoryCardLayout
-            title="rental"
-            key={'RentalCities'}
-            city={cachedData?.city as string}
-            cities={cachedData?.['rental'] as { [key: string]: string[] }}
-          />
-        )}
+        {/* Products */}
+        {/* <CategoryCardLayout route="reMarketItem" title="Products" key={'RentalCities'} 
+          city={CitiesLocations?.city as string}
+          cities={CitiesLocations?.['reMarketItem'] as { [key: string]: string[] }}
+        /> */}
       </div>
 
       <div
