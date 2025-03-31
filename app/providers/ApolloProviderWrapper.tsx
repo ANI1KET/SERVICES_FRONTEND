@@ -1,46 +1,69 @@
-// 'use client';
-
-// import { ApolloProvider } from '@apollo/client';
-
-// import { apolloclient } from '../dashboard/graphQL/graphQLClient';
-
-// export default function ApolloProviderWrapper({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return <ApolloProvider client={apolloclient}>{children}</ApolloProvider>;
-// }
-
 'use client';
 
 import {
+  HttpLink,
   ApolloClient,
+  InMemoryCache,
   ApolloProvider,
   NormalizedCacheObject,
 } from '@apollo/client';
-import { useState, useEffect } from 'react';
-
-import createApolloClient from '../dashboard/graphQL/graphQLClient';
+import { useRef } from 'react';
+import { Session } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import { setContext } from '@apollo/client/link/context';
 
 export default function ApolloProviderWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [client, setClient] =
-    useState<ApolloClient<NormalizedCacheObject> | null>(null);
+  const { data: session } = useSession();
+  const clientRef = useRef<ApolloClient<NormalizedCacheObject> | null>(null);
 
-  useEffect(() => {
-    const setupApollo = async () => {
-      const apolloClient = await createApolloClient();
-      setClient(apolloClient);
+  if (!session) {
+    clientRef.current = null;
+  } else if (!clientRef.current) {
+    clientRef.current = createApolloClient(session);
+  }
+  // if (!session && clientRef.current) {
+  //   clientRef.current = null;
+  // } else if (session && !clientRef.current) {
+  //   clientRef.current = createApolloClient(session);
+  // }
+
+  if (!clientRef.current)
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        Login to Access Again
+      </div>
+    );
+
+  return <ApolloProvider client={clientRef.current}>{children}</ApolloProvider>;
+}
+
+function createApolloClient(session: Session) {
+  const httpLink = new HttpLink({
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_SERVER,
+  });
+
+  const authLink = setContext((_, { headers }) => {
+    const role = session?.user?.role;
+    const permission = session?.user?.permission;
+    return {
+      headers: {
+        ...headers,
+        ...(role && permission
+          ? {
+              'X-User-Role': String(role),
+              'X-User-Permission': JSON.stringify(permission),
+            }
+          : {}),
+      },
     };
+  });
 
-    setupApollo();
-  }, []);
-
-  if (!client) return <p>Loading...</p>;
-
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+  return new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+  });
 }

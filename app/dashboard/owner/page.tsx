@@ -20,7 +20,7 @@ const getRandomColor = (count: number) => {
   );
 };
 
-const Admin = () => {
+const Owner = () => {
   const session = useSession();
   const cachedTheme = useThemeState();
   const { loading, data, error } = useQuery<{ totalListedRoom: RoomStats }>(
@@ -115,4 +115,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Owner;
