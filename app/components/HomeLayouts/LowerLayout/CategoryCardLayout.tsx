@@ -3,7 +3,7 @@
 import ReactPlayer from 'react-player';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import ImageLoop from '@/app/lib/ui/ImageLoop';
 import { cn } from '@/app/lib/utils/tailwindMerge';
