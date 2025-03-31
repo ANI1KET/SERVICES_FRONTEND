@@ -72,7 +72,13 @@ const MainLayout: React.FC<ChildComponentProps> = ({
         };
       },
     });
-  }, [hasMore, fetchMore, session.data?.user.userId, data?.user.rooms.length]);
+  }, [
+    hasMore,
+    deletedRoomIdsCount.size,
+    fetchMore,
+    session.data?.user.userId,
+    data?.user.rooms.length,
+  ]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

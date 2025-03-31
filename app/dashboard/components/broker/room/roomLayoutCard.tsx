@@ -52,13 +52,13 @@ const RoomLayoutCard: React.FC<{
       );
 
       try {
-        // await updateRoom({
-        //   variables: {
-        //     id: roomId,
-        //     ...updateData,
-        //     ...(filteredAmenities ? { amenities: filteredAmenities } : {}),
-        //   },
-        // });
+        await updateRoom({
+          variables: {
+            id: roomId,
+            ...updateData,
+            ...(filteredAmenities ? { amenities: filteredAmenities } : {}),
+          },
+        });
 
         const ROOM_FRAGMENT = gql`
           fragment RoomData on Room {
@@ -118,9 +118,9 @@ const RoomLayoutCard: React.FC<{
   const handleDelete = useCallback(
     async (roomId: string) => {
       try {
-        // await deleteRoom({
-        //   variables: { id: roomId },
-        // });
+        await deleteRoom({
+          variables: { id: roomId },
+        });
 
         client.cache.evict({ id: `Room:${roomId}` });
         // client.cache.evict({ fieldName: 'room', args: { id: roomId } });
@@ -133,7 +133,7 @@ const RoomLayoutCard: React.FC<{
         console.error(`Failed to delete room:`, error);
       }
     },
-    [client.cache, deleteRoom, isFilter, setIsFilter]
+    [client.cache, room.id, deleteRoom, isFilter, setIsFilter]
   );
   return (
     <form
