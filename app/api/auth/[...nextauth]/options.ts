@@ -4,7 +4,8 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 import prisma from '@/prisma/prismaClient';
-import { PostedBy, Permission } from '@/app/types/types';
+import { Permission } from '@prisma/client';
+import { PostedBy } from '@/app/types/types';
 
 export const authOptions: NextAuthOptions = {
   // pages: {
