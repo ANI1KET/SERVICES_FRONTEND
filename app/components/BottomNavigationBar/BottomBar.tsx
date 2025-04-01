@@ -49,7 +49,7 @@ const BottomBar = () => {
           onClick={() => handleTabClick('renter')}
         >
           <RentIcon />
-          Rent
+          Room
         </div>
         <div
           className={cn(

@@ -9,7 +9,7 @@ import { RoomStats } from '../types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { GET_LISTED_ROOM_STATS } from '../graphQL/dashboardQuery';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-import UsersInsterestedRooms from '../components/owner/UsersInsterestedRooms';
+import UsersInsterestedRooms from '../components/broker/UsersInsterestedRooms';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
