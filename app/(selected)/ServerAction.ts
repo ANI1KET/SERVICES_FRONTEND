@@ -1,28 +1,28 @@
-// import axiosInstance from '../lib/utils/axiosInstance';
+'use server';
 
-export const decodeURLPlaceQuery = (query: string): Record<string, string> => {
+import axiosInstance from '../lib/utils/axiosInstance';
+
+export const updateNumber = async ({
+  userId,
+  number,
+}: {
+  userId: string;
+  number: string;
+}): Promise<string> => {
+  'use server';
+
   try {
-    const urlDecoded = decodeURIComponent(query);
-    const decoded = atob(urlDecoded);
-    const [id, city] = decoded.split(',');
+    const response = await axiosInstance.post(
+      `/user/number`,
+      { userId, number },
+      {
+        headers: { 'Cache-Control': 'no-cache' },
+      }
+    );
 
-    return { id, city };
+    return response.data;
   } catch (error) {
     console.error('Error decoding query parameter:', error);
-    return {};
+    return 'Failed';
   }
 };
-
-// export const getCategoryDetails = async ({
-//   id,
-//   category,
-// }: {
-//   id: string;
-//   category: string;
-// }) => {
-//   const response = await axiosInstance.get(`/${category}/${id}`, {
-//     headers: { 'Cache-Control': 'no-cache' },
-//   });
-
-//   return response.data;
-// };

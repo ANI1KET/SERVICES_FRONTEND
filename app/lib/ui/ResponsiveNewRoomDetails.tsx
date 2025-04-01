@@ -1,10 +1,12 @@
 'use client';
 
+import Swal from 'sweetalert2';
 import { useSession } from 'next-auth/react';
 
 import { PriceIcon } from '@/app/lib/icon/svg';
 import { NewListedRoom } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { updateNumber } from '@/app/(selected)/ServerAction';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { pushSavedRoom } from '@/app/(selected)/room/ServerAction';
 
@@ -16,10 +18,57 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
   roomCardDetails,
 }) => {
   const cacheTheme = useThemeState();
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
+  const showNumberInputPopup = async () => {
+    const { value } = await Swal.fire({
+      title: 'Contact',
+      input: 'text',
+      inputPlaceholder: 'Enter your number...',
+      inputAttributes: {
+        maxlength: '10',
+        pattern: '[0-9]{10}',
+        inputmode: 'numeric',
+      },
+      width: 300,
+      padding: '1rem',
+      showCancelButton: true,
+      confirmButtonText: 'Done',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'rounded-xl shadow-lg',
+        title: cn(cacheTheme?.textColor, 'text-lg font-bold'),
+        confirmButton: cn(cacheTheme?.bg, cacheTheme?.textColor, 'rounded-lg'),
+        cancelButton: cn(
+          'rounded-lg',
+          cacheTheme?.activeBg,
+          cacheTheme?.activeTextColor
+        ),
+      },
+      inputValidator: (value) => {
+        if (!/^\d{10}$/.test(value)) {
+          return 'Please enter a valid 10-digit number!';
+        }
+      },
+    });
+
+    if (value) {
+      const response = await updateNumber({
+        number: value,
+        userId: session?.user.userId as string,
+      });
+      if (response !== 'Failed')
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            number: value,
+          },
+        });
+    }
+  };
   return (
-    <div>
+    <>
       <div className="text-right m-2 max-xsm:hidden">
         {session ? (
           session?.user.role === 'USER' ? (
@@ -34,6 +83,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
                 const originalText = target.innerText;
 
                 try {
+                  if (!session.user.number) showNumberInputPopup();
                   target.innerText = 'Interested';
 
                   const existingRooms = JSON.parse(
@@ -201,7 +251,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
           )}
         </p>
       </div>
-    </div>
+    </>
   );
 };
 

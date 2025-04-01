@@ -1,6 +1,17 @@
 import { notFound } from 'next/navigation';
 
-import { decodeURLPlaceQuery } from '../../ServerAction';
+const decodeURLPlaceQuery = (query: string): Record<string, string> => {
+  try {
+    const urlDecoded = decodeURIComponent(query);
+    const decoded = atob(urlDecoded);
+    const [id, city] = decoded.split(',');
+
+    return { id, city };
+  } catch (error) {
+    console.error('Error decoding query parameter:', error);
+    return {};
+  }
+};
 
 export default async function SelectedReMarketItem({
   params,

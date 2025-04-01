@@ -141,7 +141,7 @@ export const authOptions: NextAuthOptions = {
 
     //   return redirectUrl;
     // },
-    async jwt({ user, token }) {
+    async jwt({ user, token, trigger, session }) {
       if (user) {
         token.id = user.id?.toString();
         token.name = user.name;
@@ -155,6 +155,10 @@ export const authOptions: NextAuthOptions = {
         //   token.refresh_token = account.refresh_token;
         //   token.access_token = account.access_token;
         // }
+      }
+
+      if (trigger === 'update') {
+        return { ...token, ...session.user };
       }
 
       return token;

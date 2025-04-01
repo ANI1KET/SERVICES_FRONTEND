@@ -7,7 +7,6 @@ import AuthProvider from './providers/authProvider';
 import Header from './components/HeaderNavigationBar/header';
 import ReactQueryProvider from './providers/reactqueryProvider';
 // import DisableInteractions from "./lib/utils/DisableInteractions";
-// import SideNavBar from "./components/SideNavigationBar/SideNavBar";
 import BottomNavBar from './components/BottomNavigationBar/BottomNavBar';
 
 export const metadata: Metadata = {
@@ -44,7 +43,6 @@ export default function RootLayout({
           <AuthProvider>
             {/* <DisableInteractions /> */}
             <Header />
-            {/* <SideNavBar /> */}
             {children}
             <Footer />
             <BottomNavBar />

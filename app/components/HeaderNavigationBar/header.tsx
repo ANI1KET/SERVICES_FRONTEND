@@ -1,8 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import {
   useThemeState,
@@ -18,6 +19,20 @@ const Header: React.FC = () => {
   const { data: session } = useSession();
   const deleteTabState = useDeleteTabState();
 
+  // const texts = [
+  //   'Aniket  nnnmm nm mnnnmnnnnmnmnmnnnn',
+  //   'Another Name',
+  //   'More Text',
+  // ];
+  // const [currentIndex, setCurrentIndex] = useState(0);
+
+  // useEffect(() => {
+  //   const interval = setTimeout(() => {
+  //     setCurrentIndex((prevIndex) => (prevIndex + 1) % texts.length);
+  //   }, 3000);
+
+  //   return () => clearTimeout(interval);
+  // }, [currentIndex, texts.length]);
   return (
     <div className="max-sm:hidden z-10 text-xl flex items-start h-[8vh] w-full sticky top-0 left-0 right-0 ">
       <div
@@ -55,8 +70,22 @@ const Header: React.FC = () => {
             'h-[5.5vh] w-[70vw] flex items-center justify-around border-b'
           )}
         />
-        {/* <div className="h-[2.5vh] w-full text-xs text-center text-green-200">
-          Aniket
+        {/* <div className="w-full h-[2.5vh] overflow-hidden relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={texts[currentIndex]}
+              className={cn(
+                cachedTheme?.textColor,
+                'absolute w-full font-semibold text-center text-sm'
+              )}
+              initial={{ x: '-100%', opacity: 0 }}
+              animate={{ x: '0%', opacity: 1 }}
+              exit={{ x: '100%', opacity: 0 }}
+              transition={{ duration: 1, ease: 'easeInOut' }}
+            >
+              {texts[currentIndex]}
+            </motion.div>
+          </AnimatePresence>
         </div> */}
       </div>
 
