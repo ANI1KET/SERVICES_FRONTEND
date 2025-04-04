@@ -13,8 +13,8 @@ import RoomLayoutCard from './roomLayoutCard';
 import SearchedLayout from './SearchedLayout';
 import { LIMIT } from '@/app/lib/reusableConst';
 import { MenuItem, Select } from '@mui/material';
+import { NewListedRoom } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import { RoomWithMediaUrl } from '@/app/types/types';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 const SearchLayout = ({ children }: { children: React.ReactNode }) => {
@@ -41,10 +41,10 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
     getCityLocationRooms,
     { data: cityLocationRoomsData, loading, error, fetchMore },
   ] = useLazyQuery<{
-    cityLocationRooms: RoomWithMediaUrl[];
+    cityLocationRooms: NewListedRoom[];
   }>(GET_CITY_LOCATION_ROOMS);
   const [getRoomData, { data: RoomData }] = useLazyQuery<{
-    room: RoomWithMediaUrl;
+    room: NewListedRoom;
   }>(GET_ROOM, { fetchPolicy: 'no-cache' });
 
   useEffect(() => {
