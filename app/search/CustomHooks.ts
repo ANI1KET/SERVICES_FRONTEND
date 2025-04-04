@@ -1,5 +1,5 @@
 import { throttle } from 'lodash';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import {

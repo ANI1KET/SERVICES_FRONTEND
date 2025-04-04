@@ -168,6 +168,7 @@ export function useSetTabState() {
 
 export function useDeleteTabState() {
   return (tabName: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [tabName]: _, ...remainingTabs } = tabStateVar();
     tabStateVar(remainingTabs);
   };
