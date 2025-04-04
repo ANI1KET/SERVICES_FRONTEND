@@ -119,31 +119,11 @@ export default function ReactQueryProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [queryClient] = useState(() => {
-    const client = new QueryClient();
-
-    // client.setQueryDefaults(['tabState'], {
-    //   enabled: false,
-    //   gcTime: Infinity,
-    //   staleTime: Infinity,
-    // });
-    // client.setQueryData<TabState>(['tabState'], initialTabState);
-
-    // client.setQueryDefaults(['searchData'], {
-    //   enabled: false,
-    //   gcTime: Infinity,
-    //   staleTime: Infinity,
-    // });
-
-    // client.setQueryDefaults(['theme'], {
-    //   enabled: false,
-    //   gcTime: Infinity,
-    //   staleTime: Infinity,
-    // });
-    // client.setQueryData<ThemeState>(['theme'], initialThemeState);
-
-    return client;
-  });
+  // const [queryClient] = useState(() => {
+  //   const client = new QueryClient();
+  //   return client;
+  // });
+  const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -219,46 +199,3 @@ export function useUpdateSearchFilters() {
     });
   };
 }
-
-// export function useTabState() {
-//   // const queryClient = useQueryClient();
-
-//   const { data: tabState } = useQuery<TabState>({
-//     queryKey: ['tabState'],
-//     // initialData: queryClient.getQueryData<TabState>(['tabState']),
-//   });
-
-//   return tabState;
-//   // return queryClient.getQueryData<TabState>(['tabState']);
-// }
-
-// export function useSetTabState() {
-//   const queryClient = useQueryClient();
-
-//   return (tabName: string, value: string) => {
-//     queryClient.setQueryData<TabState>(['tabState'], (prevState = {}) => {
-//       return {
-//         ...prevState,
-//         [tabName]: value,
-//       };
-//     });
-//   };
-// }
-
-// export function useDeleteTabState() {
-//   const queryClient = useQueryClient();
-
-//   return (tabName: string) => {
-//     queryClient.setQueryData<TabState>(['tabState'], (prevState = {}) => {
-//       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//       const { [tabName]: _, ...remainingTabs } = prevState;
-//       return remainingTabs;
-//     });
-//   };
-// }
-
-// export function useThemeState() {
-//   const queryClient = useQueryClient();
-
-//   return queryClient.getQueryData<ThemeState>(['theme']);
-// }
