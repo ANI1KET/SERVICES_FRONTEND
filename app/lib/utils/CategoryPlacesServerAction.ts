@@ -13,9 +13,15 @@ export async function getCategoryCitiesLocations(category: string) {
   // console.log('1 ', cookieStore);
   // const requestHeaders = await headers();
   // console.log(Object.fromEntries(requestHeaders));
+
   try {
     const response = await axiosInstance.get(
-      `/place/cities-locations/${category}`
+      `/place/cities-locations/${category}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      }
     );
 
     return response.data;
@@ -55,7 +61,12 @@ export async function getCategoryCityLocations({
 
   try {
     const response = await axiosInstance.get(
-      `/place/city-locations?category=${category}&city=${city}`
+      `/place/city-locations?category=${category}&city=${city}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      }
     );
 
     const transformedResponseData: CityLocationsData =

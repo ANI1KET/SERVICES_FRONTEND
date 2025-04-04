@@ -4,8 +4,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 import prisma from '@/prisma/prismaClient';
-import { Permission } from '@prisma/client';
-import { PostedBy } from '@/app/types/types';
+import { Permission, Role } from '@prisma/client';
 
 export const authOptions: NextAuthOptions = {
   // pages: {
@@ -166,7 +165,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.user.id = token.id as string | undefined;
       session.user.number = token.number as string | undefined;
-      session.user.role = token.role as PostedBy;
+      session.user.role = token.role as Role;
       session.user.userId = token.userId as string | undefined;
       session.user.permission = token.permission as Permission[] | [];
       // session.user.refresh_token = token?.refresh_token;

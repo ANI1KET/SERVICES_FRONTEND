@@ -1,13 +1,17 @@
 import { throttle } from 'lodash';
-import { useCallback, useMemo, useState } from 'react';
-import { QueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import { useCallback, useMemo, useRef } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
+import {
+  useSearchData,
+  useUpdateSearchFilters,
+} from '../providers/reactqueryProvider';
 import { PAGE_SIZE } from '../lib/reusableConst';
 import { getCityLocations } from './ServerAction';
 import { QueryFilters, SearchQueries } from '../types/types';
 
-export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
-  const cachedData = queryClient.getQueryData<SearchQueries>(['searchData']);
+export const useInfiniteRoomQuery = () => {
+  const cachedData = useSearchData();
 
   return useInfiniteQuery({
     queryKey: ['search/room', cachedData?.city, cachedData?.filters],
@@ -27,42 +31,38 @@ export const useInfiniteRoomQuery = (queryClient: QueryClient) => {
       return lastPage.length === PAGE_SIZE ? currentOffset : undefined;
     },
     staleTime: 0,
-    gcTime: 60000,
+    gcTime: 2 * 60000,
     initialPageParam: 0,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
 };
 
-export const useFilterUpdater = (queryClient: QueryClient) => {
-  const [, setPendingFilters] = useState<Partial<SearchQueries['filters']>>({});
+export const useFilterUpdater = () => {
+  const updateFilters = useUpdateSearchFilters();
+  const pendingFiltersRef = useRef<Partial<SearchQueries['filters']>>({});
 
-  const throttledUpdateCache = useMemo(
-    () =>
-      throttle((filtersToApply: Partial<SearchQueries['filters']>) => {
-        queryClient.setQueryData<SearchQueries>(['searchData'], (prevData) => {
-          if (!prevData) return undefined;
-          return {
-            ...prevData,
-            filters: { ...prevData.filters, ...filtersToApply },
-          };
-        });
-
-        setPendingFilters({});
-      }, 1000),
-    [queryClient]
-  );
+  const throttledUpdateCache = useRef(
+    throttle(
+      () => {
+        updateFilters(pendingFiltersRef.current);
+        pendingFiltersRef.current = {};
+      },
+      1000,
+      { leading: true, trailing: true }
+    )
+  ).current;
 
   const updateFilter = useCallback(
     <K extends keyof SearchQueries['filters']>(
       key: K,
       value: SearchQueries['filters'][K]
     ) => {
-      setPendingFilters((prev) => {
-        const newFilters = { ...prev, [key]: value };
-        throttledUpdateCache(newFilters);
-        return newFilters;
-      });
+      pendingFiltersRef.current = {
+        ...pendingFiltersRef.current,
+        [key]: value,
+      };
+      throttledUpdateCache();
     },
     [throttledUpdateCache]
   );

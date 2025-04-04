@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import useBreakpoint from '@/app/lib/utils/useBreakpoint';
+import { permissions } from '@/app/lib/scalableComponents';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 const ListNavigation = () => {
@@ -31,48 +32,49 @@ const ListNavigation = () => {
             cachedTheme?.bg,
             cachedTheme?.textColor,
             cachedTheme?.borderColor,
-            'absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl text-base text-center border transition-all group-hover:scale-100'
+            'absolute left-1/2 top-full mt-[1px] w-[6.6rem] p-1 -translate-x-1/2 scale-0 rounded-xl text-base text-center border transition-all group-hover:scale-100'
           )}
         >
           Login
         </Link>
-      ) : session?.user.role === 'USER' ? (
-        <Link
-          href={'/upgrade'}
+      ) : (
+        <p
           className={cn(
             cachedTheme?.bg,
             cachedTheme?.textColor,
             cachedTheme?.borderColor,
-            'absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl text-base transition-all group-hover:scale-100 border '
+            'absolute left-1/2 top-full mt-[1px] w-[6.6rem] -translate-x-1/2 scale-0 text-base transition-all group-hover:scale-100 border rounded-xl'
           )}
         >
-          Upgrade to list property
-        </Link>
-      ) : (
-        (session?.user.permission ?? []).length > 0 && (
-          <p
-            className={cn(
-              cachedTheme?.bg,
-              cachedTheme?.textColor,
-              cachedTheme?.borderColor,
-              'absolute left-1/2 top-full mt-[1px] w-24 -translate-x-1/2 scale-0 text-base transition-all group-hover:scale-100 border rounded-xl'
-            )}
-          >
-            {(session?.user.permission ?? []).map((route, index, list) => (
+          {permissions.map((route, index, list) => {
+            const isPermitted = session?.user?.permission?.includes(route);
+            const formattedRoute =
+              route.charAt(0).toUpperCase() + route.slice(1);
+            return (
               <Link
                 key={route}
-                href={`/list/${route}`}
+                href={isPermitted ? `/list/${route}` : '/upgrade'}
                 className={cn(
                   cachedTheme?.borderColor,
-                  index !== list.length - 1 && 'border-b-2',
-                  'block w-full p-1 rounded-b-md hover:text-lg'
+                  'block w-full p-1 rounded-xl',
+                  !isPermitted && [
+                    cachedTheme?.activeListHover,
+                    cachedTheme?.activeListHoverText,
+                  ],
+                  index !== list.length - 1 && 'border-b-2'
                 )}
+                onMouseEnter={(e) =>
+                  !isPermitted && (e.currentTarget.textContent = 'Upgrade')
+                }
+                onMouseLeave={(e) =>
+                  !isPermitted && (e.currentTarget.textContent = formattedRoute)
+                }
               >
-                {route}
+                {formattedRoute}
               </Link>
-            ))}
-          </p>
-        )
+            );
+          })}
+        </p>
       )}
     </div>
   );

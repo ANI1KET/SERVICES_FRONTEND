@@ -1,10 +1,16 @@
 'use client';
 
+import { Role } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import {
+  roomType,
+  amenities,
+  furnishingStatus,
+} from '@/app/lib/scalableComponents';
 import {
   FileInput,
   InputField,
@@ -16,7 +22,7 @@ import { cn } from '@/app/lib/utils/tailwindMerge';
 import { SubmitRoomDetails } from '../ServerAction';
 import { upload_Images, upload_Video } from '../uploadUtils';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-import { PostedBy, RoomWithMedia, RoomWithMediaUrl } from '@/app/types/types';
+import { RoomWithMedia, RoomWithMediaUrl } from '@/app/types/types';
 
 const Room = () => {
   const router = useRouter();
@@ -42,7 +48,7 @@ const Room = () => {
 
   const roomCreation = useMutation({
     mutationFn: (
-      data: RoomWithMediaUrl & { postedBy: PostedBy; listerId: string }
+      data: RoomWithMediaUrl & { postedBy: Role; listerId: string }
     ) =>
       SubmitRoomDetails({
         ...data,
@@ -106,7 +112,7 @@ const Room = () => {
         photos: uploadImageUrls,
         videos: uploadVideoUrl ?? null,
         listerId: session?.user.userId as string,
-        postedBy: session?.user.role as PostedBy,
+        postedBy: session?.user.role as Role,
       });
     } catch (error) {
       console.log('object!!!');
@@ -297,7 +303,7 @@ const Room = () => {
 
         <RadioGroup
           label="Room Type"
-          options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
+          options={roomType}
           register={register('roomtype')}
           handleEnterPress={handleEnterPress}
           error={errors.roomtype?.message}
@@ -305,7 +311,7 @@ const Room = () => {
 
         <CheckboxGroup
           label="Amenities"
-          options={['PARKING', 'WIFI', 'WATER']}
+          options={amenities}
           register={register('amenities')}
         />
 
@@ -317,7 +323,7 @@ const Room = () => {
             onBlur: () => trigger('furnishingStatus'),
           })}
           error={errors.furnishingStatus?.message}
-          options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
+          options={furnishingStatus}
         />
 
         <FileInput

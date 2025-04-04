@@ -2,12 +2,12 @@
 
 import Slider from '@mui/material/Slider';
 import React, { useEffect, useState } from 'react';
-import { FurnishingStatusEnum } from '@prisma/client';
+import { FurnishingStatusEnum, Role } from '@prisma/client';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
 import { cn } from '../utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-import { Room, RoomType, PostedBy, RoomWithMedia } from '@/app/types/types';
+import { Room, RoomType, RoomWithMedia } from '@/app/types/types';
 
 // InputField Component
 type InputFieldProps = {
@@ -109,9 +109,9 @@ type RadioGroupProps = {
 
 export const RadioGroup = ({
   label,
+  error,
   options,
   register,
-  error,
   handleEnterPress,
 }: RadioGroupProps) => (
   <div>
@@ -200,11 +200,11 @@ export const FileInput = ({
 // PlusCheckbox Group
 type TickCheckboxGroupProps = {
   label: string;
-  options: string[] | PostedBy[] | RoomType[] | FurnishingStatusEnum[];
+  options: string[] | Role[] | RoomType[] | FurnishingStatusEnum[];
   register: ReturnType<
     UseFormRegister<{
       amenities: string;
-      postedby: PostedBy;
+      postedby: Role;
       roomtype: RoomType;
       furnishingstatus: FurnishingStatusEnum;
     }>

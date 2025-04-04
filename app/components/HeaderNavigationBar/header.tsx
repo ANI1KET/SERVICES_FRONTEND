@@ -13,6 +13,7 @@ import {
 import { HeaderTabs } from '../../lib/utils/tabs';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import NavigationTabs from '../../lib/ui/NavigationTabs';
+import { canAccessDashboard, permissions } from '@/app/lib/scalableComponents';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -21,7 +22,6 @@ const Header: React.FC = () => {
   const deleteTabState = useDeleteTabState();
 
   // const texts = [
-  //   'Aniket  nnnmm nm mnnnmnnnnmnmnmnnnn',
   //   'Another Name',
   //   'More Text',
   // ];
@@ -149,7 +149,7 @@ const Header: React.FC = () => {
                   >
                     Profile
                   </li>
-                  {session.user.role !== 'USER' && (
+                  {canAccessDashboard(session.user.role, 'dashboard') && (
                     <li
                       className={cn(
                         cachedTheme?.hoverBg,
@@ -226,44 +226,48 @@ const Header: React.FC = () => {
             >
               Login
             </span>
-          ) : session.user.role === 'USER' ? (
-            <span
+          ) : (
+            <p
               className={cn(
-                'absolute left-1/2 top-full mt-[1px] w-24 p-1 -translate-x-1/2 scale-0 rounded-xl text-base border transition-all group-hover:scale-100',
                 cachedTheme?.bg,
                 cachedTheme?.textColor,
-                cachedTheme?.borderColor
+                cachedTheme?.borderColor,
+                'absolute left-1/2 top-full mt-[1px] w-[6.5rem] -translate-x-1/2 scale-0 text-base border transition-all group-hover:scale-100 rounded-xl'
               )}
-              onClick={() => router.push('/upgrade')}
             >
-              Upgrade to list property
-            </span>
-          ) : (
-            (session?.user.permission ?? []).length > 0 && (
-              <p
-                className={cn(
-                  'absolute left-1/2 top-full mt-[1px] w-24 -translate-x-1/2 scale-0 text-base border transition-all group-hover:scale-100 rounded-xl',
-                  cachedTheme?.bg,
-                  cachedTheme?.textColor,
-                  cachedTheme?.borderColor
-                )}
-              >
-                {(session?.user.permission ?? []).map((route, index, list) => (
+              {permissions.map((route, index, list) => {
+                const isPermitted = session?.user?.permission?.includes(route);
+                const formattedRoute =
+                  route.charAt(0).toUpperCase() + route.slice(1);
+                return (
                   <span
                     key={route}
                     className={cn(
                       cachedTheme?.hoverBg,
                       cachedTheme?.borderColor,
+                      !isPermitted && [
+                        cachedTheme?.activeListHover,
+                        cachedTheme?.activeListHoverText,
+                      ],
                       index !== list.length - 1 && 'border-b-2',
-                      'block w-full p-1 rounded-b-xl hover:rounded-xl'
+                      'block w-full p-1 rounded-b-xl hover:rounded-xl transition-all duration-200 ease-in-out '
                     )}
-                    onClick={() => router.push(`/list/${route}`)}
+                    onClick={() =>
+                      router.push(isPermitted ? `/list/${route}` : `/upgrade`)
+                    }
+                    onMouseEnter={(e) =>
+                      !isPermitted && (e.currentTarget.textContent = 'Upgrade')
+                    }
+                    onMouseLeave={(e) =>
+                      !isPermitted &&
+                      (e.currentTarget.textContent = formattedRoute)
+                    }
                   >
-                    {route}
+                    {formattedRoute}
                   </span>
-                ))}
-              </p>
-            )
+                );
+              })}
+            </p>
           )}
         </div>
       </div>

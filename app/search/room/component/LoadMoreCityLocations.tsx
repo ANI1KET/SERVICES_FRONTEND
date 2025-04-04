@@ -1,10 +1,24 @@
 'use client';
 
-import { FurnishingStatusEnum } from '@prisma/client';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useRef,
+  useMemo,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
+import { FurnishingStatusEnum, Role } from '@prisma/client';
 
-import { PostedBy, RoomType, SearchQueries } from '../../../types/types';
+import {
+  postedBy,
+  roomType,
+  amenities,
+  furnishingStatus,
+} from '@/app/lib/scalableComponents';
+import {
+  useSearchData,
+  useThemeState,
+} from '@/app/providers/reactqueryProvider';
 import {
   PriceSlider,
   RatingSlider,
@@ -14,21 +28,16 @@ import {
 } from '../../../lib/ui/FormReusableComponent';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import CityLocationsData from './CityLocationsData';
-import { useThemeState } from '@/app/providers/reactqueryProvider';
+import { RoomType, Amenities, QueryFilters } from '../../../types/types';
 import { useFilterUpdater, useInfiniteRoomQuery } from '../../CustomHooks';
 
 const LoadMoreCityLocations = () => {
   const cacheTheme = useThemeState();
-  const queryClient = useQueryClient();
-
-  const { data: searchData } = useQuery<SearchQueries>({
-    queryKey: ['searchData'],
-    enabled: false,
-  });
+  const searchData = useSearchData();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteRoomQuery(queryClient);
-  const updateFilter = useFilterUpdater(queryClient);
+    useInfiniteRoomQuery();
+  const updateFilter = useFilterUpdater();
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -80,61 +89,9 @@ const LoadMoreCityLocations = () => {
           'h-[90vh] overflow-y-scroll sticky top-[8.5vh] xl:overflow-y-hidden xl:h-fit max-sm:top-1 flex flex-col gap-4 max-xsm:hidden p-1 border-2 rounded-xl '
         )}
       >
-        <PriceSlider
-          defaultValue={searchData?.filters.price}
-          onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
-        />
-
-        <div className="grid xl:grid-cols-2 lg:grid-cols-1 gap-4 mx-1">
-          <RatingSlider
-            defaultValue={searchData?.filters.rating}
-            onChangeEnd={(ratingRange) => updateFilter('rating', ratingRange)}
-          />
-
-          <CapacitySlider
-            defaultValue={searchData?.filters.capacity}
-            onChangeEnd={(capacityValue) =>
-              updateFilter('capacity', capacityValue)
-            }
-          />
-        </div>
-
-        <CustomCheckboxGroup
-          label="Amenities"
-          options={['PARKING', 'WIFI', 'WATER']}
-          defaultValue={searchData?.filters.amenities as string[]}
-          className="grid xl:grid-cols-3 lg:grid-cols-2 "
-          onChange={(amenity) => updateFilter('amenities', amenity)}
-        />
-        <CustomCheckboxGroup<RoomType>
-          label="Room Type"
-          defaultValue={searchData?.filters.roomtype as RoomType[]}
-          options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
-          className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
-          onChange={(roomType) => updateFilter('roomtype', roomType)}
-        />
-        <CustomCheckboxGroup<PostedBy>
-          label="Posted By"
-          defaultValue={searchData?.filters.postedby as PostedBy[]}
-          options={['OWNER', 'BROKER']}
-          className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
-          onChange={(postedBy) => updateFilter('postedby', postedBy)}
-        />
-        <CustomCheckboxGroup<FurnishingStatusEnum>
-          label="Furnishing Status"
-          defaultValue={
-            searchData?.filters.furnishingstatus as FurnishingStatusEnum[]
-          }
-          options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
-          className="grid xl:grid-cols-3 lg:grid-cols-2 "
-          onChange={(furnishingStatus) =>
-            updateFilter('furnishingstatus', furnishingStatus)
-          }
-        />
-        <CustomCheckbox
-          label="Verified"
-          defaultValue={searchData?.filters.verified as boolean}
-          onChange={(verify) => updateFilter('verified', verify)}
+        <FilterLayout
+          filters={searchData?.filters}
+          updateFilter={updateFilter}
         />
       </div>
       <div className="">
@@ -178,61 +135,9 @@ const LoadMoreCityLocations = () => {
             'flex flex-col gap-1 w-full h-[50vh] col-span-9 border-2 rounded-t-2xl p-2 overflow-y-scroll'
           )}
         >
-          <PriceSlider
-            defaultValue={searchData?.filters.price}
-            onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
-          />
-
-          <div className="flex gap-4">
-            <RatingSlider
-              defaultValue={searchData?.filters.rating}
-              onChangeEnd={(ratingRange) => updateFilter('rating', ratingRange)}
-            />
-
-            <CapacitySlider
-              defaultValue={searchData?.filters.capacity}
-              onChangeEnd={(capacityValue) =>
-                updateFilter('capacity', capacityValue)
-              }
-            />
-          </div>
-
-          <CustomCheckboxGroup
-            label="Amenities"
-            options={['PARKING', 'WIFI', 'WATER']}
-            defaultValue={searchData?.filters.amenities as string[]}
-            className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
-            onChange={(amenity) => updateFilter('amenities', amenity)}
-          />
-          <CustomCheckboxGroup<RoomType>
-            label="Room Type"
-            defaultValue={searchData?.filters.roomtype as RoomType[]}
-            options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
-            className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
-            onChange={(roomType) => updateFilter('roomtype', roomType)}
-          />
-          <CustomCheckboxGroup<PostedBy>
-            label="Posted By"
-            defaultValue={searchData?.filters.postedby as PostedBy[]}
-            options={['OWNER', 'BROKER']}
-            className="grid grid-cols-3 lg:grid-cols-3 max-sm:grid-cols-2"
-            onChange={(postedBy) => updateFilter('postedby', postedBy)}
-          />
-          <CustomCheckboxGroup<FurnishingStatusEnum>
-            label="Furnishing Status"
-            defaultValue={
-              searchData?.filters.furnishingstatus as FurnishingStatusEnum[]
-            }
-            options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
-            className="grid grid-cols-3 lg:grid-cols-auto-fit] lg:min-[300px] max-sm:grid-cols-2"
-            onChange={(furnishingStatus) =>
-              updateFilter('furnishingstatus', furnishingStatus)
-            }
-          />
-          <CustomCheckbox
-            label="Verified"
-            defaultValue={searchData?.filters.verified as boolean}
-            onChange={(verify) => updateFilter('verified', verify)}
+          <FilterLayout
+            filters={searchData?.filters}
+            updateFilter={updateFilter}
           />
         </div>
         <div
@@ -246,17 +151,17 @@ const LoadMoreCityLocations = () => {
             xmlns="http://www.w3.org/2000/svg"
             width={34}
             height={34}
-            viewBox="0 0 24 24"
             fill="none"
-            stroke="currentcolor"
             strokeWidth="1.5"
+            viewBox="0 0 24 24"
+            stroke="currentcolor"
             strokeLinecap="round"
             strokeLinejoin="round"
             className={`lucide lucide-x`}
           >
             <path d="M18 6 6 18" />
             <path d="m6 6 12 12" />
-          </svg>{' '}
+          </svg>
         </div>
       </div>
 
@@ -278,3 +183,77 @@ const LoadMoreCityLocations = () => {
 };
 
 export default LoadMoreCityLocations;
+
+const FilterLayout = ({
+  filters,
+  updateFilter,
+}: {
+  filters: QueryFilters | undefined;
+  updateFilter: <K extends keyof QueryFilters>(
+    key: K,
+    value: QueryFilters[K]
+  ) => void;
+}) => {
+  return (
+    <React.Fragment>
+      <PriceSlider
+        defaultValue={filters?.price}
+        onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
+      />
+      <div
+        className={cn(
+          'grid gap-4 mx-1',
+          'xl:grid-cols-2 ',
+          'lg:grid-cols-1',
+          'max-sm:grid-cols-2 max-sm:mx-0'
+        )}
+      >
+        <RatingSlider
+          defaultValue={filters?.rating}
+          onChangeEnd={(ratingRange) => updateFilter('rating', ratingRange)}
+        />
+        <CapacitySlider
+          defaultValue={filters?.capacity}
+          onChangeEnd={(capacityValue) =>
+            updateFilter('capacity', capacityValue)
+          }
+        />
+      </div>
+      <CustomCheckboxGroup<Amenities>
+        label="Amenities"
+        options={amenities}
+        defaultValue={filters?.amenities as Amenities[]}
+        className="grid xl:grid-cols-3 grid-cols-2 "
+        onChange={(amenity) => updateFilter('amenities', amenity)}
+      />
+      <CustomCheckboxGroup<RoomType>
+        label="Room Type"
+        defaultValue={filters?.roomtype as RoomType[]}
+        options={roomType}
+        className="grid grid-cols-3 max-sm:grid-cols-2"
+        onChange={(roomType) => updateFilter('roomtype', roomType)}
+      />
+      <CustomCheckboxGroup<Role>
+        label="Posted By"
+        defaultValue={filters?.postedby as Role[]}
+        options={postedBy}
+        className="grid grid-cols-3 max-sm:grid-cols-2"
+        onChange={(postedBy) => updateFilter('postedby', postedBy)}
+      />
+      <CustomCheckboxGroup<FurnishingStatusEnum>
+        label="Furnishing Status"
+        defaultValue={filters?.furnishingstatus as FurnishingStatusEnum[]}
+        options={furnishingStatus}
+        className="grid xl:grid-cols-3 grid-cols-2 "
+        onChange={(furnishingStatus) =>
+          updateFilter('furnishingstatus', furnishingStatus)
+        }
+      />
+      <CustomCheckbox
+        label="Verified"
+        defaultValue={filters?.verified as boolean}
+        onChange={(verify) => updateFilter('verified', verify)}
+      />
+    </React.Fragment>
+  );
+};

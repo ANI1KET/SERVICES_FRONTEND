@@ -10,9 +10,9 @@ import ReactQueryProvider from './providers/reactqueryProvider';
 import BottomNavBar from './components/BottomNavigationBar/BottomNavBar';
 
 export const metadata: Metadata = {
-  title: 'Services Market Place',
+  title: 'AfnoSansaar',
   keywords: ['rent', 'room', 'accommodation'],
-  description: 'Room, Land, Hostel, Store, Services',
+  description: 'Room, Land, Home, Hostel, Vehicle',
 };
 
 export default function RootLayout({
@@ -52,7 +52,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-// import { getServerSession } from 'next-auth';
-// import { authOptions } from '../api/auth/[...nextauth]/options';
-// const session = await getServerSession(authOptions);

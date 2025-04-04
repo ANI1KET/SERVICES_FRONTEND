@@ -1,6 +1,5 @@
 'use client';
 
-import { Room } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
@@ -15,6 +14,7 @@ import SearchedLayout from './SearchedLayout';
 import { LIMIT } from '@/app/lib/reusableConst';
 import { MenuItem, Select } from '@mui/material';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { RoomWithMediaUrl } from '@/app/types/types';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 const SearchLayout = ({ children }: { children: React.ReactNode }) => {
@@ -41,12 +41,11 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
     getCityLocationRooms,
     { data: cityLocationRoomsData, loading, error, fetchMore },
   ] = useLazyQuery<{
-    cityLocationRooms: Room[];
+    cityLocationRooms: RoomWithMediaUrl[];
   }>(GET_CITY_LOCATION_ROOMS);
-  const [getRoomData, { data: RoomData }] = useLazyQuery<{ room: Room }>(
-    GET_ROOM,
-    { fetchPolicy: 'no-cache' }
-  );
+  const [getRoomData, { data: RoomData }] = useLazyQuery<{
+    room: RoomWithMediaUrl;
+  }>(GET_ROOM, { fetchPolicy: 'no-cache' });
 
   useEffect(() => {
     if (data?.listedRoomCitiesLocations) {

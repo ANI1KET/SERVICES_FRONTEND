@@ -1,5 +1,7 @@
 'use server';
 
+import { cookies } from 'next/headers';
+
 import axiosInstance from '../lib/utils/axiosInstance';
 
 export const updateNumber = async ({
@@ -11,12 +13,17 @@ export const updateNumber = async ({
 }): Promise<string> => {
   'use server';
 
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get('next-auth.session-token')?.value;
   try {
     const response = await axiosInstance.post(
       `/user/number`,
       { userId, number },
       {
-        headers: { 'Cache-Control': 'no-cache' },
+        headers: {
+          Cookie: `next-auth.session-token=${sessionToken}`,
+          'Cache-Control': 'no-cache',
+        },
       }
     );
 

@@ -11,6 +11,7 @@ import {
 } from '@/app/providers/reactqueryProvider';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import useBreakpoint from '@/app/lib/utils/useBreakpoint';
+import { canAccessDashboard } from '@/app/lib/scalableComponents';
 import { RentIcon, ProfileIcon, FurnishIcon } from '@/app/lib/icon/svg';
 
 const BottomBar = () => {
@@ -318,7 +319,7 @@ const BottomBar = () => {
                   >
                     Logout
                   </li>
-                  {session.user.role !== 'USER' && (
+                  {canAccessDashboard(session.user.role, 'dashboard') && (
                     <li
                       className={cn(
                         cachedTheme?.borderColor,

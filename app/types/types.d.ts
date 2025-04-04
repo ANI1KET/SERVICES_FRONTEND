@@ -1,12 +1,12 @@
-import { FurnishingStatusEnum } from '@prisma/client';
+import { FurnishingStatusEnum, Role } from '@prisma/client';
 
-export type PostedBy = 'OWNER' | 'BROKER';
 export type RoomType = 'FLAT' | '1BHK' | '2BHK' | '3BHK' | '4BHK';
+export type Amenities = 'BIKE PARK' | 'CAR PARK' | 'WIFI' | '24/7 WATER';
 
 export type QueryFilters = {
-  postedby: PostedBy[];
+  postedby: Role[];
   roomtype: RoomType[];
-  amenities: string[];
+  amenities: Amenities[];
   price: number | number[];
   rating: number | number[];
   capacity: number | number[];

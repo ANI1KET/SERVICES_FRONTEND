@@ -9,8 +9,8 @@ import ImageLoop from '@/app/lib/ui/ImageLoop';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { getCategoryDetails } from './ServerAction';
 import { PAGE_SIZE } from '@/app/lib/reusableConst';
-import { CapacityIcon, PriceIcon } from '@/app/lib/icon/svg';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
+import { CapacityIcon, FurnishIcon, PriceIcon } from '@/app/lib/icon/svg';
 
 const CategoryCardLayout: React.FC<{
   city: string;
@@ -146,13 +146,14 @@ const CategoryCardLayout: React.FC<{
           ))}
       </div>
       <div className="w-full flex overflow-x-auto ">
-        <div className="grid grid-rows-2 ">
+        <div className={cn('grid grid-rows-2 ')}>
           {data?.pages.map((page, pageIndex) =>
             page.map((item, index: number) => (
               <div
-                className={`cursor-pointer ${
+                className={cn(
+                  `cursor-pointer `,
                   index % 2 === 0 ? 'row-start-1' : 'row-start-2'
-                }`}
+                )}
                 key={`${pageIndex}${index}`}
                 onClick={() =>
                   router.push(`/room/${btoa(`${item.id},${City}`)}`)
@@ -161,8 +162,8 @@ const CategoryCardLayout: React.FC<{
                 {item.videos ? (
                   <div
                     className={cn(
-                      'xl:w-[20vw] aspect-video ',
-                      'md:w-[25vw] ',
+                      'xl:w-[25vw] aspect-video ',
+                      'md:w-[33.3vw] ',
                       'max-sm:w-[50vw] ',
                       'max-xsm:w-screen '
                     )}
@@ -191,8 +192,8 @@ const CategoryCardLayout: React.FC<{
                 ) : (
                   <div
                     className={cn(
-                      'xl:w-[20vw] relative aspect-video -z-10 ',
-                      'md:w-[25vw] ',
+                      'xl:w-[25vw] relative aspect-video -z-10 ',
+                      'md:w-[33.3vw] ',
                       'max-sm:w-[50vw] ',
                       'max-xsm:w-screen '
                     )}
@@ -207,8 +208,8 @@ const CategoryCardLayout: React.FC<{
                     cachedTheme?.bg,
                     cachedTheme?.textColor,
                     cachedTheme?.borderColor,
-                    'xl:w-[20vw] grid grid-rows-2 grid-cols-2 gap-1 p-1 border-r-[1px] border-l-[1px] border-b-[1px] rounded-b-md',
-                    'md:w-[25vw] ',
+                    'xl:w-[25vw] grid grid-rows-2 grid-cols-2 gap-1 p-1 border-r-[1px] border-l-[1px] border-b-[1px] rounded-b-md',
+                    'md:w-[33.3vw] ',
                     'max-sm:w-[50vw] ',
                     'max-xsm:w-screen '
                   )}
@@ -249,14 +250,27 @@ const CategoryCardLayout: React.FC<{
                     }`}
                     className={`row-span-1 col-span-1 text-xl flex justify-end`}
                   >
-                    {item.postedBy}
+                    👤 {item.postedBy}
                   </p>
                   <p
-                    title={`${item.location}`}
+                    title={`${item.roomtype}`}
+                    className={`row-span-1 col-span-1 text-xl`}
+                  >
+                    🏘️ {item.roomtype}
+                  </p>
+                  <p
+                    title={`${item.furnishingStatus}`}
+                    className={`row-span-1 col-span-1 text-xl flex justify-end items-center gap-1`}
+                  >
+                    <FurnishIcon /> {item.furnishingStatus}
+                  </p>
+                  <p
+                    title={`${item.location} (${item.direction})`}
                     className={`row-span-1 col-span-2 text-xl flex justify-start `}
                   >
                     <span className="flex items-center gap-1 truncate ">
                       📌 {item.location}
+                      {item.direction ? ` (${item.direction})` : ''}
                     </span>
                   </p>
                 </div>

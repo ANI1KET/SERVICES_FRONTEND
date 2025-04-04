@@ -1,16 +1,18 @@
 import { gql } from '@apollo/client';
-import { Room } from '@prisma/client';
 import { useCallback, useState } from 'react';
 import { MenuItem, Select } from '@mui/material';
 import { useApolloClient, useMutation } from '@apollo/client';
 
+import {
+  useThemeState,
+  deletedRoomIds,
+} from '@/app/providers/reactqueryProvider';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import { deletedRoomIds } from '@/app/dashboard/graphQL/cache';
-import { useThemeState } from '@/app/providers/reactqueryProvider';
+import { NewListedRoom } from '@/app/types/types';
 import { DeleteRoom, UpdateRoom } from '@/app/dashboard/graphQL/roomQuery';
 
 const RoomLayoutCard: React.FC<{
-  room: Room;
+  room: NewListedRoom;
   setIsFilter?: React.Dispatch<
     React.SetStateAction<{
       cityLocation: boolean;
@@ -24,12 +26,16 @@ const RoomLayoutCard: React.FC<{
 
   const [updateRoom] = useMutation(UpdateRoom);
   const [deleteRoom] = useMutation(DeleteRoom);
-  const [editedRooms, setEditedRooms] = useState<Record<string, Partial<Room>>>(
-    {}
-  );
+  const [editedRooms, setEditedRooms] = useState<
+    Record<string, Partial<NewListedRoom>>
+  >({});
 
   const handleChange = useCallback(
-    (roomId: string, field: keyof Room, value: number | string | boolean) => {
+    (
+      roomId: string,
+      field: keyof NewListedRoom,
+      value: number | string | boolean
+    ) => {
       setEditedRooms((prev) => {
         if (prev[roomId]?.[field] === value) return prev;
         return {

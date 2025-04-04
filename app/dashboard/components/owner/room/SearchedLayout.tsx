@@ -7,31 +7,31 @@ import {
   OperationVariables,
   FetchMoreQueryOptions,
 } from '@apollo/client';
-import { Room } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import RoomLayoutCard from './roomLayoutCard';
 import { LIMIT } from '@/app/lib/reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { RoomWithMediaUrl } from '@/app/types/types';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 type ChildComponentProps = {
-  data?: { cityLocationRooms: Room[] };
+  data?: { cityLocationRooms: RoomWithMediaUrl[] };
   loading: boolean;
   error?: ApolloError;
   fetchMore: <
-    TFetchData = { cityLocationRooms: Room[] },
+    TFetchData = { cityLocationRooms: RoomWithMediaUrl[] },
     TFetchVars extends OperationVariables = OperationVariables
   >(
     fetchMoreOptions: FetchMoreQueryOptions<TFetchVars, TFetchData> & {
       updateQuery?: (
-        previousQueryResult: { cityLocationRooms: Room[] },
+        previousQueryResult: { cityLocationRooms: RoomWithMediaUrl[] },
         options: {
           fetchMoreResult: Unmasked<TFetchData>;
           variables: TFetchVars;
         }
-      ) => { cityLocationRooms: Room[] };
+      ) => { cityLocationRooms: RoomWithMediaUrl[] };
     }
   ) => Promise<ApolloQueryResult<TFetchData>>;
 };
@@ -104,7 +104,7 @@ const SearchedLayout: React.FC<ChildComponentProps> = ({
     return <p className="text-center text-red-500">Error fetching rooms.</p>;
   return (
     <div className="grid lg:grid-cols-4 md:grid-cols-3 max-sm:grid-cols-2 max-xsm:grid-cols-1 gap-4 p-4">
-      {data?.cityLocationRooms.map((room: Room) => (
+      {data?.cityLocationRooms.map((room: RoomWithMediaUrl) => (
         <RoomLayoutCard key={room.id} room={room} />
       ))}
 

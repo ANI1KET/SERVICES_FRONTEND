@@ -17,6 +17,7 @@ import {
   GET_USER_BY_EMAIL_NUMBER,
 } from '../graphQL/userQuery';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { permissions, roles } from '@/app/lib/scalableComponents';
 import { GET_BORKER_OWNER_STATS } from '../graphQL/dashboardQuery';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
@@ -338,13 +339,9 @@ const DetailComponent = memo(
       [client.cache, removeUserSubs]
     );
 
-    const missingPermissions = [
-      'room',
-      'hostel',
-      'vehicle',
-      'property',
-      'reMarketItem',
-    ].filter((perm) => !user.permission.includes(perm));
+    const missingPermissions = permissions.filter(
+      (perm) => !user.permission.includes(perm)
+    );
     return (
       <div
         key={user.id}
@@ -391,7 +388,7 @@ const DetailComponent = memo(
               },
             }}
           >
-            {['OWNER', 'BROKER', 'USER'].map((role) => (
+            {roles.map((role) => (
               <MenuItem
                 key={role}
                 value={role}

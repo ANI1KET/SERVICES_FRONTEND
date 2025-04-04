@@ -8,32 +8,34 @@ import {
   OperationVariables,
   FetchMoreQueryOptions,
 } from '@apollo/client';
-import { Room } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
+import {
+  useThemeState,
+  deletedRoomIds,
+} from '@/app/providers/reactqueryProvider';
 import RoomLayoutCard from './roomLayoutCard';
 import { LIMIT } from '@/app/lib/reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import { deletedRoomIds } from '@/app/dashboard/graphQL/cache';
-import { useThemeState } from '@/app/providers/reactqueryProvider';
+import { NewListedRoom } from '@/app/types/types';
 
 type ChildComponentProps = {
-  data?: { user: { rooms: Room[] } };
+  data?: { user: { rooms: NewListedRoom[] } };
   loading: boolean;
   error?: ApolloError;
   fetchMore: <
-    TFetchData = { user: { rooms: Room[] } },
+    TFetchData = { user: { rooms: NewListedRoom[] } },
     TFetchVars extends OperationVariables = OperationVariables
   >(
     fetchMoreOptions: FetchMoreQueryOptions<TFetchVars, TFetchData> & {
       updateQuery?: (
-        previousQueryResult: { user: { rooms: Room[] } },
+        previousQueryResult: { user: { rooms: NewListedRoom[] } },
         options: {
           fetchMoreResult: Unmasked<TFetchData>;
           variables: TFetchVars;
         }
-      ) => { user: { rooms: Room[] } };
+      ) => { user: { rooms: NewListedRoom[] } };
     }
   ) => Promise<ApolloQueryResult<TFetchData>>;
 };
@@ -108,7 +110,7 @@ const MainLayout: React.FC<ChildComponentProps> = ({
     return <p className="text-center text-red-500">Error fetching rooms.</p>;
   return (
     <div className="grid lg:grid-cols-4 md:grid-cols-3 max-sm:grid-cols-2 max-xsm:grid-cols-1 gap-4 p-4">
-      {data?.user.rooms.map((room: Room) => (
+      {data?.user.rooms.map((room: NewListedRoom) => (
         <MemoizedRoomLayoutCard key={room.id} room={room} />
       ))}
 
@@ -126,7 +128,7 @@ const MainLayout: React.FC<ChildComponentProps> = ({
   );
 };
 
-const MemoizedRoomLayoutCard = memo(({ room }: { room: Room }) => {
+const MemoizedRoomLayoutCard = memo(({ room }: { room: NewListedRoom }) => {
   return <RoomLayoutCard room={room} />;
 });
 MemoizedRoomLayoutCard.displayName = 'MemoizedRoomLayoutCard';

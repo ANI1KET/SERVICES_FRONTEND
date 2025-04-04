@@ -71,7 +71,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
     <>
       <div className="text-right m-2 max-xsm:hidden">
         {session ? (
-          session?.user.role === 'USER' ? (
+          session?.user.permission?.includes('room') ? null : (
             <button
               className={cn(
                 'text-sm p-[2px] rounded-lg cursor-pointer mr-1',
@@ -121,7 +121,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
             >
               Interest
             </button>
-          ) : null
+          )
         ) : (
           <button
             title="Login to proceed"

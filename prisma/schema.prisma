@@ -117,28 +117,28 @@ enum FurnishingStatusEnum {
 model Room {
   id               String               @id @default(auto()) @map("_id") @db.ObjectId
   mincapacity      Int
+  bedroom          Int
+  hall             Int
+  kitchen          Int
+  bathroom         Int
   maxcapacity      Int
+  ratings          Float                @default(0)
   price            Float
   name             String
   ownerContact     String
   primaryContact   String
   city             String
   location         String
+  roomtype         String
+  available        Boolean              @default(true)
+  verified         Boolean              @default(false)
+  isActive         Boolean              @default(true)
   direction        String?
   videos           String?
   photos           String[]
-  ratings          Float                @default(0)
-  available        Boolean              @default(true)
-  postedBy         Role                 @default(USER)
-  verified         Boolean              @default(false)
-  bedroom          Int
-  hall             Int
-  kitchen          Int
-  bathroom         Int
-  roomtype         String
   amenities        String[]             @default([])
-  isActive         Boolean              @default(true)
   // ENUM
+  postedBy         Role                 @default(USER)
   furnishingStatus FurnishingStatusEnum
   // RELATIONSHIP
   reviews          RoomReview[]         @relation("RoomReviews")
@@ -177,27 +177,33 @@ model RoomReview {
 }
 
 model Hostel {
-  id             String         @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  city           String
-  location       String
-  totalRooms     Int?
-  availableRooms Int?
-  price          Float?
-  direction      String?
-  contact        String?
-  amenities      String[]
-  roomTypes      String[]
-  images         String[]
-  isActive       Boolean        @default(true)
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  city             String
+  location         String
+  direction        String?
+  contact          String
+  hostelType       String // "PG", "Dormitory", "Shared", "Private", "Boys PG", "Girls PG"
+  available        Int?           @default(0)
+  price            Float?
+  deposit          Float? // Security deposit amount
+  ratings          Float?         @default(0.0) // Average rating from reviews
+  amenities        String[] // WiFi, AC, Geyser, etc.
+  roomTypes        String[] // "Single", "Double", "Triple Sharing"
+  services         String[] // Laundry, housekeeping, food, etc.
+  securityFeatures String[] // CCTV, biometric access, security guard
+  nearbyFacilities String[] // Hospitals, markets, transport, gym, etc.
+  images           String[]
+  videos           String?
+  isActive         Boolean        @default(true)
   // RELATIONSHIP
-  reviews        HostelReview[] @relation("HostelReviews")
+  reviews          HostelReview[] @relation("HostelReviews")
   // RELATIONSHIP
-  lister         User           @relation(fields: [listerId], references: [id], name: "UserHostels", onDelete: Cascade)
-  listerId       String         @db.ObjectId
+  lister           User           @relation(fields: [listerId], references: [id], name: "UserHostels", onDelete: Cascade)
+  listerId         String         @db.ObjectId
   // 
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 
   @@map("Hostels")
 }
@@ -263,6 +269,7 @@ model Vehicle {
   price           Float?
   images          String[]
   condition       String?
+  available       Boolean      @default(true)
   isActive        Boolean      @default(true)
   // ENUM
   transmission    Transmission
@@ -277,23 +284,28 @@ model Vehicle {
 }
 
 model ReMarketItem {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  city        String
-  location    String
-  description String?
-  price       Float
-  condition   String // Like New, Sale, Refurbished, UsedItem, etc.
-  category    String // Electronics, Furniture, Clothing, etc.
-  images      String[]
-  purchasedAt DateTime?
-  isActive    Boolean   @default(true)
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  description    String
+  category       String // "Electronics", "Furniture", "Clothing", "Vehicles", etc.
+  subCategory    String? // More specific type like "Laptop", "Smartphone", etc.
+  condition      String // "New", "Used", "Refurbished", "Like New"
+  price          Float
+  isNegotiable   Boolean
+  city           String
+  location       String // City/Area where the item is listed
+  ageInMonths    Int? // How old the item is (for Used/Refurbished items)
+  warrantyPeriod Int? // Warranty duration in months (if available)
+  images         String[]
+  isActive       Boolean  @default(true)
+  available      Boolean  @default(true)
+
   // RELATIONSHIP 
-  seller      User      @relation(fields: [sellerId], references: [id], name: "UserReMarketItems", onDelete: Cascade)
-  sellerId    String    @db.ObjectId
+  seller    User     @relation(fields: [sellerId], references: [id], name: "UserReMarketItems", onDelete: Cascade)
+  sellerId  String   @db.ObjectId
   // TIMESTAMPS
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("ReMarketItems")
 }

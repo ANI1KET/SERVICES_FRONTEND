@@ -17,7 +17,11 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
     const cachedTheme = useThemeState();
 
     return (
-      <div className="w-full h-full grid grid-cols-2 gap-2 text-2xl max-sm:text-sm">
+      <div
+        className={cn(
+          'w-full h-full grid grid-cols-2 gap-2 text-2xl max-sm:text-sm'
+        )}
+      >
         <p className="hidden max-xsm:block col-span-2 ">
           <span className="flex items-center gap-2 text-sm">
             📞 Contact
@@ -35,7 +39,12 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
           </span>
           <span>{`+977-${roomCardDetails.primaryContact}`}</span>
         </p>
-        <hr className="hidden max-xsm:block col-span-2" />
+        <hr
+          className={cn(
+            cachedTheme?.borderColor,
+            'hidden max-xsm:block col-span-2'
+          )}
+        />
         {/* <p className="hidden max-xsm:block border-r break-words">
           <span className="flex items-center gap-2 text-sm">📞 Contact</span>
           <span>{`+977-${roomCardDetails.primaryContact}`}</span>
@@ -47,14 +56,19 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
         </p>
         <hr className="hidden max-xsm:block col-span-2" /> */}
         {/*  */}
-        <p className="break-words border-r text-lg max-sm:text-sm">
+        <p
+          className={cn(
+            cachedTheme?.borderColor,
+            'break-words border-r text-lg max-sm:text-sm'
+          )}
+        >
           <span className="flex items-center gap-2 ">
             <PriceIcon />
             Price
           </span>
           <span>{`Rs.${roomCardDetails.price}`}</span>
         </p>
-        <p className="break-words text-lg max-sm:text-sm">
+        <p className={cn('break-words text-lg max-sm:text-sm')}>
           <span className="flex items-center gap-2 ">🏘️ Room Type</span>
           <span>
             {`${roomCardDetails.roomtype} `}
@@ -76,8 +90,13 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
             })()}
           </span>
         </p>
-        <hr className="col-span-2" />
-        <p className="border-r break-words text-lg max-sm:text-sm">
+        <hr className={cn(cachedTheme?.borderColor, 'col-span-2')} />
+        <p
+          className={cn(
+            cachedTheme?.borderColor,
+            'border-r break-words text-lg max-sm:text-sm'
+          )}
+        >
           <span className="flex items-center gap-2 ">
             <CapacityIcon />
             Capacity
@@ -91,8 +110,13 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
           </span>
           <span>{`${roomCardDetails.furnishingStatus}`}</span>
         </p>
-        <hr className="col-span-2" />
-        <p className="break-words border-r text-lg max-sm:text-sm">
+        <hr className={cn(cachedTheme?.borderColor, 'col-span-2')} />
+        <p
+          className={cn(
+            cachedTheme?.borderColor,
+            'break-words border-r text-lg max-sm:text-sm'
+          )}
+        >
           <span className="flex items-center gap-2 ">👤 Posted By</span>
           <span>{`${roomCardDetails.postedBy}`}</span>
         </p>
@@ -101,7 +125,7 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
           <span>{timeAgo(roomCardDetails.updatedAt)}</span>
           {/* <span>{new Date(roomCardDetails.updatedAt).toDateString()}</span> */}
         </p>
-        <hr className="col-span-2" />
+        <hr className={cn(cachedTheme?.borderColor, 'col-span-2')} />
         <p className="break-words col-span-2 text-lg max-sm:text-sm">
           <span className="flex items-center justify-between w-full">
             <span className="w-1/2">📌 Location</span>
@@ -114,7 +138,7 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
             {roomCardDetails?.direction && ` ( ${roomCardDetails?.direction} )`}
           </span>
         </p>
-        <hr className="col-span-2" />
+        <hr className={cn(cachedTheme?.borderColor, 'col-span-2')} />
         {/*  */}
         <p className="hidden max-xsm:block col-span-2 ">
           <span className="flex justify-center items-center gap-2 text-base font-semibold">
@@ -126,7 +150,12 @@ const RoomDetailsLayout: React.FC<RoomDetailsProps> = memo(
             </span>
           )}
         </p>
-        <hr className="hidden max-xsm:block col-span-2" />
+        <hr
+          className={cn(
+            cachedTheme?.borderColor,
+            'hidden max-xsm:block col-span-2'
+          )}
+        />
       </div>
     );
   }

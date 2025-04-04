@@ -1,33 +1,41 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
 import Select from '@mui/material/Select';
 import { useRouter } from 'next/navigation';
 import MenuItem from '@mui/material/MenuItem';
+import { SearchQuery } from '@/app/types/types';
 import FormControl from '@mui/material/FormControl';
 import { useEffect, useState, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useForm, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 
+import {
+  postedBy,
+  roomType,
+  amenities,
+  furnishingStatus,
+} from '../scalableComponents';
 import {
   FetchCategoryCityLocations,
   FetchCategoryCitiesLocations,
 } from '../utils/FetchCategoryPlaces';
 import { ArrowUpIcon } from '../icon/svg';
 import {
-  CapacitySlider,
   CheckedBox,
   PriceSlider,
   RatingSlider,
+  CapacitySlider,
   TickCheckboxGroup,
 } from '@/app/lib/ui/FormReusableComponent';
 import {
   CityData,
+  ThemeState,
   useTabState,
   useThemeState,
+  useSetSearchData,
 } from '@/app/providers/reactqueryProvider';
 import { cn } from '../utils/tailwindMerge';
 import useBreakpoint from '../utils/useBreakpoint';
-import { SearchQueries, SearchQuery } from '@/app/types/types';
 
 const SearchForm: React.FC = () => {
   const router = useRouter();
@@ -35,6 +43,7 @@ const SearchForm: React.FC = () => {
   const cachedTheme = useThemeState();
   const queryClient = useQueryClient();
   const { isMobile } = useBreakpoint();
+  const setSearchData = useSetSearchData();
   const category = tabState?.['CategoryTab'] as string;
   const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
 
@@ -110,19 +119,15 @@ const SearchForm: React.FC = () => {
       ? selectedLocation
       : [...selectedLocation, location].filter(Boolean);
 
-    queryClient.setQueryData<SearchQueries>(['searchData'], {
-      city,
-      locations,
-      filters: {
-        price: data.price,
-        rating: data.rating,
-        capacity: data.capacity,
-        verified: data.verified || undefined,
-        postedby: data.postedby,
-        roomtype: data.roomtype,
-        amenities: data.amenities,
-        furnishingstatus: data.furnishingstatus,
-      },
+    setSearchData(city, locations, {
+      price: data.price,
+      rating: data.rating,
+      capacity: data.capacity,
+      verified: data.verified || undefined,
+      postedby: data.postedby,
+      roomtype: data.roomtype,
+      amenities: data.amenities,
+      furnishingstatus: data.furnishingstatus,
     });
 
     router.push(`/search/${tabState?.['CategoryTab']}`);
@@ -163,49 +168,13 @@ const SearchForm: React.FC = () => {
         >
           <p>Filter</p>
           <ArrowUpIcon className="group-hover:scale-125 group-hover:rotate-180 transition-all duration-300" />
-          <div
-            className={cn(
-              cachedTheme?.bg,
-              cachedTheme?.borderColor,
-              'w-full h-[40vh] overflow-x-scroll flex flex-col gap-2 p-2 absolute top-full left-0 right-0 rounded-2xl border-2 opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300'
-            )}
-          >
-            <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
-            <div className="flex gap-4">
-              <RatingSlider
-                onChangeEnd={(value) => setValue('rating', value)}
-              />
-              <CapacitySlider
-                onChangeEnd={(value) => setValue('capacity', value)}
-              />
-            </div>
-            <TickCheckboxGroup
-              label="Amenities"
-              options={['PARKING', 'WIFI', 'WATER']}
-              register={register('amenities')}
-            />
-            <TickCheckboxGroup
-              label="Room Type"
-              options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
-              register={register('roomtype')}
-            />
-            <TickCheckboxGroup
-              label="Furnishing Status"
-              options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
-              register={register('furnishingstatus')}
-            />
-            <TickCheckboxGroup
-              label="Posted By"
-              options={['OWNER', 'BROKER', 'USER']}
-              register={register('postedby')}
-            />
-            <CheckedBox
-              label="Verified"
-              value={verified ?? false}
-              register={register('verified')}
-              onChange={(e) => setValue('verified', e.target.checked)}
-            />
-          </div>
+          <FilterLayout
+            isMobile={isMobile}
+            verified={verified}
+            setValue={setValue}
+            register={register}
+            cachedTheme={cachedTheme}
+          />
         </div>
       )}
 
@@ -490,57 +459,75 @@ const SearchForm: React.FC = () => {
       )}
 
       {isMobile && (
-        <div
-          className={cn(
-            cachedTheme?.bg,
-            cachedTheme?.borderColor,
-            'flex flex-col gap-1 h-[49vh] col-span-9 border-2 rounded-2xl p-1 overflow-y-scroll'
-          )}
-        >
-          <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
-
-          <div className="flex gap-4">
-            <RatingSlider onChangeEnd={(value) => setValue('rating', value)} />
-
-            <CapacitySlider
-              onChangeEnd={(value) => setValue('capacity', value)}
-            />
-          </div>
-
-          <TickCheckboxGroup
-            label="Amenities"
-            options={['PARKING', 'WIFI', 'WATER']}
-            register={register('amenities')}
-          />
-
-          <TickCheckboxGroup
-            label="Room Type"
-            options={['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT']}
-            register={register('roomtype')}
-          />
-
-          <TickCheckboxGroup
-            label="Furnishing Status"
-            options={['FURNISHED', 'SEMIFURNISHED', 'UNFURNISHED']}
-            register={register('furnishingstatus')}
-          />
-
-          <TickCheckboxGroup
-            label="Posted By"
-            options={['OWNER', 'BROKER', 'USER']}
-            register={register('postedby')}
-          />
-
-          <CheckedBox
-            label="Verified"
-            value={verified ?? false}
-            register={register('verified')}
-            onChange={(e) => setValue('verified', e.target.checked)}
-          />
-        </div>
+        <FilterLayout
+          isMobile={isMobile}
+          verified={verified}
+          setValue={setValue}
+          register={register}
+          cachedTheme={cachedTheme}
+        />
       )}
     </form>
   );
 };
 
 export default SearchForm;
+
+const FilterLayout = ({
+  isMobile,
+  verified,
+  setValue,
+  register,
+  cachedTheme,
+}: {
+  isMobile: boolean;
+  verified: boolean | undefined;
+  cachedTheme: ThemeState | undefined;
+  setValue: UseFormSetValue<SearchQuery>;
+  register: UseFormRegister<SearchQuery>;
+}) => {
+  return (
+    <div
+      className={cn(
+        cachedTheme?.bg,
+        cachedTheme?.borderColor,
+        'flex flex-col border-2 rounded-2xl ',
+        isMobile
+          ? 'gap-1 h-[49vh] col-span-9 p-1 overflow-y-scroll'
+          : 'w-full h-[40vh] overflow-x-scroll gap-2 p-2 absolute top-full left-0 right-0 opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all duration-300'
+      )}
+    >
+      <PriceSlider onChangeEnd={(value) => setValue('price', value)} />
+      <div className="flex gap-4">
+        <RatingSlider onChangeEnd={(value) => setValue('rating', value)} />
+        <CapacitySlider onChangeEnd={(value) => setValue('capacity', value)} />
+      </div>
+      <TickCheckboxGroup
+        label="Amenities"
+        options={amenities}
+        register={register('amenities')}
+      />
+      <TickCheckboxGroup
+        label="Room Type"
+        options={roomType}
+        register={register('roomtype')}
+      />
+      <TickCheckboxGroup
+        label="Furnishing Status"
+        options={furnishingStatus}
+        register={register('furnishingstatus')}
+      />
+      <TickCheckboxGroup
+        label="Posted By"
+        options={postedBy}
+        register={register('postedby')}
+      />
+      <CheckedBox
+        label="Verified"
+        value={verified ?? false}
+        register={register('verified')}
+        onChange={(e) => setValue('verified', e.target.checked)}
+      />
+    </div>
+  );
+};

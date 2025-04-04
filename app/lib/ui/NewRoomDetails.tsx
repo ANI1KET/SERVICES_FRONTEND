@@ -80,7 +80,7 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
 
           <p className="text-sm col-span-2 text-right ">
             {session ? (
-              session?.user.role === 'USER' ? (
+              session?.user.permission?.includes('room') ? null : (
                 <button
                   className={cn(
                     'text-sm p-[2px] rounded-lg cursor-pointer mr-1',
@@ -130,7 +130,7 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
                 >
                   Interest
                 </button>
-              ) : null
+              )
             ) : (
               <button
                 title="Login to proceed"

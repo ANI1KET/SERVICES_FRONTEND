@@ -3,34 +3,13 @@ import { useSession } from 'next-auth/react';
 import { Reference, StoreObject, useMutation, useQuery } from '@apollo/client';
 
 import {
-  DELETE_INTERESTED_USER,
   GET_INTERESTED_ROOMS,
+  DELETE_INTERESTED_USER,
 } from '../../graphQL/interestedRooms';
-import { Room } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { InterestedBy, RoomData } from '../../types';
 import { timeAgoDetailed } from '@/app/lib/utils/timeCalculation';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  number: string | null;
-}
-
-interface InterestedBy {
-  user: User;
-  createdAt: string;
-}
-
-interface RoomData {
-  id: string;
-  roomId: string;
-  room: Room & {
-    available: boolean;
-  };
-  interestedBy: InterestedBy[];
-}
 
 const UsersInsterestedRooms: React.FC = React.memo(() => {
   const session = useSession();
