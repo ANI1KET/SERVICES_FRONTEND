@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { makeVar, useReactiveVar } from '@apollo/client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
