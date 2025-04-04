@@ -2,9 +2,10 @@
 
 import { Readable } from 'stream';
 import { google } from 'googleapis';
+import { Role } from '@prisma/client';
 
 import prisma from '@/prisma/prismaClient';
-import { PostedBy, RoomWithMediaUrl } from '../types/types';
+import { RoomWithMediaUrl } from '../types/types';
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -266,7 +267,7 @@ export async function uploadChunkVideo({
 }
 
 export async function SubmitRoomDetails(
-  formData: RoomWithMediaUrl & { postedBy: PostedBy; listerId: string }
+  formData: RoomWithMediaUrl & { postedBy: Role; listerId: string }
 ) {
   'use server';
   try {
