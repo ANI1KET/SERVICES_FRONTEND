@@ -63,12 +63,18 @@ const ListNavigation = () => {
                   ],
                   index !== list.length - 1 && 'border-b-2'
                 )}
-                onMouseEnter={(e) =>
+                onTouchStart={(e) =>
                   !isPermitted && (e.currentTarget.textContent = 'Upgrade')
                 }
-                onMouseLeave={(e) =>
+                onTouchEnd={(e) =>
                   !isPermitted && (e.currentTarget.textContent = formattedRoute)
                 }
+                // onMouseEnter={(e) =>
+                //   !isPermitted && (e.currentTarget.textContent = 'Upgrade')
+                // }
+                // onMouseLeave={(e) =>
+                //   !isPermitted && (e.currentTarget.textContent = formattedRoute)
+                // }
               >
                 {formattedRoute}
               </Link>
