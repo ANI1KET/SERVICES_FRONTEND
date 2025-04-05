@@ -6,9 +6,8 @@ import { useSession } from 'next-auth/react';
 import { PriceIcon } from '@/app/lib/icon/svg';
 import { NewListedRoom } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import { updateNumber } from '@/app/(selected)/ServerAction';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-import { pushSavedRoom } from '@/app/(selected)/room/ServerAction';
+import { pushSavedRoom, updateNumber } from '@/app/(selected)/ServerAction';
 
 interface NewRoomCardProps {
   roomCardDetails: NewListedRoom;

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 
 import { ArrowLeftIcon, ArrowRightIcon, CrossIcon } from '../icon/svg';
 
@@ -20,28 +20,26 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ imagesUrl }) => {
     Math.floor(imagesUrl.length / 2)
   );
 
-  const extendedPositions = [
-    ...Array.from(
-      { length: Math.floor(imagesUrl.length / 2) },
-      (_, i) => `left${Math.floor(imagesUrl.length / 2) - i}`
-    ),
-    'center',
-    ...Array.from(
-      { length: Math.floor(imagesUrl.length / 2) },
-      (_, i) => `right${i + 1}`
-    ),
-  ].slice(0, imagesUrl.length);
+  const extendedPositions = useMemo(() => {
+    const mid = Math.floor(imagesUrl.length / 2);
+    return [
+      ...Array.from({ length: mid }, (_, i) => `left${mid - i}`),
+      'center',
+      ...Array.from({ length: mid }, (_, i) => `right${i + 1}`),
+    ].slice(0, imagesUrl.length);
+  }, [imagesUrl.length]);
 
-  const imageVariants = extendedPositions.reduce((acc, pos, index) => {
+  const imageVariants = useMemo(() => {
     const centerIndex = extendedPositions.indexOf('center');
-    const distanceFromCenter = Math.abs(centerIndex - index);
-
-    acc[pos] = {
-      x: pos === 'center' ? '0%' : `${(index - centerIndex) * 100}%`,
-      scale: Math.max(1 - distanceFromCenter * 0.25, 0.2),
-    };
-    return acc;
-  }, {} as Record<string, { x: string; scale: number }>);
+    return extendedPositions.reduce((acc, pos, index) => {
+      const distance = Math.abs(centerIndex - index);
+      acc[pos] = {
+        x: pos === 'center' ? '0%' : `${(index - centerIndex) * 100}%`,
+        scale: Math.max(1 - distance * 0.25, 0.2),
+      };
+      return acc;
+    }, {} as Record<string, { x: string; scale: number }>);
+  }, [extendedPositions]);
 
   const handleNext = () => {
     setPositionIndexes((prev) => [prev[prev.length - 1], ...prev.slice(0, -1)]);
@@ -84,16 +82,11 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ imagesUrl }) => {
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!touchStartX.current) return;
 
-    const touchEndX = e.touches[0].clientX;
-    const diff = touchEndX - touchStartX.current;
+    const diff = e.touches[0].clientX - touchStartX.current;
 
-    if (diff > 50) {
-      handleBack();
-      touchStartX.current = null;
-    } else if (diff < -50) {
-      handleNext();
-      touchStartX.current = null;
-    }
+    if (diff > 50) handleBack();
+    else if (diff < -50) handleNext();
+    touchStartX.current = null;
   };
 
   return (

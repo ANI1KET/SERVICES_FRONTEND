@@ -1,16 +1,25 @@
 'use client';
 
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import { InfiniteData, useQueryClient } from '@tanstack/react-query';
+
 import {
   useSearchData,
   useThemeState,
 } from '@/app/providers/reactqueryProvider';
-import ImageSlider from '@/app/lib/ui/ImageSlider';
-import VideoPlayer from '@/app/lib/ui/VideoPlayer';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import NewRoomDetails from '@/app/lib/ui/NewRoomDetails';
 import { NewListedRoom, RoomData } from '@/app/types/types';
-import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import ResponsiveNewRoomDetails from '@/app/lib/ui/ResponsiveNewRoomDetails';
+
+const VideoPlayer = dynamic(() => import('@/app/lib/ui/VideoPlayer'), {
+  ssr: false,
+  loading: () => <VideoSkeleton />,
+});
+const ImageSlider = dynamic(() => import('@/app/lib/ui/ImageSlider'), {
+  ssr: false,
+});
 
 const findMatchingRoom = (
   cachedData: { pages: RoomData[][] } | undefined,
@@ -26,7 +35,7 @@ const findMatchingRoom = (
   return undefined;
 };
 
-const RoomDetailsLayout: React.FC<{ city: string; roomId: string }> = ({
+const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
   city,
   roomId,
 }) => {
@@ -45,20 +54,25 @@ const RoomDetailsLayout: React.FC<{ city: string; roomId: string }> = ({
         ]);
       })();
 
-  const RoomDetails = findMatchingRoom(cachedData, roomId);
-  if (!RoomDetails) return null;
+  const roomDetails = findMatchingRoom(cachedData, roomId);
+
+  // const cityRoomDetails =
+  //   roomDetails &&
+  //   queryClient.getQueryData<InfiniteData<RoomData[]>>([
+  //     `room${roomDetails.city}`,
+  //   ]);
+  if (!roomDetails) return null;
   return (
     <div className="flex flex-col ">
       <div className="flex max-xsm:flex-col gap-1 p-2 relative max-xsm:p-0 max-xsm:gap-0 ">
-        <VideoPlayer videoUrl={RoomDetails?.videos} />
-
-        <NewRoomDetails roomCardDetails={RoomDetails as NewListedRoom} />
+        <Suspense fallback={<VideoSkeleton />}>
+          <VideoPlayer videoUrl={roomDetails.videos} />
+        </Suspense>
+        <NewRoomDetails roomCardDetails={roomDetails as NewListedRoom} />
       </div>
-
       <ResponsiveNewRoomDetails
-        roomCardDetails={RoomDetails as NewListedRoom}
+        roomCardDetails={roomDetails as NewListedRoom}
       />
-
       <div
         className={cn(
           cacheTheme?.textColor,
@@ -67,10 +81,17 @@ const RoomDetailsLayout: React.FC<{ city: string; roomId: string }> = ({
       >
         Room Images
       </div>
-
-      <ImageSlider imagesUrl={RoomDetails?.photos as string[]} />
+      <ImageSlider imagesUrl={roomDetails.photos as string[]} />
     </div>
   );
 };
 
 export default RoomDetailsLayout;
+
+const VideoSkeleton = () => (
+  <div
+    className={cn(
+      'relative w-[45vw] max-xsm:w-screen aspect-video border animate-pulse bg-gray-600 border-black'
+    )}
+  ></div>
+);

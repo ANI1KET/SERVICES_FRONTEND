@@ -33,3 +33,26 @@ export const updateNumber = async ({
     return 'Failed';
   }
 };
+
+export const pushSavedRoom = async ({
+  userId,
+  roomId,
+  listerId,
+}: {
+  userId: string;
+  roomId: string;
+  listerId: string;
+}) => {
+  'use server';
+
+  try {
+    const { data } = await axiosInstance.post(`/interestedrooms/create`, {
+      userId,
+      roomId,
+      listerId,
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error?.toString() || 'An unknown error occurred');
+  }
+};

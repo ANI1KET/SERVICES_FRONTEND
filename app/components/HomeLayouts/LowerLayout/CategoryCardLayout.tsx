@@ -1,16 +1,24 @@
 'use client';
 
-import ReactPlayer from 'react-player';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 
-import ImageLoop from '@/app/lib/ui/ImageLoop';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { getCategoryDetails } from './ServerAction';
 import { PAGE_SIZE } from '@/app/lib/reusableConst';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { CapacityIcon, FurnishIcon, PriceIcon } from '@/app/lib/icon/svg';
+
+const ImageLoop = dynamic(() => import('@/app/lib/ui/ImageLoop'), {
+  ssr: false,
+  loading: () => <Skeleton />,
+});
+const ReactPlayer = dynamic(() => import('react-player/lazy'), {
+  ssr: false,
+  loading: () => <Skeleton />,
+});
 
 const CategoryCardLayout: React.FC<{
   city: string;
@@ -168,26 +176,28 @@ const CategoryCardLayout: React.FC<{
                       'max-xsm:w-screen '
                     )}
                   >
-                    <ReactPlayer
-                      loop
-                      muted
-                      playing
-                      width="100%"
-                      height="100%"
-                      controls={false}
-                      url={item.videos}
-                      config={{
-                        youtube: {
-                          playerVars: {
-                            rel: 0,
-                            showinfo: 0,
-                            disablekb: 1,
-                            modestbranding: 1,
+                    <Suspense fallback={<Skeleton />}>
+                      <ReactPlayer
+                        loop
+                        muted
+                        playing
+                        width="100%"
+                        height="100%"
+                        controls={false}
+                        url={item.videos}
+                        config={{
+                          youtube: {
+                            playerVars: {
+                              rel: 0,
+                              showinfo: 0,
+                              disablekb: 1,
+                              modestbranding: 1,
+                            },
                           },
-                        },
-                      }}
-                      style={{ pointerEvents: 'none' }}
-                    />
+                        }}
+                        style={{ pointerEvents: 'none' }}
+                      />
+                    </Suspense>
                   </div>
                 ) : (
                   <div
@@ -199,7 +209,9 @@ const CategoryCardLayout: React.FC<{
                     )}
                   >
                     {item.photos && item.photos.length > 0 && (
-                      <ImageLoop images={item.photos} />
+                      <Suspense fallback={<Skeleton />}>
+                        <ImageLoop images={item.photos} />
+                      </Suspense>
                     )}
                   </div>
                 )}
@@ -298,3 +310,11 @@ const CategoryCardLayout: React.FC<{
 };
 
 export default CategoryCardLayout;
+
+const Skeleton = () => (
+  <div
+    className={cn(
+      'w-fulll aspect-video border animate-pulse bg-gray-300 border-black'
+    )}
+  ></div>
+);

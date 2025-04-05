@@ -30,9 +30,9 @@ export const useInfiniteRoomQuery = () => {
       const currentOffset = allPages.length * PAGE_SIZE;
       return lastPage.length === PAGE_SIZE ? currentOffset : undefined;
     },
-    staleTime: 0,
-    gcTime: 2 * 60000,
+    gcTime: 5 * 60000,
     initialPageParam: 0,
+    staleTime: 5 * 60000,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });

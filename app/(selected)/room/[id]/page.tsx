@@ -29,10 +29,9 @@ export default async function SelectedRoom({
 
   const city = roomDetails.city;
   const roomId = roomDetails.id;
-
   return (
-    <div>
+    <>
       <RoomDetailsLayout city={city} roomId={roomId}></RoomDetailsLayout>
-    </div>
+    </>
   );
 }

@@ -7,9 +7,8 @@ import { NewListedRoom } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { timeAgo } from '../utils/timeCalculation';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-import { updateNumber } from '@/app/(selected)/ServerAction';
-import { pushSavedRoom } from '@/app/(selected)/room/ServerAction';
 import { PriceIcon, FurnishIcon, CapacityIcon } from '@/app/lib/icon/svg';
+import { pushSavedRoom, updateNumber } from '@/app/(selected)/ServerAction';
 
 interface NewRoomCardProps {
   roomCardDetails: NewListedRoom;

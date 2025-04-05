@@ -111,8 +111,8 @@ const Room = () => {
         ...data,
         photos: uploadImageUrls,
         videos: uploadVideoUrl ?? null,
-        listerId: session?.user.userId as string,
         postedBy: session?.user.role as Role,
+        listerId: session?.user.userId as string,
       });
     } catch (error) {
       console.log('object!!!');

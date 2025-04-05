@@ -1,20 +1,33 @@
 'use client';
 
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
 
 import { NewListedRoom } from '@/app/types/types';
-import VideoPlayer from '@/app/lib/ui/VideoPlayer';
-import ImageSlider from '../../../lib/ui/ImageSlider';
 import { fetchNewRoomDetails } from '../../ServerAction';
 import NewRoomDetails from '../../../lib/ui/NewRoomDetails';
 import { decodeURLPlaceQuery } from '@/app/lib/utils/decodeURL';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import ResponsiveNewRoomDetails from '../../../lib/ui/ResponsiveNewRoomDetails';
 
+const VideoPlayer = dynamic(() => import('@/app/lib/ui/VideoPlayer'), {
+  ssr: false,
+  loading: () => <div>Loading video...</div>,
+});
+const ImageSlider = dynamic(() => import('@/app/lib/ui/ImageSlider'), {
+  ssr: false,
+});
+
 const Room = () => {
   const params = useParams();
   const queryClient = useQueryClient();
   const roomId = params?.id ? decodeURLPlaceQuery(params.id as string) : null;
+
+  const dataFromCache = queryClient.getQueryData<NewListedRoom>([
+    'CategoryDetails',
+    'room',
+  ]);
 
   const {
     data: newRoomDetails,
@@ -26,10 +39,9 @@ const Room = () => {
       roomId
         ? fetchNewRoomDetails('room', roomId)
         : Promise.reject('No room ID'),
-    enabled: !!roomId,
+    enabled: !!roomId && !dataFromCache,
     staleTime: 1000 * 60 * 10,
-    initialData: () =>
-      queryClient.getQueryData<NewListedRoom>(['CategoryDetails', 'room']),
+    initialData: dataFromCache,
   });
 
   if (!newRoomDetails) return null;
@@ -38,8 +50,9 @@ const Room = () => {
   return (
     <div className="flex flex-col ">
       <div className="flex max-xsm:flex-col gap-1 p-2 relative mb-5 max-xsm:p-0 max-xsm:gap-0 ">
-        <VideoPlayer videoUrl={newRoomDetails?.videos} />
-
+        <Suspense fallback={<div>Loading video...</div>}>
+          <VideoPlayer videoUrl={newRoomDetails.videos} />
+        </Suspense>
         <NewRoomDetails roomCardDetails={newRoomDetails as NewListedRoom} />
       </div>
 
