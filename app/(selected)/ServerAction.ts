@@ -29,7 +29,7 @@ export const updateNumber = async ({
       { userId, number },
       {
         headers: {
-          Cookie: `next-auth.session-token=${sessionToken}`,
+          Cookie: `__Secure-next-auth.session-token=${sessionToken}`,
           'Cache-Control': 'no-cache',
         },
       }
@@ -66,7 +66,7 @@ export const pushSavedRoom = async ({
       },
       {
         headers: {
-          Cookie: `next-auth.session-token=${sessionToken}`,
+          Cookie: `__Secure-next-auth.session-token=${sessionToken}`,
           'Cache-Control': 'no-cache',
         },
       }
