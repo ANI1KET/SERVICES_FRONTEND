@@ -2,7 +2,16 @@
 
 import { cookies } from 'next/headers';
 
+import { NewListedRoom } from '../types/types';
 import axiosInstance from '../lib/utils/axiosInstance';
+
+const getSessionToken = async (): Promise<string | undefined> => {
+  const cookieStore = await cookies();
+  return (
+    cookieStore.get('__Secure-next-auth.session-token')?.value ||
+    cookieStore.get('next-auth.session-token')?.value
+  );
+};
 
 export const updateNumber = async ({
   userId,
@@ -13,9 +22,8 @@ export const updateNumber = async ({
 }): Promise<string> => {
   'use server';
 
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get('next-auth.session-token')?.value;
   try {
+    const sessionToken = await getSessionToken();
     const response = await axiosInstance.post(
       `/user/number`,
       { userId, number },
@@ -46,11 +54,36 @@ export const pushSavedRoom = async ({
   'use server';
 
   try {
-    const { data } = await axiosInstance.post(`/interestedrooms/create`, {
-      userId,
-      roomId,
-      listerId,
-    });
+    const sessionToken = await getSessionToken();
+    console.log(sessionToken);
+
+    const { data } = await axiosInstance.post(
+      `/interestedrooms/create`,
+      {
+        userId,
+        roomId,
+        listerId,
+      },
+      {
+        headers: {
+          Cookie: `next-auth.session-token=${sessionToken}`,
+          'Cache-Control': 'no-cache',
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error?.toString() || 'An unknown error occurred');
+  }
+};
+
+export const fetchSelectedRoomDetails = async (
+  roomId: string
+): Promise<NewListedRoom> => {
+  'use server';
+  try {
+    const { data } = await axiosInstance.get(`/room/${roomId}`);
     return data;
   } catch (error) {
     throw new Error(error?.toString() || 'An unknown error occurred');

@@ -33,8 +33,8 @@ const Home = async () => {
       }),
     initialPageParam: 0,
   });
-  // const data = queryClient.getQueryData(['getCategoryCitiesLocations']);
   // const infiniteData = queryClient.getQueryData(['roomKathmandu']);
+  // const data = queryClient.getQueryData(['getCategoryCitiesLocations']);
   return (
     <main>
       <HydrationBoundary state={dehydrate(queryClient)}>

@@ -1,21 +1,29 @@
 'use client';
 
-import { Suspense } from 'react';
+import {
+  useQuery,
+  InfiniteData,
+  useQueryClient,
+  useInfiniteQuery,
+} from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
-import { InfiniteData, useQueryClient } from '@tanstack/react-query';
+import { Suspense, useCallback, useEffect, useRef } from 'react';
 
 import {
   useSearchData,
   useThemeState,
 } from '@/app/providers/reactqueryProvider';
+import RoomDetails from './RoomDetails';
+import { PAGE_SIZE } from '../reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import NewRoomDetails from '@/app/lib/ui/NewRoomDetails';
 import { NewListedRoom, RoomData } from '@/app/types/types';
+import { fetchSelectedRoomDetails } from '@/app/(selected)/ServerAction';
 import ResponsiveNewRoomDetails from '@/app/lib/ui/ResponsiveNewRoomDetails';
+import { getCategoryDetails } from '@/app/components/HomeLayouts/LowerLayout/ServerAction';
 
 const VideoPlayer = dynamic(() => import('@/app/lib/ui/VideoPlayer'), {
   ssr: false,
-  loading: () => <VideoSkeleton />,
 });
 const ImageSlider = dynamic(() => import('@/app/lib/ui/ImageSlider'), {
   ssr: false,
@@ -56,22 +64,78 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
 
   const roomDetails = findMatchingRoom(cachedData, roomId);
 
-  // const cityRoomDetails =
-  //   roomDetails &&
-  //   queryClient.getQueryData<InfiniteData<RoomData[]>>([
-  //     `room${roomDetails.city}`,
-  //   ]);
-  if (!roomDetails) return null;
+  const { data: fallbackRoomDetails } = useQuery<NewListedRoom>({
+    queryKey: ['selectedRoom', roomId],
+    queryFn: () => fetchSelectedRoomDetails(roomId),
+    enabled: !roomDetails,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  const finalRoomDetails = roomDetails || fallbackRoomDetails;
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: [`room${finalRoomDetails?.city}`],
+      queryFn: ({ pageParam = 0 }) =>
+        getCategoryDetails({
+          city: finalRoomDetails?.city as string,
+          category: 'room',
+          offset: pageParam,
+        }),
+      getNextPageParam: (lastPage, allPages) => {
+        const currentOffset = allPages.length * PAGE_SIZE;
+        return lastPage.length === PAGE_SIZE ? currentOffset : undefined;
+      },
+      initialPageParam: 0,
+      gcTime: 1000 * 60 * 10,
+      staleTime: 1000 * 60 * 10,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      enabled: !!finalRoomDetails?.city,
+    });
+
+  const observerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          handleLoadMore();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '300px',
+        threshold: 0,
+      }
+    );
+
+    const target = observerRef.current;
+    if (target) observer.observe(target);
+
+    return () => {
+      if (target) observer.unobserve(target);
+    };
+  }, [handleLoadMore]);
+
+  if (!finalRoomDetails) return null;
   return (
     <div className="flex flex-col ">
       <div className="flex max-xsm:flex-col gap-1 p-2 relative max-xsm:p-0 max-xsm:gap-0 ">
         <Suspense fallback={<VideoSkeleton />}>
-          <VideoPlayer videoUrl={roomDetails.videos} />
+          <VideoPlayer videoUrl={finalRoomDetails.videos} />
         </Suspense>
-        <NewRoomDetails roomCardDetails={roomDetails as NewListedRoom} />
+        <NewRoomDetails roomCardDetails={finalRoomDetails as NewListedRoom} />
       </div>
       <ResponsiveNewRoomDetails
-        roomCardDetails={roomDetails as NewListedRoom}
+        roomCardDetails={finalRoomDetails as NewListedRoom}
       />
       <div
         className={cn(
@@ -81,7 +145,24 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
       >
         Room Images
       </div>
-      <ImageSlider imagesUrl={roomDetails.photos as string[]} />
+      <ImageSlider imagesUrl={finalRoomDetails.photos as string[]} />
+
+      <div className={'mt-5 '}>
+        <p
+          className={cn(
+            cacheTheme.borderColor,
+            'text-xl text-center font-semibold p-1 border rounded-t-xl'
+          )}
+        >
+          Similar Rooms in {finalRoomDetails.city}
+        </p>
+        <RoomDetails
+          data={data?.pages}
+          observerRef={observerRef}
+          city={finalRoomDetails.city as string}
+          isFetchingNextPage={isFetchingNextPage}
+        />
+      </div>
     </div>
   );
 };

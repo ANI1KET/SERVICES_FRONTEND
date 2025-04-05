@@ -26,14 +26,14 @@ const InterestedRoom = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ['interestedRooms'],
     queryFn: () => fetchInterestedRoomDetails(interestedRooms),
-    enabled: !!interestedRooms.length,
     refetchOnWindowFocus: false,
+    enabled: !!interestedRooms.length,
   });
 
   const removeRoom = useCallback(
     async (roomId: string) => {
       try {
-        await deleteInterestedRoom(roomId);
+        deleteInterestedRoom(roomId);
 
         setInterestedRooms((prevRooms) => {
           const updatedRooms = prevRooms.filter((id) => id !== roomId);

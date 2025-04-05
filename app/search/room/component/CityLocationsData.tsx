@@ -10,7 +10,6 @@ import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 const ImageLoop = dynamic(() => import('../../../lib/ui/ImageLoop'), {
   ssr: false,
-  loading: () => <ImageSkeleton />,
 });
 const AutoScrollCarousel = dynamic(() => import('./AutoScrollCarousel'), {
   ssr: false,

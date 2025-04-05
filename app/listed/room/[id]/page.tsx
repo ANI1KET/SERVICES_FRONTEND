@@ -13,7 +13,6 @@ import ResponsiveNewRoomDetails from '../../../lib/ui/ResponsiveNewRoomDetails';
 
 const VideoPlayer = dynamic(() => import('@/app/lib/ui/VideoPlayer'), {
   ssr: false,
-  loading: () => <div>Loading video...</div>,
 });
 const ImageSlider = dynamic(() => import('@/app/lib/ui/ImageSlider'), {
   ssr: false,
