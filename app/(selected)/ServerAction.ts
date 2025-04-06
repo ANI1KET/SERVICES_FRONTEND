@@ -21,7 +21,6 @@ export const updateNumber = async ({
   number: string;
 }): Promise<string> => {
   'use server';
-
   try {
     const sessionToken = await getSessionToken();
     const response = await axiosInstance.post(
@@ -29,7 +28,7 @@ export const updateNumber = async ({
       { userId, number },
       {
         headers: {
-          Cookie: `__Secure-next-auth.session-token=${sessionToken}`,
+          Cookie: `next-auth.session-token=${sessionToken}`,
           'Cache-Control': 'no-cache',
         },
       }
@@ -52,11 +51,8 @@ export const pushSavedRoom = async ({
   listerId: string;
 }) => {
   'use server';
-
   try {
     const sessionToken = await getSessionToken();
-    console.log(sessionToken);
-
     const { data } = await axiosInstance.post(
       `/interestedrooms/create`,
       {
@@ -66,7 +62,7 @@ export const pushSavedRoom = async ({
       },
       {
         headers: {
-          Cookie: `__Secure-next-auth.session-token=${sessionToken}`,
+          Cookie: `next-auth.session-token=${sessionToken}`,
           'Cache-Control': 'no-cache',
         },
       }
