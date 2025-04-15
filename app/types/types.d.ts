@@ -67,7 +67,12 @@ export type NewListedRoom = RoomWithMediaUrl & {
 
 export type RoomData = NewListedRoom & {
   user: {
-    role: string;
+    id: string;
+    role: Role;
+    name: string;
+    email: string;
+    number: string;
+    promoteRoomPrice: number;
   };
   roomReviews: {
     id: string;
@@ -77,3 +82,6 @@ export type RoomData = NewListedRoom & {
     updatedAt: string;
   }[];
 };
+
+export type GroupedRooms = Record<string, NewListedRoom[]>;
+export type UserFromRoomData = Pick<RoomData, 'user'>['user'];

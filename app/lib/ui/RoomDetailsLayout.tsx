@@ -79,9 +79,9 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
       queryKey: [`room${finalRoomDetails?.city}`],
       queryFn: ({ pageParam = 0 }) =>
         getCategoryDetails({
-          city: finalRoomDetails?.city as string,
           category: 'room',
           offset: pageParam,
+          city: finalRoomDetails?.city as string,
         }),
       getNextPageParam: (lastPage, allPages) => {
         const currentOffset = allPages.length * PAGE_SIZE;

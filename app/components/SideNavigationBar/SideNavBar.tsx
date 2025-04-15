@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useSession } from 'next-auth/react';
 
 import { cn } from '../../lib/utils/tailwindMerge';
 import { useThemeState } from '../../providers/reactqueryProvider';
@@ -62,12 +61,11 @@ import { useThemeState } from '../../providers/reactqueryProvider';
 //   );
 // }
 
-export const Logo = () => {
+export const Logo = ({ url, title }: { url: string; title: title }) => {
   const cachedTheme = useThemeState();
-  const { data: session } = useSession();
   return (
     <Link
-      href={`/dashboard/${session?.user.role?.toLowerCase()}`}
+      href={url}
       className={cn(
         cachedTheme?.textColor,
         'font-normal flex space-x-2 items-center py-1 relative'
@@ -346,18 +344,17 @@ export const Logo = () => {
           'font-medium text-lg whitespace-pre'
         )}
       >
-        AFNOSANSAR
+        {title}
       </motion.span>
     </Link>
   );
 };
 
-export const LogoIcon = () => {
+export const LogoIcon = ({ url }: { url: string }) => {
   const cachedTheme = useThemeState();
-  const { data: session } = useSession();
   return (
     <Link
-      href={`/dashboard/${session?.user.role?.toLowerCase()}`}
+      href={url}
       className={cn(
         cachedTheme?.textColor,
         'font-normal flex space-x-2 items-center text-sm py-1 relative'

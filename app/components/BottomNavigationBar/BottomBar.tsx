@@ -1,5 +1,6 @@
 'use client';
 
+import { Role } from '@prisma/client';
 import React, { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
@@ -11,8 +12,8 @@ import {
 } from '@/app/providers/reactqueryProvider';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import useBreakpoint from '@/app/lib/utils/useBreakpoint';
-import { canAccessDashboard } from '@/app/lib/scalableComponents';
 import { RentIcon, ProfileIcon, FurnishIcon } from '@/app/lib/icon/svg';
+import { canAccessDashboard, canPromote } from '@/app/lib/scalableComponents';
 
 const BottomBar = () => {
   const router = useRouter();
@@ -332,6 +333,18 @@ const BottomBar = () => {
                       }
                     >
                       Dashboard
+                    </li>
+                  )}
+                  {canPromote(session.user.role as Role) && (
+                    <li
+                      className={cn(
+                        cachedTheme?.hoverBg,
+                        cachedTheme?.borderColor,
+                        'p-2 cursor-pointer border-t-2 rounded-lg'
+                      )}
+                      onClick={() => router.push('/promote')}
+                    >
+                      Promote
                     </li>
                   )}
                   <li

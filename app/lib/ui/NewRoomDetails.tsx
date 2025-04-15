@@ -115,14 +115,14 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
 
                       target.innerText = originalText;
                     } catch (error) {
-                      if (
-                        error instanceof DOMException &&
-                        error.name === 'QuotaExceededError'
-                      ) {
-                        alert('Storage is full! Please clear some data.');
-                      } else {
-                        console.log('Failed to save data.');
-                      }
+                      // if (
+                      //   error instanceof DOMException &&
+                      //   error.name === 'QuotaExceededError'
+                      // ) {
+                      //   alert('Storage is full! Please clear some data.');
+                      // } else {
+                      console.log('Failed to save data.', error);
+                      // }
                       target.innerText = 'Failed';
                     }
                   }}

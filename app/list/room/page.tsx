@@ -153,8 +153,8 @@ const Room = () => {
             handleEnterPress={handleEnterPress}
           />
           <InputField
-            label="Contact"
             id="primaryContact"
+            label="Contact"
             register={register('primaryContact', {
               required: 'Enter your number',
               pattern: {
@@ -167,8 +167,8 @@ const Room = () => {
             handleEnterPress={handleEnterPress}
           />
           <InputField
-            label="Owner Contact"
             id="ownerContact"
+            label="Owner Contact"
             register={register('ownerContact', {
               required: 'Enter your number',
               pattern: {
@@ -213,28 +213,28 @@ const Room = () => {
             step={0.01}
             label="Price"
             type="number"
-            errors={errors}
             register={register('price', {
               required: 'Enter the room rent price',
               onBlur: () => trigger('price'),
             })}
+            errors={errors}
             handleEnterPress={handleEnterPress}
           />
           <InputField
-            type="number"
-            errors={errors}
             id="mincapacity"
+            type="number"
             label="Min Capacity"
             register={register('mincapacity', {
               required: 'Enter minimum capacity of person',
               valueAsNumber: true,
               onBlur: () => trigger('mincapacity'),
             })}
+            errors={errors}
             handleEnterPress={handleEnterPress}
           />
           <InputField
-            type="number"
             id="maxcapacity"
+            type="number"
             label="Max Capacity"
             register={register('maxcapacity', {
               required: 'Enter maximum capacity of person',
@@ -247,7 +247,6 @@ const Room = () => {
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-
           <InputField
             type="number"
             id="bedroom"
@@ -260,7 +259,6 @@ const Room = () => {
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-
           <InputField
             type="number"
             id="hall"
@@ -273,7 +271,6 @@ const Room = () => {
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-
           <InputField
             type="number"
             id="kitchen"
@@ -286,7 +283,6 @@ const Room = () => {
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-
           <InputField
             type="number"
             id="bathroom"

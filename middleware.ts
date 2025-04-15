@@ -1,13 +1,20 @@
 import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { Permission, Role } from '@prisma/client';
+
+import {
+  canPromote,
+  hasPermission,
+  canUseDashboard,
+} from './app/lib/scalableComponents';
 
 const secret = process.env.NEXTAUTH_SECRET;
 
 export async function middleware(req: NextRequest) {
   const token = (await getToken({ req, secret })) as unknown as {
-    role: string;
-    permission: string[];
+    role: Role;
+    permission: Permission[];
   };
 
   if (!token) {
@@ -16,19 +23,29 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  const requestedPath = req.nextUrl.pathname.split('/')[2];
-  let hasPermission = token.permission.includes(requestedPath);
-  if (req.nextUrl.pathname.startsWith('/list') && !hasPermission) {
+  const pathSegments = req.nextUrl.pathname.split('/');
+  const secondSegment = pathSegments[2];
+
+  if (
+    req.nextUrl.pathname.startsWith('/list') &&
+    !hasPermission(secondSegment, token.permission)
+  ) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
-  hasPermission = token.role.toLowerCase() === requestedPath;
-  if (req.nextUrl.pathname.startsWith('/dashboard') && !hasPermission) {
+  if (req.nextUrl.pathname.startsWith('/promote') && !canPromote(token.role)) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
-  const path = req.nextUrl.pathname.split('/')[3];
-  if (path && !token.permission.includes(path)) {
+  if (
+    req.nextUrl.pathname.startsWith('/dashboard') &&
+    !canUseDashboard(token.role, 'dashboard', secondSegment)
+  ) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
+
+  const thirdSegment = pathSegments[3];
+  if (thirdSegment && !hasPermission(thirdSegment, token.permission)) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
@@ -36,5 +53,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/list/:path*', '/dashboard/:path*'],
+  matcher: ['/list/:path*', '/dashboard/:path*', '/profile', '/promote'],
 };

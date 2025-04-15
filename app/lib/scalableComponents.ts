@@ -28,8 +28,8 @@ export const roomType: RoomType[] = ['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT'];
 // AUTHENTICATION
 
 // AUTHORIZATION
-const permission: Record<Role, string[]> = {
-  USER: [],
+const rolePermissions: Record<Role, string[]> = {
+  USER: ['promote'],
   ADMIN: ['dashboard'],
   OWNER: ['dashboard'],
   BROKER: ['dashboard'],
@@ -39,5 +39,28 @@ export const canAccessDashboard = (
   role: Role | undefined,
   category: string
 ): boolean => {
-  return permission[role as Role].includes(category);
+  return rolePermissions[role as Role].includes(category);
+};
+
+// MIDDLEWARE
+export const canUseDashboard = (
+  role: Role,
+  category: string,
+  secondSegment: string
+): boolean => {
+  return (
+    secondSegment === role.toLowerCase() &&
+    rolePermissions[role as Role].includes(category)
+  );
+};
+
+export const canPromote = (role: Role): boolean => {
+  return rolePermissions[role].includes('promote');
+};
+
+export const hasPermission = (
+  pathSegment: string,
+  userPermissions: string[]
+): boolean => {
+  return userPermissions.includes(pathSegment);
 };

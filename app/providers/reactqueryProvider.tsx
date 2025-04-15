@@ -20,6 +20,7 @@ export interface ThemeState {
   activeRingColor: string;
   activeTextColor: string;
   activeListHover: string;
+  activeBorderColor: string;
   activeListHoverText: string;
   // Input
   inputBg: string;
@@ -53,6 +54,7 @@ const initialThemeState = {
   bottomBarActiveTextColor: 'black',
   activeTextColor: 'text-green-200',
   activeRingColor: 'hover:ring-black',
+  activeBorderColor: 'border-green-300',
   activeListHover: 'hover:bg-neutral-900',
   activeListHoverText: 'hover:text-green-200',
   // Input

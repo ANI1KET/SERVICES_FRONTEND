@@ -1,5 +1,6 @@
 'use client';
 
+import { Role } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 // import { useEffect, useState } from 'react';
@@ -7,13 +8,17 @@ import { useSession, signOut } from 'next-auth/react';
 // import { AnimatePresence, motion } from 'framer-motion';
 
 import {
+  canPromote,
+  permissions,
+  canAccessDashboard,
+} from '@/app/lib/scalableComponents';
+import {
   useThemeState,
   useDeleteTabState,
 } from '@/app/providers/reactqueryProvider';
 import { HeaderTabs } from '../../lib/utils/tabs';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import NavigationTabs from '../../lib/ui/NavigationTabs';
-import { canAccessDashboard, permissions } from '@/app/lib/scalableComponents';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -149,6 +154,18 @@ const Header: React.FC = () => {
                   >
                     Profile
                   </li>
+                  {canPromote(session.user.role as Role) && (
+                    <li
+                      className={cn(
+                        cachedTheme?.hoverBg,
+                        cachedTheme?.borderColor,
+                        'p-2 cursor-pointer border-b rounded-lg'
+                      )}
+                      onClick={() => router.push('/promote')}
+                    >
+                      Promote
+                    </li>
+                  )}
                   {canAccessDashboard(session.user.role, 'dashboard') && (
                     <li
                       className={cn(

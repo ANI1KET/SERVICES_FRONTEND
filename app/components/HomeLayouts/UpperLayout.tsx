@@ -5,8 +5,8 @@ const UpperLayout = () => {
     <section className="relative h-[45vh]">
       <Image
         fill
+        priority
         src="/a.jpeg"
-        loading="lazy"
         alt="Image description"
         className="object-cover"
       />
