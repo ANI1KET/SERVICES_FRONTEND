@@ -61,7 +61,7 @@ import { useThemeState } from '../../providers/reactqueryProvider';
 //   );
 // }
 
-export const Logo = ({ url, title }: { url: string; title: title }) => {
+export const Logo = ({ url, title }: { url: string; title: string }) => {
   const cachedTheme = useThemeState();
   return (
     <Link
