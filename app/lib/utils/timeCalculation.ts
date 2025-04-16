@@ -29,3 +29,23 @@ export const timeAgoDetailed = (date: string | number): string => {
   if (diffDays === 1) return 'Yesterday';
   return `${diffDays} days ago`;
 };
+
+export function getExpirationStatus(expiresAt: string): {
+  message: string;
+  isExpired: boolean;
+} {
+  const expirationDate = new Date(expiresAt);
+  const currentDate = new Date();
+  const diffTime = expirationDate.getTime() - currentDate.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  const isExpired = diffTime < 0;
+  const message =
+    diffDays > 0
+      ? `${diffDays} days left`
+      : diffDays < 0
+      ? `${Math.abs(diffDays)} days ago`
+      : 'Expires today';
+
+  return { message, isExpired };
+}

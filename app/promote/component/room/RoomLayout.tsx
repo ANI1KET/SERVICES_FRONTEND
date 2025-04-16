@@ -15,7 +15,7 @@ import {
   UserFromRoomData,
 } from '@/app/types/types';
 import {
-  getPromotionLink,
+  addPromotion,
   getPromotingDetails,
   getListerRoomsDetails,
 } from '../../ServerAction';
@@ -299,7 +299,7 @@ const ListerRooms = ({
               cachedTheme.activeBorderColor
             )}
             onClick={() =>
-              getPromotionLink({
+              addPromotion({
                 roomId: room.id,
                 listerId: lister.id,
                 userId: session?.user.userId as string,

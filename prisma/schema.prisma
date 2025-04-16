@@ -86,7 +86,9 @@ model Promoter {
 }
 
 model PromotionAgreement {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  pricePerClick Float
+  totalEarned   Float  @default(0)
 
   // RELATIONSHIP
   promoter   Promoter        @relation("PromoterAgreements", fields: [promoterId], references: [id], onDelete: Cascade)
@@ -96,6 +98,9 @@ model PromotionAgreement {
   listerId   String          @db.ObjectId
   // RELATIONSHIP
   promotions RoomPromotion[] @relation("PromotionRooms")
+  // TIMESTAMPS
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 
   @@unique([promoterId, listerId])
 }
@@ -103,11 +108,10 @@ model PromotionAgreement {
 model RoomPromotion {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  originalUrl   String
-  shortUrl      String @unique
-  pricePerClick Float
-  totalPrice    Float  @default(0)
-  clicks        Int    @default(0)
+  originalUrl String
+  shortUrl    String @unique
+  clicks      Int    @default(0)
+  totalEarned Float  @default(0)
 
   // RELATIONSHIPS
   agreement   PromotionAgreement @relation(name: "PromotionRooms", fields: [agreementId], references: [id], onDelete: Cascade)

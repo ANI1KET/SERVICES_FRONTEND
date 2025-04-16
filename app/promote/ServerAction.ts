@@ -3,9 +3,13 @@
 import axios from 'axios';
 import { cookies } from 'next/headers';
 
+import {
+  NewListedRoom,
+  UserFromRoomData,
+  PromoterWithDeals,
+} from '../types/types';
 import axiosInstance from '../lib/utils/axiosInstance';
 import { PROMOTE_PAGE_SIZE } from '../lib/reusableConst';
-import { NewListedRoom, UserFromRoomData } from '../types/types';
 
 const getSessionToken = async (): Promise<string | undefined> => {
   const cookieStore = await cookies();
@@ -76,7 +80,7 @@ export const getListerRoomsDetails = async ({
   }
 };
 
-export const getPromotionLink = async ({
+export const addPromotion = async ({
   userId,
   roomId,
   listerId,
@@ -115,5 +119,94 @@ export const getPromotionLink = async ({
       throw error.response?.data || error.message;
     }
     throw error;
+  }
+};
+
+export const getPromoterDetails = async (
+  userId: string
+): Promise<PromoterWithDeals | undefined> => {
+  'use server';
+
+  try {
+    const sessionToken = await getSessionToken();
+    const response = await axiosInstance.get(`/promote/${userId}`, {
+      headers: {
+        'Cache-Control': 'no-cache',
+        Cookie: `next-auth.session-token=${sessionToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(error.response?.data || error.message);
+      return;
+    }
+    console.error(error);
+    return;
+  }
+};
+
+export const removeRoom = async (
+  totalEarned: number,
+  roomPromotionId: string,
+  listerPromotionId: string
+  // ) => {
+): Promise<string> => {
+  'use server';
+
+  try {
+    const sessionToken = await getSessionToken();
+    const response = await axiosInstance.delete(
+      `/promote/remove/${roomPromotionId}`,
+      {
+        data: {
+          totalEarned,
+          listerPromotionId,
+        },
+        headers: {
+          'Cache-Control': 'no-cache',
+          Cookie: `next-auth.session-token=${sessionToken}`,
+        },
+      }
+    );
+
+    return response.data.message;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(error.response?.data || error.message);
+      return '';
+    }
+    console.error(error);
+    return '';
+  }
+};
+
+export const renewPromotion = async (
+  roomPromotionId: string
+): Promise<string> => {
+  'use server';
+
+  try {
+    const sessionToken = await getSessionToken();
+    const response = await axiosInstance.put(
+      `/promote/renew/${roomPromotionId}`,
+      {},
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          Cookie: `next-auth.session-token=${sessionToken}`,
+        },
+      }
+    );
+
+    return response.data.message;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(error.response?.data || error.message);
+      return '';
+    }
+    console.error(error);
+    return '';
   }
 };

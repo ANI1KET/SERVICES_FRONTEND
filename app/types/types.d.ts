@@ -85,3 +85,51 @@ export type RoomData = NewListedRoom & {
 
 export type GroupedRooms = Record<string, NewListedRoom[]>;
 export type UserFromRoomData = Pick<RoomData, 'user'>['user'];
+
+export type Promoter = {
+  id: string;
+  userId: string;
+};
+
+export type PromotionDeal = {
+  id: string;
+  listerId: string;
+  promoterId: string;
+  totalEarned: number;
+  pricePerClick: number;
+  lister: {
+    name: string;
+    email: string;
+    number: string | null;
+  };
+  promotions: Promotion[];
+};
+
+export type Promotion = {
+  id: string;
+  roomId: string;
+  clicks: number;
+  shortUrl: string;
+  expiresAt: string;
+  createdAt: string;
+  originalUrl: string;
+  agreementId: string;
+  totalEarned: number;
+  room: {
+    name: string;
+    city: string;
+    price: number;
+    location: string;
+  };
+  clickEvents: ClickEvent[];
+};
+
+export type ClickEvent = {
+  ip: string;
+  timestamp: string;
+  deviceType: string;
+};
+
+export type PromoterWithDeals = Promoter & {
+  promotionDeals: PromotionDeal[];
+};
