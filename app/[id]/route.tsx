@@ -18,12 +18,26 @@ export async function GET(
   //   ? 'mobile'
   //   : 'desktop';
   const userAgent = req.headers.get('user-agent') || 'unknown';
+  console.log('! ', userAgent);
   const parser = new UAParser(userAgent);
-  const deviceInfo = parser.getDevice();
-  const deviceType =
-    deviceInfo.vendor && deviceInfo.model
-      ? `${deviceInfo.vendor} ${deviceInfo.model}`
-      : 'Unknown Device';
+  console.log('!! ', parser);
+  const device = parser.getDevice();
+  console.log('!!! ', device);
+
+  let deviceModel: string | null = null;
+  if (device.vendor && device.model) {
+    deviceModel = `${device.vendor} ${device.model}`;
+  }
+
+  let deviceType: string | null = deviceModel;
+  if (!deviceType && device.type) {
+    deviceType = device.type;
+  }
+  if (!deviceType) {
+    deviceType = /mobile|android|iphone|ipad/i.test(userAgent)
+      ? 'Mobile'
+      : 'Desktop';
+  }
 
   const roomPromotion = await prisma.roomPromotion.findUnique({
     where: { shortUrl: id },
