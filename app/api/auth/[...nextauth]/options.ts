@@ -24,17 +24,17 @@ export const authOptions: NextAuthOptions = {
         ...(isProd && { domain: '.aniketrouniyar.com.np' }),
       },
     },
-    callbackUrl: {
-      name: isProd
-        ? '__Secure-next-auth.callback-url'
-        : 'next-auth.callback-url',
-      options: {
-        sameSite: 'lax',
-        path: '/',
-        secure: isProd,
-        ...(isProd && { domain: '.aniketrouniyar.com.np' }),
-      },
-    },
+    // callbackUrl: {
+    //   name: isProd
+    //     ? '__Secure-next-auth.callback-url'
+    //     : 'next-auth.callback-url',
+    //   options: {
+    //     sameSite: 'lax',
+    //     path: '/',
+    //     secure: isProd,
+    //     ...(isProd && { domain: '.aniketrouniyar.com.np' }),
+    //   },
+    // },
     csrfToken: {
       name: isProd ? '__Host-next-auth.csrf-token' : 'next-auth.csrf-token',
       options: {
