@@ -1,3 +1,4 @@
+import { UAParser } from 'ua-parser-js';
 import prisma from '@/prisma/prismaClient';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -12,10 +13,17 @@ export async function GET(
     req.headers.get('x-real-ip') ||
     'unknown';
 
+  // const userAgent = req.headers.get('user-agent') || 'unknown';
+  // const deviceType = /mobile|android|iphone|ipad/i.test(userAgent)
+  //   ? 'mobile'
+  //   : 'desktop';
   const userAgent = req.headers.get('user-agent') || 'unknown';
-  const deviceType = /mobile|android|iphone|ipad/i.test(userAgent)
-    ? 'mobile'
-    : 'desktop';
+  const parser = new UAParser(userAgent);
+  const deviceInfo = parser.getDevice();
+  const deviceType =
+    deviceInfo.vendor && deviceInfo.model
+      ? `${deviceInfo.vendor} ${deviceInfo.model}`
+      : 'Unknown Device';
 
   const roomPromotion = await prisma.roomPromotion.findUnique({
     where: { shortUrl: id },
