@@ -6,20 +6,42 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from '@/prisma/prismaClient';
 import { Permission, Role } from '@prisma/client';
 
+const isProd = process.env.NODE_ENV === 'production';
 export const authOptions: NextAuthOptions = {
   // pages: {
   //   signIn: '/login',
   // },
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: isProd
+        ? '__Secure-next-auth.session-token'
+        : 'next-auth.session-token',
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        domain: '.aniketrouniyar.com.np',
-        maxAge: 24 * 60 * 60,
+        secure: isProd,
+        ...(isProd && { domain: '.aniketrouniyar.com.np' }),
+      },
+    },
+    callbackUrl: {
+      name: isProd
+        ? '__Secure-next-auth.callback-url'
+        : 'next-auth.callback-url',
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: isProd,
+        ...(isProd && { domain: '.aniketrouniyar.com.np' }),
+      },
+    },
+    csrfToken: {
+      name: isProd ? '__Host-next-auth.csrf-token' : 'next-auth.csrf-token',
+      options: {
+        httpOnly: false,
+        sameSite: 'lax',
+        path: '/',
+        secure: isProd,
       },
     },
   },
