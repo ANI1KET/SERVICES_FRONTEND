@@ -18,6 +18,7 @@ export async function GET(
   //   ? 'mobile'
   //   : 'desktop';
   const userAgent = req.headers.get('user-agent') || 'unknown';
+  console.log(req.headers);
   console.log('! ', userAgent);
   const parser = new UAParser(userAgent);
   console.log('!! ', parser);
