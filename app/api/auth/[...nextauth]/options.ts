@@ -17,10 +17,10 @@ export const authOptions: NextAuthOptions = {
         ? '__Secure-next-auth.session-token'
         : 'next-auth.session-token',
       options: {
-        httpOnly: true,
-        sameSite: 'lax',
         path: '/',
+        httpOnly: true,
         secure: isProd,
+        sameSite: isProd ? 'None' : 'Lax',
         ...(isProd && { domain: '.aniketrouniyar.com.np' }),
       },
     },
@@ -38,10 +38,10 @@ export const authOptions: NextAuthOptions = {
     csrfToken: {
       name: isProd ? '__Host-next-auth.csrf-token' : 'next-auth.csrf-token',
       options: {
-        httpOnly: false,
-        sameSite: 'lax',
         path: '/',
         secure: isProd,
+        httpOnly: false,
+        sameSite: isProd ? 'None' : 'Lax',
       },
     },
   },
