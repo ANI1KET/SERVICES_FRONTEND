@@ -10,18 +10,19 @@ export const authOptions: NextAuthOptions = {
   // pages: {
   //   signIn: '/login',
   // },
-  // cookies: {
-  //   sessionToken: {
-  //     name: `__Secure-next-auth.session-token`,
-  //     options: {
-  //       httpOnly: true,
-  //       sameSite: "lax",
-  //       path: "/",
-  //       secure: process.env.NODE_ENV === "production",
-  //       maxAge: 24 * 60 * 60, // Adjust cookie max age here
-  //     },
-  //   },
-  // },
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: '.aniketrouniyar.com.np',
+        maxAge: 24 * 60 * 60,
+      },
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
