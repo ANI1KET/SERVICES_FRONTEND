@@ -4,7 +4,7 @@ import {
   HttpLink,
   ApolloClient,
   InMemoryCache,
-  // ApolloProvider,
+  ApolloProvider,
 } from '@apollo/client';
 
 // export default function ApolloProviderWrapper({
@@ -30,4 +30,10 @@ const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export default apolloClient;
+export default function ApolloProviderWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>;
+}
