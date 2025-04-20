@@ -3,8 +3,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
-  getCategoryCitiesLocations,
   getCategoryCityLocations,
+  getCategoryCitiesLocations,
 } from './CategoryPlacesServerAction';
 import { CityData } from '@/app/providers/reactqueryProvider';
 

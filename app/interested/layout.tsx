@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import LayoutComponent from './layoutComponent';
+// import LayoutComponent from './layoutComponent';
 
 export const metadata: Metadata = {
   title: 'SERVICES',
@@ -13,5 +13,6 @@ export default function InterestedLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <LayoutComponent>{children}</LayoutComponent>;
+  return <>{children};</>;
+  // return <LayoutComponent>{children}</LayoutComponent>;
 }

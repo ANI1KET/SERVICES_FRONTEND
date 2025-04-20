@@ -41,12 +41,13 @@ model Subscription {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
+  @@index([createdAt])
   @@map("Subscriptions")
 }
 
 model InterestedRooms {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
-  listerId String @db.ObjectId
+  listerId String
 
   // RELATIONSHIP
   roomId       String                 @unique @db.ObjectId
@@ -72,6 +73,7 @@ model InterestedRoomsUsers {
 
   @@unique([userId, interestedRoomId])
   @@index([userId])
+  @@index([createdAt])
   @@index([interestedRoomId])
 }
 
@@ -103,6 +105,7 @@ model PromotionAgreement {
   updatedAt  DateTime        @updatedAt
 
   @@unique([promoterId, listerId])
+  @@index([createdAt])
 }
 
 model RoomPromotion {
@@ -125,6 +128,8 @@ model RoomPromotion {
   // TIMESTAMPS
   expiresAt DateTime
   createdAt DateTime @default(now())
+
+  @@index([createdAt])
 }
 
 model UserClick {
@@ -184,6 +189,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   @@index([role])
+  @@index([createdAt])
   @@index([permission])
   @@index([role, permission])
   @@map("Users")
@@ -240,6 +246,7 @@ model Room {
   @@index([city])
   @@index([listerId])
   @@index([isActive])
+  @@index([createdAt])
   @@map("Rooms")
 }
 
@@ -260,6 +267,7 @@ model RoomReview {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+  @@index([createdAt])
   @@map("Room_Reviews")
 }
 
@@ -298,6 +306,7 @@ model Hostel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([createdAt])
   @@map("Hostels")
 }
 
@@ -318,6 +327,7 @@ model HostelReview {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+  @@index([createdAt])
   // @@index([roomId])
   @@map("Hostel_Reviews")
 }
@@ -351,6 +361,7 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([createdAt])
   @@map("Properties")
 }
 
@@ -388,6 +399,7 @@ model Vehicle {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([createdAt])
   @@map("Vehicles")
 }
 
@@ -419,5 +431,6 @@ model ReMarketItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([createdAt])
   @@map("ReMarketItems")
 }

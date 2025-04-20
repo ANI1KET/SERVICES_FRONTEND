@@ -76,10 +76,10 @@ export const ListerPromotion: React.FC<{
 
         <div className="flex max-sm:flex-col justify-around max-sm:w-1/2">
           <p className="max-sm:order-2 order-4 col-span-2 max-sm:col-span-1">
-            💰 {promotions.pricePerClick} /visit
+            💰 {promotions.pricePerClick ?? 0} /visit
           </p>
           <p className="max-sm:order-4 order-5 max-sm:col-span-1">
-            💵 {promotions.totalEarned}
+            💵 {promotions.totalEarned ?? 0}
           </p>
         </div>
       </div>

@@ -97,7 +97,7 @@ export const addPromotion = async ({
   try {
     const sessionToken = await getSessionToken();
     const response = await axiosInstance.post(
-      `/url/short`,
+      `/promote/short`,
       {
         userId,
         roomId,
