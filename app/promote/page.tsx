@@ -6,24 +6,37 @@ import { ListerPromotion } from './component/PageComponent';
 import { authOptions } from '../api/auth/[...nextauth]/options';
 
 const Promoter = async () => {
-  const session = await getServerSession(authOptions);
-  const promoterDetails: PromoterWithDeals | undefined =
-    await getPromoterDetails(session?.user.userId as string);
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.userId;
 
-  if (!promoterDetails)
+    const promoterDetails: PromoterWithDeals | undefined =
+      await getPromoterDetails(userId as string);
+
+    if (!promoterDetails || promoterDetails.promotionDeals.length === 0) {
+      return (
+        <div className="w-full flex justify-center items-center">
+          No Promotion Record to Show
+        </div>
+      );
+    }
+    console.log(promoterDetails);
+
+    return (
+      <main className="w-full flex flex-col gap-4 overflow-y-auto">
+        {promoterDetails.promotionDeals.map((promote, index: number) => (
+          <ListerPromotion key={index + 1} index={index} promote={promote} />
+        ))}
+      </main>
+    );
+  } catch (error) {
+    console.error('Error fetching promoter details:', error);
     return (
       <div className="w-full flex justify-center items-center">
-        No Promotion Record to Show
+        Failed to load promotion data.
       </div>
     );
-
-  return (
-    <main className="w-full flex flex-col gap-4 overflow-y-auto">
-      {promoterDetails.promotionDeals.map((promote, index: number) => (
-        <ListerPromotion key={index + 1} index={index} promote={promote} />
-      ))}
-    </main>
-  );
+  }
 };
 
 export default Promoter;
