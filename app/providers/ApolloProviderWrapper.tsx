@@ -22,10 +22,12 @@ import {
 
 //   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 // }
-export const apolloClient = new ApolloClient({
+const apolloClient = new ApolloClient({
   link: new HttpLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_SERVER,
     credentials: 'include',
   }),
   cache: new InMemoryCache(),
 });
+
+export default apolloClient;
