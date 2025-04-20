@@ -4,8 +4,9 @@ import { FurnishingStatusEnum, Permission, Role } from '@prisma/client';
 export const permissions: Permission[] = [
   'room',
   'hostel',
-  'property',
+  'promote',
   'vehicle',
+  'property',
   'reMarketItem',
 ];
 export const roles: Role[] = ['OWNER', 'BROKER', 'USER'];
