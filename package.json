@@ -31,6 +31,7 @@
     "lodash": "^4.17.21",
     "next": "^15.0.4",
     "next-auth": "^4.24.11",
+    "rate-limiter-flexible": "^7.0.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.2.0",
