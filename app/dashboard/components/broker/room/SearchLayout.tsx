@@ -20,8 +20,6 @@ import { useThemeState } from '@/app/providers/reactqueryProvider';
 const SearchLayout = ({ children }: { children: React.ReactNode }) => {
   const session = useSession();
   const cachedTheme = useThemeState();
-  const canPromote = session.data?.user.permission?.includes('promote');
-  const isPromoting = session.data?.user.toPromote;
 
   const [isFilter, setIsFilter] = useState({ cityLocation: false, id: false });
   const [filterRooms, setFilterRooms] = useState({
@@ -95,10 +93,7 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <form
         onSubmit={handleSubmit}
-        className={cn(
-          'w-full max-xsm:hidden grid ',
-          canPromote ? 'grid-cols-8' : 'grid-cols-7'
-        )}
+        className={cn('w-full max-xsm:hidden grid grid-cols-7')}
       >
         <input
           type="text"
@@ -226,19 +221,6 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
         >
           Search
         </button>
-
-        {canPromote && (
-          <button
-            className={cn(
-              cachedTheme?.borderColor,
-              'col-span-1 border rounded-lg font-semibold',
-              isPromoting ? 'bg-red-500' : cachedTheme?.activeBg,
-              isPromoting ? 'text-black' : cachedTheme?.activeTextColor
-            )}
-          >
-            {isPromoting ? 'Unpromote' : 'Promote'}
-          </button>
-        )}
       </form>
 
       {RoomData && RoomData.room && isFilter.id && (
@@ -441,19 +423,6 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
               >
                 Search
               </button>
-
-              {canPromote && (
-                <button
-                  className={cn(
-                    cachedTheme?.borderColor,
-                    'w-fit p-2 border rounded-lg font-semibold',
-                    isPromoting ? 'bg-red-500' : cachedTheme?.activeBg,
-                    isPromoting ? 'text-black' : cachedTheme?.activeTextColor
-                  )}
-                >
-                  {isPromoting ? 'Unpromote' : 'Promote'}
-                </button>
-              )}
             </div>
           </form>
 
