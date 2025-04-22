@@ -4,21 +4,19 @@ import { useCallback, useState } from 'react';
 
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import CategoryCardLayout from './LowerLayout/CategoryCardLayout';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 import SearchPanel from '../BottomNavigationBar/PanelComponent/SearchPanel';
-import { useTabState, useThemeState } from '@/app/providers/reactqueryProvider';
-import { FetchCategoryCitiesLocations } from '@/app/lib/utils/FetchCategoryPlaces';
 
-const LowerLayout = () => {
+const LowerLayout: React.FC<{
+  city: string;
+  cities: Record<string, string[]>;
+}> = ({ city, cities }) => {
   const cachedTheme = useThemeState();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const tabState = useTabState();
-  const category = tabState?.['CategoryTab'] as string;
 
   const togglePanel = useCallback(() => {
     setIsPanelOpen((prev) => !prev);
   }, []);
-
-  const { data: CitiesLocations } = FetchCategoryCitiesLocations(category);
   return (
     // <section className="max-sm:pt-[0] pt-[8vh] flex flex-row">
     <section className="max-sm:pt-[0] pt-[8vh] ">
@@ -26,11 +24,11 @@ const LowerLayout = () => {
       <div className=" ">
         {/* Rooms */}
         <CategoryCardLayout
+          city={city}
           route="room"
           title="Rooms"
+          cities={cities}
           key={'RoomCities'}
-          city={CitiesLocations?.city as string}
-          cities={CitiesLocations?.['room'] as { [key: string]: string[] }}
         />
 
         {/* Hostels */}

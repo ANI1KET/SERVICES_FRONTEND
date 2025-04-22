@@ -70,22 +70,22 @@ const SearchForm: React.FC = () => {
   const selectedCity = watch('city');
   const selectedCityLocation = watch('location');
 
+  const cachedData = queryClient.getQueryData<CityData>([
+    'getCategoryCitiesLocations',
+  ]);
   const {
     data: CitiesLocations,
     isError: isCitiesLocationsError,
     error: CitiesLocationsError,
     refetch: reFetchCitiesLocations,
-  } = FetchCategoryCitiesLocations(category);
+  } = FetchCategoryCitiesLocations(category, cachedData?.city as string);
   useEffect(() => {
     if (category) {
-      const cachedData = queryClient.getQueryData<CityData>([
-        'getCategoryCitiesLocations',
-      ]);
       if (!cachedData?.[category]) {
         reFetchCitiesLocations();
       }
     }
-  }, [category, queryClient, reFetchCitiesLocations]);
+  }, [cachedData, category, queryClient, reFetchCitiesLocations]);
   if (isCitiesLocationsError) {
     console.log(CitiesLocationsError.message);
   }

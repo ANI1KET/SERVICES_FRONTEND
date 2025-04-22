@@ -5,8 +5,15 @@ import { AxiosError } from 'axios';
 // import { headers } from 'next/headers';
 
 import axiosInstance from './axiosInstance';
+import { PAGE_SIZE } from '../reusableConst';
 
-export async function getCategoryCitiesLocations(category: string) {
+export async function getCategoryCitiesLocationDetails({
+  category,
+  offset = 0,
+}: {
+  offset: number;
+  category: string;
+}) {
   'use server';
 
   // const cookieStore = await cookies();
@@ -15,9 +22,38 @@ export async function getCategoryCitiesLocations(category: string) {
   // console.log(Object.fromEntries(requestHeaders));
 
   try {
+    const response = await axiosInstance.get(`/place/data/${category}`, {
+      params: {
+        offset,
+        limit: PAGE_SIZE,
+      },
+      headers: {
+        'Cache-Control': 'no-cache',
+      },
+    });
+
+    return response.data;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      throw error.response?.data?.error;
+    }
+    throw error;
+  }
+}
+
+export async function getCategoryCitiesLocations(
+  city: string,
+  category: string
+) {
+  'use server';
+
+  try {
     const response = await axiosInstance.get(
       `/place/cities-locations/${category}`,
       {
+        params: {
+          city,
+        },
         headers: {
           'Cache-Control': 'no-cache',
         },

@@ -46,7 +46,7 @@ const Room = () => {
     },
   });
 
-  const roomCreation = useMutation({
+  const { isPending, mutate } = useMutation({
     mutationFn: (
       data: RoomWithMediaUrl & { postedBy: Role; listerId: string }
     ) =>
@@ -107,7 +107,7 @@ const Room = () => {
           ? `https://www.youtube.com/embed/${uploadVideoUrlResult.value}`
           : null;
 
-      roomCreation.mutate({
+      mutate({
         ...data,
         photos: uploadImageUrls,
         videos: uploadVideoUrl ?? null,
@@ -340,17 +340,17 @@ const Room = () => {
 
         <button
           type="submit"
-          disabled={isSubmitting || status === 'unauthenticated'}
+          disabled={isPending || status === 'unauthenticated'}
           className={cn(
             cachedTheme?.activeBg,
             cachedTheme?.activeTextColor,
             `w-full py-2 px-4 rounded-md ${
-              (isSubmitting || status === 'unauthenticated') &&
+              (isPending || status === 'unauthenticated') &&
               'opacity-50 cursor-not-allowed'
             }`
           )}
         >
-          {isSubmitting ? 'Listing...' : 'List'}
+          {isSubmitting && isPending ? 'Listing...' : 'List'}
         </button>
       </form>
     </div>

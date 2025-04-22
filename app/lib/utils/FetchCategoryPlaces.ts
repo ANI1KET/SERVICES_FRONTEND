@@ -8,13 +8,16 @@ import {
 } from './CategoryPlacesServerAction';
 import { CityData } from '@/app/providers/reactqueryProvider';
 
-export function FetchCategoryCitiesLocations(category: string) {
+export function FetchCategoryCitiesLocations(category: string, city: string) {
   const queryClient = useQueryClient();
 
   return useQuery({
     queryKey: ['getCategoryCitiesLocations'],
     queryFn: async () => {
-      const CitiesLocationsData = await getCategoryCitiesLocations(category);
+      const CitiesLocationsData = await getCategoryCitiesLocations(
+        city,
+        category
+      );
 
       const newCacheData = queryClient.setQueryData(
         ['getCategoryCitiesLocations'],
