@@ -8,22 +8,12 @@ import { v2 as cloudinary } from 'cloudinary';
 import prisma from '@/prisma/prismaClient';
 import { RoomWithMediaUrl } from '../types/types';
 
-console.log(
-  process.env.CLOUDINARY_API_KEY,
-  process.env.CLOUDINARY_API_SECRET,
-  process.env.CLOUDINARY_CLOUD_NAME
-);
 // Configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-// cloudinary.config({
-//   cloud_name: 'afnosansaar',
-//   api_key: '176958137934638',
-//   api_secret: 'Gx60lS4DBNLQ-mVEvXSu9P5VX_I',
-// });
 
 export const upload_Images = async (photos: File[]): Promise<string[]> => {
   const uploadSingleImage = (photo: File): Promise<string> => {

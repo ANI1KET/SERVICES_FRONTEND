@@ -56,7 +56,7 @@ export async function getCategoryCityLocations({
 }: {
   city: string;
   category: string;
-}) {
+}): Promise<Record<string, string[]>> {
   'use server';
 
   try {

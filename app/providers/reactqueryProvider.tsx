@@ -107,12 +107,8 @@ export const themeVar = makeVar<ThemeState>(initialThemeState);
 export const searchDataVar = makeVar<SearchQueries | undefined>(undefined);
 
 export type CityData = {
-  [key: string]:
-    | {
-        [key: string]: string[];
-      }
-    | string;
   city: string;
+  [key: string]: Record<string, string[]> | string;
 };
 
 export default function ReactQueryProvider({

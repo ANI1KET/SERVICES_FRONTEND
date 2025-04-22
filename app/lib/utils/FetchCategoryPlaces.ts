@@ -55,16 +55,19 @@ export function FetchCategoryCityLocations() {
         category: category,
       });
 
-      queryClient.setQueryData(['getCategoryCitiesLocations'], (cachedData) => {
-        return {
-          ...(cachedData as CityData),
-          city: city,
-          [category]: {
-            ...(cachedData?.[category] as Record<string, string[]>),
-            ...CityLocationsData,
-          },
-        };
-      }) as CityData;
+      queryClient.setQueryData<CityData>(
+        ['getCategoryCitiesLocations'],
+        (cachedData) => {
+          return {
+            ...cachedData,
+            city: city,
+            [category]: {
+              ...(cachedData?.[category] as Record<string, string[]>),
+              ...CityLocationsData,
+            },
+          };
+        }
+      );
 
       // queryClient.removeQueries({
       //   queryKey: ['getCategoryCityLocations'],
