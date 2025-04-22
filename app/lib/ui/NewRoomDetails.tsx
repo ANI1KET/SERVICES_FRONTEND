@@ -47,6 +47,7 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
         if (!/^\d{10}$/.test(value)) {
           return 'Please enter a valid 10-digit number!';
         }
+        return null;
       },
     });
 
