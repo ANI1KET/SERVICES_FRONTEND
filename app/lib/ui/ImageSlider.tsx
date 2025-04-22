@@ -112,7 +112,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ imagesUrl }) => {
               <Image
                 fill
                 src={image}
-                unoptimized
+                // unoptimized
                 loading="lazy"
                 alt={`Slide ${index}`}
                 style={{ objectFit: 'contain' }}
@@ -149,7 +149,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ imagesUrl }) => {
           <div className="relative w-[85vw] h-[85vh]">
             <Image
               fill
-              unoptimized
+              // unoptimized
               alt="Preview"
               loading="lazy"
               src={previewImage}

@@ -19,7 +19,7 @@ const ImageLoop = ({ images }: { images: string[] }) => {
       fill
       sizes="100%"
       loading="lazy"
-      unoptimized
+      // unoptimized
       src={images[currentIndex]}
       alt={`Slide ${currentIndex}`}
       style={{

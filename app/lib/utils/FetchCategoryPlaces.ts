@@ -57,10 +57,7 @@ export function FetchCategoryCityLocations() {
 
       queryClient.setQueryData(
         ['getCategoryCitiesLocations'],
-        (cachedData: {
-          [x: string]: string | Record<string, string[]>;
-          city: string;
-        }) => {
+        (cachedData: CityData) => {
           return {
             ...(cachedData as CityData),
             city: city,

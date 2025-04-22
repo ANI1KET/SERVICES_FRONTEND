@@ -56,7 +56,7 @@ const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
                   <Image
                     width={50}
                     height={50}
-                    unoptimized
+                    // unoptimized
                     alt="Avatar"
                     src={session?.user.image as string}
                     className="h-7 w-7 flex-shrink-0 rounded-full"

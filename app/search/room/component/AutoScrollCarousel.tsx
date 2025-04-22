@@ -119,7 +119,7 @@ const ImageSlider: React.FC<ImageSliderProps> = memo(({ photos }) => {
           <Image
             fill
             src={image}
-            unoptimized
+            // unoptimized
             loading="lazy"
             alt={`Slide ${index}`}
             style={{

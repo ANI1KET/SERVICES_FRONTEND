@@ -31,7 +31,7 @@ const Room = () => {
   const { data: session, status } = useSession();
 
   const {
-    // reset,
+    reset,
     watch,
     trigger,
     register,
@@ -54,9 +54,9 @@ const Room = () => {
         ...data,
       }),
     onSuccess: (response) => {
+      reset();
       queryClient.setQueryData(['CategoryDetails', 'room'], response);
       router.push(`/listed/room/${btoa(response.id)}`);
-      // reset();
     },
     onError: (error) => {
       console.error('Mutation failed:', error);
@@ -115,8 +115,7 @@ const Room = () => {
         listerId: session?.user.userId as string,
       });
     } catch (error) {
-      console.log('object!!!');
-      alert(
+      console.error(
         error instanceof Error ? error.message : 'An unknown error occurred'
       );
     }
