@@ -45,9 +45,9 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
         ),
       },
       inputValidator: (value) => {
-        if (!/^\d{10}$/.test(value)) {
-          return 'Please enter a valid 10-digit number!';
-        }
+        return /^\d{10}$/.test(value)
+          ? Promise.resolve(null)
+          : Promise.resolve('Please enter a valid 10-digit number!');
       },
     });
 
