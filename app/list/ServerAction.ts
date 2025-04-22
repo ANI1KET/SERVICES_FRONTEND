@@ -3,9 +3,53 @@
 import { Readable } from 'stream';
 import { google } from 'googleapis';
 import { Role } from '@prisma/client';
+import { v2 as cloudinary } from 'cloudinary';
 
 import prisma from '@/prisma/prismaClient';
 import { RoomWithMediaUrl } from '../types/types';
+
+console.log(
+  process.env.CLOUDINARY_API_KEY,
+  process.env.CLOUDINARY_API_SECRET,
+  process.env.CLOUDINARY_CLOUD_NAME
+);
+// Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+// cloudinary.config({
+//   cloud_name: 'afnosansaar',
+//   api_key: '176958137934638',
+//   api_secret: 'Gx60lS4DBNLQ-mVEvXSu9P5VX_I',
+// });
+
+export const upload_Images = async (photos: File[]): Promise<string[]> => {
+  const uploadSingleImage = (photo: File): Promise<string> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const buffer = Buffer.from(await photo.arrayBuffer());
+
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: 'room', resource_type: 'image' },
+          (error, result) => {
+            if (error) return reject(error);
+            if (result?.secure_url) return resolve(result.secure_url);
+            reject(new Error('No public_id returned from Cloudinary'));
+          }
+        );
+
+        uploadStream.end(buffer);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  };
+
+  const uploadPromises = photos.map(uploadSingleImage);
+  return await Promise.all(uploadPromises);
+};
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -17,125 +61,125 @@ oauth2Client.setCredentials({
   refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
 });
 
-const drive = google.drive({
-  version: 'v3',
-  auth: oauth2Client,
-});
+// const drive = google.drive({
+//   version: 'v3',
+//   auth: oauth2Client,
+// });
 
 const { credentials } = await oauth2Client.refreshAccessToken();
 const accessToken = credentials.access_token;
 
-export async function uploadImage({
-  fileName,
-  fileType,
-  file,
-}: {
-  fileName: string;
-  fileType: string;
-  file: File;
-}) {
-  'use server';
-  try {
-    const fileStream = new Readable();
-    fileStream.push(Buffer.from(await file.arrayBuffer()));
-    fileStream.push(null);
+// export async function uploadImage({
+//   fileName,
+//   fileType,
+//   file,
+// }: {
+//   fileName: string;
+//   fileType: string;
+//   file: File;
+// }) {
+//   'use server';
+//   try {
+//     const fileStream = new Readable();
+//     fileStream.push(Buffer.from(await file.arrayBuffer()));
+//     fileStream.push(null);
 
-    const response = await drive.files.create({
-      requestBody: {
-        name: fileName,
-        mimeType: fileType,
-        parents: ['11X7grkDG1HMGpuyg4VRcbYZjeSg6BBqs'],
-      },
-      media: {
-        mimeType: fileType,
-        body: fileStream,
-      },
-      fields: 'id, webViewLink',
-    });
+//     const response = await drive.files.create({
+//       requestBody: {
+//         name: fileName,
+//         mimeType: fileType,
+//         parents: ['11X7grkDG1HMGpuyg4VRcbYZjeSg6BBqs'],
+//       },
+//       media: {
+//         mimeType: fileType,
+//         body: fileStream,
+//       },
+//       fields: 'id, webViewLink',
+//     });
 
-    const { id } = response.data;
+//     const { id } = response.data;
 
-    return `https://drive.google.com/uc?export=view&id=${id}`;
-    // return `https://lh3.googleusercontent.com/d/${id}`;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
+//     return `https://drive.google.com/uc?export=view&id=${id}`;
+//     // return `https://lh3.googleusercontent.com/d/${id}`;
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// }
 
-export async function getImageResumableUploadUrl({
-  fileName,
-  fileType,
-}: {
-  fileName: string;
-  fileType: string;
-}) {
-  'use server';
-  try {
-    const response = await fetch(
-      'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify({
-          name: fileName,
-          mimeType: fileType,
-          parents: ['11X7grkDG1HMGpuyg4VRcbYZjeSg6BBqs'],
-        }),
-      }
-    );
+// export async function getImageResumableUploadUrl({
+//   fileName,
+//   fileType,
+// }: {
+//   fileName: string;
+//   fileType: string;
+// }) {
+//   'use server';
+//   try {
+//     const response = await fetch(
+//       'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',
+//       {
+//         method: 'POST',
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`,
+//           'Content-Type': 'application/json; charset=UTF-8',
+//         },
+//         body: JSON.stringify({
+//           name: fileName,
+//           mimeType: fileType,
+//           parents: ['11X7grkDG1HMGpuyg4VRcbYZjeSg6BBqs'],
+//         }),
+//       }
+//     );
 
-    const locationHeader = response.headers.get('Location');
+//     const locationHeader = response.headers.get('Location');
 
-    if (!locationHeader) {
-      throw new Error('Error generating imageUploadResumableUrl');
-    }
+//     if (!locationHeader) {
+//       throw new Error('Error generating imageUploadResumableUrl');
+//     }
 
-    return locationHeader;
-  } catch (error) {
-    console.error('Error initiating resumable upload:', error);
-    throw error;
-  }
-}
+//     return locationHeader;
+//   } catch (error) {
+//     console.error('Error initiating resumable upload:', error);
+//     throw error;
+//   }
+// }
 
-export async function uploadChunkImage({
-  resumableUrl,
-  chunk,
-  offset,
-  totalSize,
-}: {
-  resumableUrl: string;
-  chunk: Uint8Array;
-  offset: number;
-  totalSize: number;
-}) {
-  'use server';
-  try {
-    const response = await fetch(resumableUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Range': `bytes ${offset}-${
-          offset + chunk.length - 1
-        }/${totalSize}`,
-        'Content-Type': 'application/octet-stream',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: Buffer.from(chunk),
-    });
+// export async function uploadChunkImage({
+//   resumableUrl,
+//   chunk,
+//   offset,
+//   totalSize,
+// }: {
+//   resumableUrl: string;
+//   chunk: Uint8Array;
+//   offset: number;
+//   totalSize: number;
+// }) {
+//   'use server';
+//   try {
+//     const response = await fetch(resumableUrl, {
+//       method: 'PUT',
+//       headers: {
+//         'Content-Range': `bytes ${offset}-${
+//           offset + chunk.length - 1
+//         }/${totalSize}`,
+//         'Content-Type': 'application/octet-stream',
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//       body: Buffer.from(chunk),
+//     });
 
-    if (response.status === 200) {
-      const imageData = await response.json();
-      return `https://drive.google.com/uc?export=view&id=${imageData.id}`;
-      // return `https://lh3.googleusercontent.com/d/${imageData.id}`;
-    }
-  } catch (error) {
-    console.error('Error uploading chunk:', error);
-    throw error;
-  }
-}
+//     if (response.status === 200) {
+//       const imageData = await response.json();
+//       return `https://drive.google.com/uc?export=view&id=${imageData.id}`;
+//       // return `https://lh3.googleusercontent.com/d/${imageData.id}`;
+//     }
+//   } catch (error) {
+//     console.error('Error uploading chunk:', error);
+//     throw error;
+//   }
+// }
 
 const youtube = google.youtube({
   version: 'v3',

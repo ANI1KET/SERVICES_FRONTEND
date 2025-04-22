@@ -1,6 +1,6 @@
 'use client';
 
-import { Role } from '@prisma/client';
+// import { Role } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 // import { useEffect, useState } from 'react';
@@ -8,7 +8,7 @@ import { useSession, signOut } from 'next-auth/react';
 // import { AnimatePresence, motion } from 'framer-motion';
 
 import {
-  canPromote,
+  // canPromote,
   permissions,
   canAccessDashboard,
 } from '@/app/lib/scalableComponents';
@@ -154,7 +154,7 @@ const Header: React.FC = () => {
                   >
                     Profile
                   </li>
-                  {canPromote(session.user.role as Role) && (
+                  {/* {canPromote(session.user.role as Role) && (
                     <li
                       className={cn(
                         cachedTheme?.hoverBg,
@@ -165,7 +165,7 @@ const Header: React.FC = () => {
                     >
                       Promote
                     </li>
-                  )}
+                  )} */}
                   {canAccessDashboard(session.user.role, 'dashboard') && (
                     <li
                       className={cn(

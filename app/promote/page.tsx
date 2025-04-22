@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getServerSession } from 'next-auth';
 
 import { PromoterWithDeals } from '../types/types';
@@ -13,18 +15,17 @@ const Promoter = async () => {
     const promoterDetails: PromoterWithDeals | undefined =
       await getPromoterDetails(userId as string);
 
-    if (!promoterDetails || promoterDetails.promotionDeals.length === 0) {
+    if (!promoterDetails) {
       return (
         <div className="w-full flex justify-center items-center">
           No Promotion Record to Show
         </div>
       );
     }
-    console.log(promoterDetails);
 
     return (
       <main className="w-full flex flex-col gap-4 overflow-y-auto">
-        {promoterDetails.promotionDeals.map((promote, index: number) => (
+        {promoterDetails?.promotionDeals.map((promote, index: number) => (
           <ListerPromotion key={index + 1} index={index} promote={promote} />
         ))}
       </main>

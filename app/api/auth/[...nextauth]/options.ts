@@ -103,13 +103,15 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (isPasswordCorrect) {
-            const { id, email, name, number, role, permission } = user;
+            const { id, email, name, number, role, permission, toPromote } =
+              user;
 
             return {
               id,
               name,
               role,
               email,
+              toPromote,
               permission,
               number: number ?? undefined,
             };
@@ -141,12 +143,13 @@ export const authOptions: NextAuthOptions = {
           });
           user.role = userDetails.role;
           user.userId = userDetails.id;
+          user.toPromote = userDetails.toPromote;
           user.permission = userDetails.permission as Permission[];
 
           return true;
         } catch (error) {
           console.error('Error signing in user:', error);
-          return false; // Return `false` on validation or database error
+          return false;
         }
       }
 
@@ -171,6 +174,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.userId = user.userId;
         token.number = user.number;
+        token.toPromote = user.toPromote;
         token.permission = user.permission;
 
         // if (account?.provider === 'google') {
@@ -186,9 +190,10 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id as string | undefined;
-      session.user.number = token.number as string | undefined;
       session.user.role = token.role as Role;
+      session.user.id = token.id as string | undefined;
+      session.user.toPromote = token.toPromote as boolean;
+      session.user.number = token.number as string | undefined;
       session.user.userId = token.userId as string | undefined;
       session.user.permission = token.permission as Permission[] | [];
       // session.user.refresh_token = token?.refresh_token;

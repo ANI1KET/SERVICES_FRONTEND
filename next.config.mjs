@@ -6,15 +6,17 @@ const nextConfig = {
         },
     },
     images: {
+        // unoptimized: true, // Optional: Disable image optimization
         remotePatterns: [
             {
                 protocol: 'https',
                 hostname: 'lh3.googleusercontent.com',
                 pathname: '/**',
-            }, {
+            },
+            {
                 protocol: 'https',
-                hostname: 'drive.google.com',
-                pathname: '/**',
+                hostname: 'res.cloudinary.com',
+                pathname: '/afnosansaar/image/upload/**',
             },
         ],
         deviceSizes: [580, 768, 1080, 1920],
