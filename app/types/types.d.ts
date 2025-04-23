@@ -28,16 +28,16 @@ export type SearchQueries = {
 export type Room = {
   name: string;
   city: string;
-  location: string;
-  bedroom: number;
   hall: number;
   kitchen: number;
+  bedroom: number;
+  location: string;
   bathroom: number;
   roomtype: string;
+  amenities: string[];
   mincapacity: number;
   maxcapacity: number;
   ownerContact: string;
-  amenities: string[];
   price: string | number;
   primaryContact: string;
   direction: string | null;

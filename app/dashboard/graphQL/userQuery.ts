@@ -9,8 +9,8 @@ export const GET_LISTED_ROOMS = gql`
         name
         hall
         price
-        # photos
-        # videos
+        photos
+        videos
         # ratings
         kitchen
         bedroom

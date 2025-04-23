@@ -122,10 +122,10 @@ const RoomLayoutCard: React.FC<{
   );
 
   const handleDelete = useCallback(
-    async (roomId: string) => {
+    async (roomId: string, photos: string[], video: string | null) => {
       try {
         await deleteRoom({
-          variables: { id: roomId },
+          variables: { id: roomId, photos, video },
         });
 
         client.cache.evict({ id: `Room:${roomId}` });
@@ -446,7 +446,7 @@ const RoomLayoutCard: React.FC<{
           cachedTheme?.activeTextColor,
           'col-span-2 p-1 rounded-2xl'
         )}
-        onClick={() => handleDelete(room.id)}
+        onClick={() => handleDelete(room.id, room.photos, room.videos)}
       >
         🗑️ Delete
       </button>

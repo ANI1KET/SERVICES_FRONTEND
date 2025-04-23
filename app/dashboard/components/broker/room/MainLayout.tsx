@@ -17,8 +17,8 @@ import {
 } from '@/app/providers/reactqueryProvider';
 import RoomLayoutCard from './roomLayoutCard';
 import { LIMIT } from '@/app/lib/reusableConst';
-import { cn } from '@/app/lib/utils/tailwindMerge';
 import { NewListedRoom } from '@/app/types/types';
+import { cn } from '@/app/lib/utils/tailwindMerge';
 
 type ChildComponentProps = {
   data?: { user: { rooms: NewListedRoom[] } };
@@ -76,10 +76,10 @@ const MainLayout: React.FC<ChildComponentProps> = ({
     });
   }, [
     hasMore,
-    deletedRoomIdsCount.size,
     fetchMore,
-    session.data?.user.userId,
     data?.user.rooms.length,
+    deletedRoomIdsCount.size,
+    session.data?.user.userId,
   ]);
 
   useEffect(() => {

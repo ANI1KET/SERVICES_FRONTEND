@@ -26,10 +26,14 @@ export const UpdateRoom = gql(`
 
 export const DeleteRoom = gql(`
     mutation DeleteRoom(
-      $id: ID!, 
+      $id: ID!,
+      $video: String,
+      $photos: [String]!,
     ) {
       deleteRoom(
         id: $id,
+        video: $video,
+        photos: $photos,
       ) {
         message
       }
