@@ -90,6 +90,8 @@ const Room = () => {
 
     data.city =
       data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
+    data.location =
+      data.location.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
     if (!data.roomtype)
       data.roomtype = `${data.bedroom > 0 ? data.bedroom : ''}B${
         data.hall > 0 ? 'H' : ''

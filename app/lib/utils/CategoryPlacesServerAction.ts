@@ -71,21 +71,6 @@ export async function getCategoryCitiesLocations(
 
 //
 
-type CityLocationsData = {
-  [key: string]: string[];
-};
-
-function transformCategoryCityLocationsResponse(
-  city: string,
-  responseData: { location: string }[]
-): CityLocationsData {
-  const cityLocationsData = responseData.map(
-    (cityLocation) => cityLocation.location
-  );
-
-  return { [city]: cityLocationsData };
-}
-
 export async function getCategoryCityLocations({
   city,
   category,
@@ -105,10 +90,7 @@ export async function getCategoryCityLocations({
       }
     );
 
-    const transformedResponseData: CityLocationsData =
-      transformCategoryCityLocationsResponse(city, response.data);
-
-    return transformedResponseData;
+    return response.data;
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       throw error.response?.data?.error;
