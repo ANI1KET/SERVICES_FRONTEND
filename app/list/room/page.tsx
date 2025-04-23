@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Role } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
@@ -29,6 +30,7 @@ const Room = () => {
   const cachedTheme = useThemeState();
   const queryClient = useQueryClient();
   const { data: session, status } = useSession();
+  const [isComplete, setIsComplete] = useState(false);
 
   const {
     reset,
@@ -36,7 +38,7 @@ const Room = () => {
     trigger,
     register,
     handleSubmit: handleFormSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<RoomWithMedia>({
     defaultValues: {
       photos: [],
@@ -46,7 +48,7 @@ const Room = () => {
     },
   });
 
-  const { isPending, mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: (
       data: RoomWithMediaUrl & { postedBy: Role; listerId: string }
     ) =>
@@ -55,6 +57,7 @@ const Room = () => {
       }),
     onSuccess: (response) => {
       reset();
+      setIsComplete(false);
       queryClient.setQueryData(['CategoryDetails', 'room'], response);
       router.push(`/listed/room/${btoa(response.id)}`);
     },
@@ -82,6 +85,7 @@ const Room = () => {
 
   const onSubmit = async (data: RoomWithMedia) => {
     if (status === 'unauthenticated') return;
+    setIsComplete(true);
 
     data.city =
       data.city.charAt(0).toUpperCase() + data.city.slice(1).toLowerCase();
@@ -340,17 +344,17 @@ const Room = () => {
 
         <button
           type="submit"
-          disabled={isPending || status === 'unauthenticated'}
+          disabled={isComplete || status === 'unauthenticated'}
           className={cn(
             cachedTheme?.activeBg,
             cachedTheme?.activeTextColor,
             `w-full py-2 px-4 rounded-md ${
-              (isPending || status === 'unauthenticated') &&
+              (isComplete || status === 'unauthenticated') &&
               'opacity-50 cursor-not-allowed'
             }`
           )}
         >
-          {isSubmitting && isPending ? 'Listing...' : 'List'}
+          {isComplete ? 'Listing...' : 'List'}
         </button>
       </form>
     </div>
