@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Room & Property Marketplace – Microservices-Based Platform
 
-## Getting Started
+Live Demo: services.aniketrouniyar.com.np
 
-First, run the development server:
+A service-oriented marketplace platform to:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Rent rooms with rich filters and location-aware search
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buy & sell properties (land/houses) with broker/lister tools
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Promote listings through short, trackable links with full analytics
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+Built using a modular microservices architecture, optimized for:
 
-To learn more about Next.js, take a look at the following resources:
+Scalability – Services scale independently, containerized with Docker
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Modularity – Feature isolation enables rapid iteration and testing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Reusability & Configurability –
 
-## Deploy on Vercel
+Config-driven form rendering
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Typed, reusable UI components
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Centralized schema and access control
+
+
+
+Core Features
+
+1. Room Rental Engine
+
+Advanced filters: city, location, price, rules, amenities
+
+Query-optimized backend for geo-filtering and performance
+
+
+2. Property Marketplace
+
+List & discover land/houses
+
+Broker and buyer dashboards with search/filter functionality
+
+
+3. Saved & Interested Rooms
+
+Save listings
+
+Get real-time alerts for price changes or availability
+
+Powered by Redis + cron-based background service
+
+
+4. Custom URL Shortener Microservice
+
+Promoters generate short links
+
+Analytics include: IP, device, browser, location, timestamp
+
+
+5. Role-Based Access Control
+
+Dashboards and permissions for:
+
+Admin
+
+Room Lister
+
+Property Broker
+
+
+
+6. Subscriptions & Notifications (WIP)
+
+Paid subscription tiers
+
+Automated alerts for saved searches via email/push
+
+
+Tech Stack
+
+Frontend
+
+Next.js (App Router) – Routing, layouts, server actions
+
+React + TypeScript – Strongly typed UI
+
+TailwindCSS – Utility-first styling
+
+React Query – Data fetching and caching
+
+React Hook Form – Dynamic and scalable form handling
+
+
+Backend (Microservices)
+
+GraphQL API Gateway – Apollo Server + Nexus
+
+Background Jobs Service – Node.js + Express + Cron
+
+Shortener Service – Redis-backed microservice for tracking and analytics
+
+Filtering Engine – Optimized multi-criteria room search
+
+
+Data & Analytics
+
+MongoDB – Flexible document schema
+
+Prisma ORM – Type-safe modeling and migrations
+
+Redis – Queues, caching, pub/sub
+
+Custom Analytics Models – Track user engagement, click-throughs, system metrics
+
+
+Infrastructure
+
+Docker – Containerized services
+
+PM2 – Node.js process manager inside containers
+
+Nginx – Reverse proxy
+
+CI/CD – GitHub Actions → Docker Registry → Deployed to DigitalOcean Droplet
+
+Live Demo
+
+Try it now: services.aniketrouniyar.com.np
+
+
+Development Status
+
+[x] Room search & filtering
+
+[x] Property listing workflows
+
+[x] Saved rooms & alert system
+
+[x] Short URL analytics microservice
+
+[ ] Subscriptions + payments
+
+[ ] Push/email notification system
+
