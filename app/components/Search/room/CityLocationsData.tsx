@@ -3,7 +3,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { memo, Suspense, useMemo } from 'react';
 
-import { NewListedRoom } from '@/app/types/types';
+import { ListedRoom } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import RoomDetailsLayout from './/RoomDetailsLayout';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
@@ -18,7 +18,7 @@ const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
 interface CityLocationsDataProps {
   category: string;
-  cityLocationsData: NewListedRoom[];
+  cityLocationsData: ListedRoom[];
 }
 
 const CityLocationsData = memo(

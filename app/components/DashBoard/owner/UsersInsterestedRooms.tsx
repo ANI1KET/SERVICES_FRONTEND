@@ -5,9 +5,9 @@ import { Reference, StoreObject, useMutation, useQuery } from '@apollo/client';
 import {
   GET_INTERESTED_ROOMS,
   DELETE_INTERESTED_USER,
-} from '../../graphQL/interestedRooms';
+} from '../../../dashboard/graphQL/interestedRooms';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import { InterestedBy, RoomData } from '../../types';
+import { InterestedBy, RoomData } from '../../../dashboard/types';
 import { timeAgoDetailed } from '@/app/lib/utils/timeCalculation';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 

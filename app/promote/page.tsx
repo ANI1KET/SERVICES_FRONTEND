@@ -2,10 +2,10 @@ export const dynamic = 'force-dynamic';
 
 import { getServerSession } from 'next-auth';
 
-import { PromoterWithDeals } from '../types/types';
+import { PromoterWithDeals } from './types';
 import { getPromoterDetails } from './ServerAction';
-import { ListerPromotion } from './component/PageComponent';
 import { authOptions } from '../api/auth/[...nextauth]/options';
+import { ListerPromotion } from '../components/Promote/PageComponent';
 
 const Promoter = async () => {
   try {

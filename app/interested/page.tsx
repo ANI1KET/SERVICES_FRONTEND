@@ -7,7 +7,7 @@ import {
   deleteInterestedRoom,
   fetchInterestedRoomDetails,
 } from './ServerAction';
-import { NewListedRoom } from '../types/types';
+import { ListedRoom } from '../types/types';
 import { cn } from '../lib/utils/tailwindMerge';
 import { ThemeState, useThemeState } from '../providers/reactqueryProvider';
 
@@ -41,10 +41,8 @@ const InterestedLayout = () => {
           return updatedRooms;
         });
 
-        queryClient.setQueryData<NewListedRoom[]>(
-          ['interestedRooms'],
-          (oldData) =>
-            oldData ? oldData.filter((room) => room.id !== roomId) : []
+        queryClient.setQueryData<ListedRoom[]>(['interestedRooms'], (oldData) =>
+          oldData ? oldData.filter((room) => room.id !== roomId) : []
         );
       } catch (error) {
         console.error('Failed to delete room:', error);
@@ -85,7 +83,7 @@ const RoomCard = memo(
     removeRoom,
     cachedTheme,
   }: {
-    room: NewListedRoom;
+    room: ListedRoom;
     cachedTheme: ThemeState | undefined;
     removeRoom: (roomId: string) => void;
   }) => {

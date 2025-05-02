@@ -9,15 +9,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import {
   roomType,
-  amenities,
+  roomAmenities,
   furnishingStatus,
 } from '@/app/lib/scalableComponents';
 import {
   FileInput,
   InputField,
   RadioGroup,
-  OptionalField,
   CheckboxGroup,
+  OptionalInputField,
 } from '@/app//lib/ui/FormReusableComponent';
 import { upload_Video } from '../uploadUtils';
 import { cn } from '@/app/lib/utils/tailwindMerge';
@@ -41,7 +41,6 @@ const Room = () => {
     formState: { errors },
   } = useForm<RoomWithMedia>({
     defaultValues: {
-      photos: [],
       videos: null,
       amenities: [],
       direction: null,
@@ -49,9 +48,7 @@ const Room = () => {
   });
 
   const { mutate } = useMutation({
-    mutationFn: (
-      data: RoomWithMediaUrl & { postedBy: Role; listerId: string }
-    ) =>
+    mutationFn: (data: RoomWithMediaUrl) =>
       SubmitRoomDetails({
         ...data,
       }),
@@ -99,26 +96,22 @@ const Room = () => {
       }${data.kitchen > 0 ? 'K' : ''}`;
 
     try {
-      const [uploadImageUrlsResult, uploadVideoUrlResult] =
-        await Promise.allSettled([
-          upload_Images(data.photos),
-          upload_Video(data.videos),
-        ]);
+      const [uploadVideoUrl, uploadImageUrls] = await Promise.allSettled([
+        upload_Video(data.videos),
+        upload_Images('room', data.photos),
+      ]);
 
-      const uploadImageUrls =
-        uploadImageUrlsResult.status === 'fulfilled'
-          ? uploadImageUrlsResult.value
-          : [];
-      const uploadVideoUrl =
-        uploadVideoUrlResult.status === 'fulfilled' &&
-        uploadVideoUrlResult.value
-          ? `https://www.youtube.com/embed/${uploadVideoUrlResult.value}`
+      const ImageUrls =
+        uploadImageUrls.status === 'fulfilled' ? uploadImageUrls.value : [];
+      const VideoUrl =
+        uploadVideoUrl.status === 'fulfilled' && uploadVideoUrl.value
+          ? `https://www.youtube.com/embed/${uploadVideoUrl.value}`
           : null;
 
       mutate({
         ...data,
-        photos: uploadImageUrls,
-        videos: uploadVideoUrl ?? null,
+        photos: ImageUrls,
+        videos: VideoUrl ?? null,
         postedBy: session?.user.role as Role,
         listerId: session?.user.userId as string,
       });
@@ -149,201 +142,224 @@ const Room = () => {
         )}
       >
         <div className="grid max-xsm:grid-cols-1 max-sm:grid-cols-2 grid-cols-3 gap-1">
-          <InputField
+          <InputField<RoomWithMedia, 'name'>
             id="name"
             label="Name"
-            register={register('name', {
+            trigger={trigger}
+            register={register}
+            rules={{
               required: 'Enter your name',
-              onBlur: () => trigger('name'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
+          <InputField<RoomWithMedia, 'primaryContact'>
             id="primaryContact"
             label="Contact"
-            register={register('primaryContact', {
+            trigger={trigger}
+            register={register}
+            rules={{
               required: 'Enter your number',
               pattern: {
                 value: /^\d{10}$/,
                 message: 'The number must be exactly 10 digits',
               },
-              onBlur: () => trigger('primaryContact'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
+          <InputField<RoomWithMedia, 'ownerContact'>
             id="ownerContact"
+            trigger={trigger}
+            register={register}
             label="Owner Contact"
-            register={register('ownerContact', {
+            rules={{
               required: 'Enter your number',
               pattern: {
                 value: /^\d{10}$/,
                 message: 'The number must be exactly 10 digits',
               },
-              onBlur: () => trigger('ownerContact'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
+          <InputField<RoomWithMedia, 'city'>
             id="city"
             label="City"
-            register={register('city', {
+            trigger={trigger}
+            register={register}
+            rules={{
               required: 'Enter the city',
-              onBlur: () => trigger('city'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
+          <InputField<RoomWithMedia, 'location'>
             id="location"
             label="Location"
-            register={register('location', {
+            trigger={trigger}
+            register={register}
+            rules={{
               required: 'Enter the room location',
-              onBlur: () => trigger('location'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
 
-          <OptionalField
+          <OptionalInputField<RoomWithMedia, 'direction'>
             id="direction"
             label="Direction"
-            register={register('direction')}
+            register={register}
+            rules={{
+              maxLength: {
+                value: 30,
+                message: 'Direction should not exceed 100 characters',
+              },
+            }}
+            errors={errors}
             handleEnterPress={handleEnterPress}
           />
 
-          <InputField
+          <InputField<RoomWithMedia, 'price'>
             id="price"
             step={0.01}
             label="Price"
             type="number"
-            register={register('price', {
+            trigger={trigger}
+            register={register}
+            rules={{
               required: 'Enter the room rent price',
-              onBlur: () => trigger('price'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
+          <InputField<RoomWithMedia, 'mincapacity'>
+            type="number"
             id="mincapacity"
-            type="number"
+            trigger={trigger}
+            register={register}
             label="Min Capacity"
-            register={register('mincapacity', {
-              required: 'Enter minimum capacity of person',
+            rules={{
               valueAsNumber: true,
-              onBlur: () => trigger('mincapacity'),
-            })}
+              required: 'Enter minimum capacity of person',
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
-            id="maxcapacity"
+          <InputField<RoomWithMedia, 'maxcapacity'>
             type="number"
+            id="maxcapacity"
+            trigger={trigger}
+            register={register}
             label="Max Capacity"
-            register={register('maxcapacity', {
-              required: 'Enter maximum capacity of person',
+            rules={{
               valueAsNumber: true,
+              required: 'Enter maximum capacity of person',
               validate: (value) =>
                 value > Number(watch('mincapacity')) ||
                 'Max capacity must be greater than min capacity',
-              onBlur: () => trigger('maxcapacity'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
-            type="number"
+          <InputField<RoomWithMedia, 'bedroom'>
             id="bedroom"
+            type="number"
             label="Bedroom"
-            register={register('bedroom', {
+            trigger={trigger}
+            register={register}
+            rules={{
               valueAsNumber: true,
               required: 'Bedroom is required',
-              onBlur: () => trigger('roomtype'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
-            type="number"
+          <InputField<RoomWithMedia, 'hall'>
             id="hall"
             label="Hall"
-            register={register('hall', {
+            type="number"
+            trigger={trigger}
+            register={register}
+            rules={{
               valueAsNumber: true,
               required: 'Hall is required',
-              onBlur: () => trigger('roomtype'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
-            type="number"
+          <InputField<RoomWithMedia, 'kitchen'>
             id="kitchen"
+            type="number"
             label="Kitchen"
-            register={register('kitchen', {
+            trigger={trigger}
+            register={register}
+            rules={{
               valueAsNumber: true,
               required: 'Kitchen is required',
-              onBlur: () => trigger('roomtype'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
-          <InputField
+          <InputField<RoomWithMedia, 'bathroom'>
             type="number"
             id="bathroom"
             label="Bathroom"
-            register={register('bathroom', {
+            trigger={trigger}
+            register={register}
+            rules={{
               valueAsNumber: true,
               required: 'Bathroom is required',
-              onBlur: () => trigger('roomtype'),
-            })}
+            }}
             errors={errors}
             handleEnterPress={handleEnterPress}
           />
         </div>
 
-        <RadioGroup
+        <RadioGroup<RoomWithMedia, 'roomtype'>
+          id="roomtype"
+          errors={errors}
           label="Room Type"
           options={roomType}
-          register={register('roomtype')}
+          register={register}
           handleEnterPress={handleEnterPress}
-          error={errors.roomtype?.message}
         />
 
-        <CheckboxGroup
-          label="Amenities"
-          options={amenities}
-          register={register('amenities')}
-        />
-
-        <RadioGroup
+        <RadioGroup<RoomWithMedia, 'furnishingStatus'>
+          register={register}
+          id="furnishingStatus"
           label="Furnishing Status"
-          handleEnterPress={handleEnterPress}
-          register={register('furnishingStatus', {
-            required: 'Furnishing status is required',
-            onBlur: () => trigger('furnishingStatus'),
-          })}
-          error={errors.furnishingStatus?.message}
           options={furnishingStatus}
+          rules={{
+            required: 'Furnishing status is required',
+          }}
+          errors={errors}
+          handleEnterPress={handleEnterPress}
         />
 
-        <FileInput
-          label="Photos"
-          id="photos"
-          register={register('photos', {
-            required: 'At least one photo is required',
-          })}
-          multiple={true}
-          accept="image/*"
-          error={errors.photos?.message}
+        <CheckboxGroup<RoomWithMedia, 'amenities'>
+          id="amenities"
+          label="Amenities"
+          register={register}
+          options={roomAmenities}
         />
-        <FileInput
-          label="Videos (Optional)"
+
+        <FileInput<RoomWithMedia, 'photos'>
+          id="photos"
+          label="Photos"
+          multiple={true}
+          errors={errors}
+          accept="image/*"
+          register={register}
+          rules={{
+            required: 'At least one photo is required',
+          }}
+        />
+        <FileInput<RoomWithMedia, 'videos'>
           id="videos"
-          register={register('videos')}
           accept="video/*"
+          register={register}
+          label="Video (Optional)"
         />
 
         <button

@@ -1,45 +1,8 @@
 'use server';
 
-import { cookies } from 'next/headers';
-
-import { NewListedRoom } from '../types/types';
+import { ListedRoom } from '../types/types';
 import axiosInstance from '../lib/utils/axiosInstance';
-
-const getSessionToken = async (): Promise<string | undefined> => {
-  const cookieStore = await cookies();
-  return (
-    cookieStore.get('__Secure-next-auth.session-token')?.value ||
-    cookieStore.get('next-auth.session-token')?.value
-  );
-};
-
-export const updateNumber = async ({
-  userId,
-  number,
-}: {
-  userId: string;
-  number: string;
-}): Promise<string> => {
-  'use server';
-  try {
-    const sessionToken = await getSessionToken();
-    const response = await axiosInstance.post(
-      `/user/number`,
-      { userId, number },
-      {
-        headers: {
-          Cookie: `next-auth.session-token=${sessionToken}`,
-          'Cache-Control': 'no-cache',
-        },
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Error decoding query parameter:', error);
-    return 'Failed';
-  }
-};
+import { getAutheticationHeader } from '../components/ServerAction';
 
 export const pushSavedRoom = async ({
   userId,
@@ -51,8 +14,8 @@ export const pushSavedRoom = async ({
   listerId: string;
 }) => {
   'use server';
+
   try {
-    const sessionToken = await getSessionToken();
     const { data } = await axiosInstance.post(
       `/interestedrooms/create`,
       {
@@ -60,12 +23,8 @@ export const pushSavedRoom = async ({
         roomId,
         listerId,
       },
-      {
-        headers: {
-          Cookie: `next-auth.session-token=${sessionToken}`,
-          'Cache-Control': 'no-cache',
-        },
-      }
+      await getAutheticationHeader()
+      // { ...(await getAutheticationHeader()) }
     );
     return data;
   } catch (error) {
@@ -76,8 +35,9 @@ export const pushSavedRoom = async ({
 
 export const fetchSelectedRoomDetails = async (
   roomId: string
-): Promise<NewListedRoom> => {
+): Promise<ListedRoom> => {
   'use server';
+
   try {
     const { data } = await axiosInstance.get(`/room/${roomId}`);
     return data;

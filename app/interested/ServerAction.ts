@@ -1,11 +1,11 @@
 'use server';
 
-import { NewListedRoom } from '../types/types';
+import { ListedRoom } from '../types/types';
 import axiosInstance from '../lib/utils/axiosInstance';
 
 export async function fetchInterestedRoomDetails(
   roomIds: string[]
-): Promise<NewListedRoom[]> {
+): Promise<ListedRoom[]> {
   'use server';
 
   try {

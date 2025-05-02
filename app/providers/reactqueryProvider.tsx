@@ -4,7 +4,7 @@ import { makeVar, useReactiveVar } from '@apollo/client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { SearchQueries } from '../types/types';
+import { RoomSearchQueries } from '../types/types';
 
 export interface TabState {
   [key: string]: string;
@@ -104,7 +104,7 @@ const initialThemeState = {
 export const deletedRoomIds = makeVar<Set<string>>(new Set());
 export const tabStateVar = makeVar<TabState>(initialTabState);
 export const themeVar = makeVar<ThemeState>(initialThemeState);
-export const searchDataVar = makeVar<SearchQueries | undefined>(undefined);
+export const searchDataVar = makeVar<RoomSearchQueries | undefined>(undefined);
 
 export type CityData = {
   city: string;
@@ -163,7 +163,7 @@ export function useSetSearchData() {
   return (
     city: string,
     locations: string[],
-    data: SearchQueries['filters']
+    data: RoomSearchQueries['filters']
   ) => {
     searchDataVar({
       city,
@@ -183,7 +183,7 @@ export function useSetSearchData() {
 }
 
 export function useUpdateSearchFilters() {
-  return (filtersToApply: Partial<SearchQueries['filters']>) => {
+  return (filtersToApply: Partial<RoomSearchQueries['filters']>) => {
     const prevData = searchDataVar();
     if (!prevData) return;
 

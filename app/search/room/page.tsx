@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 
-import LoadMoreCityLocations from './component/LoadMoreCityLocations';
+import LoadMoreCityLocations from '@/app/components/Search/room/LoadMoreCityLocations';
 
 export const metadata: Metadata = {
   title: 'Search Room',

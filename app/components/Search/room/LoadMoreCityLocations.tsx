@@ -10,9 +10,13 @@ import React, {
 import { FurnishingStatusEnum, Role } from '@prisma/client';
 
 import {
+  useFilterUpdater,
+  useInfiniteRoomQuery,
+} from '@/app/search/CustomHooks';
+import {
   postedBy,
   roomType,
-  amenities,
+  roomAmenities,
   furnishingStatus,
 } from '@/app/lib/scalableComponents';
 import {
@@ -28,8 +32,7 @@ import {
 } from '../../../lib/ui/FormReusableComponent';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import CityLocationsData from './CityLocationsData';
-import { RoomType, Amenities, QueryFilters } from '../../../types/types';
-import { useFilterUpdater, useInfiniteRoomQuery } from '../../CustomHooks';
+import { RoomType, RoomAmenities, RoomFilters } from '../../../types/types';
 
 const LoadMoreCityLocations = () => {
   const cacheTheme = useThemeState();
@@ -188,10 +191,10 @@ const FilterLayout = ({
   filters,
   updateFilter,
 }: {
-  filters: QueryFilters | undefined;
-  updateFilter: <K extends keyof QueryFilters>(
+  filters: RoomFilters | undefined;
+  updateFilter: <K extends keyof RoomFilters>(
     key: K,
-    value: QueryFilters[K]
+    value: RoomFilters[K]
   ) => void;
 }) => {
   return (
@@ -219,10 +222,10 @@ const FilterLayout = ({
           }
         />
       </div>
-      <CustomCheckboxGroup<Amenities>
+      <CustomCheckboxGroup<RoomAmenities>
         label="Amenities"
-        options={amenities}
-        defaultValue={filters?.amenities as Amenities[]}
+        options={roomAmenities}
+        defaultValue={filters?.amenities as RoomAmenities[]}
         className="grid xl:grid-cols-3 grid-cols-2 "
         onChange={(amenity) => updateFilter('amenities', amenity)}
       />

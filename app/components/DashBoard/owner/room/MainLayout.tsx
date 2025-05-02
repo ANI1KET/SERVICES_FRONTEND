@@ -16,26 +16,26 @@ import {
   deletedRoomIds,
 } from '@/app/providers/reactqueryProvider';
 import RoomLayoutCard from './roomLayoutCard';
+import { ListedRoom } from '@/app/types/types';
 import { LIMIT } from '@/app/lib/reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import { NewListedRoom } from '@/app/types/types';
 
 type ChildComponentProps = {
-  data?: { user: { rooms: NewListedRoom[] } };
+  data?: { user: { rooms: ListedRoom[] } };
   loading: boolean;
   error?: ApolloError;
   fetchMore: <
-    TFetchData = { user: { rooms: NewListedRoom[] } },
+    TFetchData = { user: { rooms: ListedRoom[] } },
     TFetchVars extends OperationVariables = OperationVariables
   >(
     fetchMoreOptions: FetchMoreQueryOptions<TFetchVars, TFetchData> & {
       updateQuery?: (
-        previousQueryResult: { user: { rooms: NewListedRoom[] } },
+        previousQueryResult: { user: { rooms: ListedRoom[] } },
         options: {
           fetchMoreResult: Unmasked<TFetchData>;
           variables: TFetchVars;
         }
-      ) => { user: { rooms: NewListedRoom[] } };
+      ) => { user: { rooms: ListedRoom[] } };
     }
   ) => Promise<ApolloQueryResult<TFetchData>>;
 };
@@ -110,7 +110,7 @@ const MainLayout: React.FC<ChildComponentProps> = ({
     return <p className="text-center text-red-500">Error fetching rooms.</p>;
   return (
     <div className="grid lg:grid-cols-4 md:grid-cols-3 max-sm:grid-cols-2 max-xsm:grid-cols-1 gap-4 p-4">
-      {data?.user.rooms.map((room: NewListedRoom) => (
+      {data?.user.rooms.map((room: ListedRoom) => (
         <MemoizedRoomLayoutCard key={room.id} room={room} />
       ))}
 
@@ -128,7 +128,7 @@ const MainLayout: React.FC<ChildComponentProps> = ({
   );
 };
 
-const MemoizedRoomLayoutCard = memo(({ room }: { room: NewListedRoom }) => {
+const MemoizedRoomLayoutCard = memo(({ room }: { room: ListedRoom }) => {
   return <RoomLayoutCard room={room} />;
 });
 MemoizedRoomLayoutCard.displayName = 'MemoizedRoomLayoutCard';

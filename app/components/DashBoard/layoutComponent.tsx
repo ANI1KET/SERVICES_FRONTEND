@@ -2,15 +2,17 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { Permission } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 
-import { cn } from '../lib/utils/tailwindMerge';
-import { permissions } from '../lib/scalableComponents';
-import { DashboardPermissionTabs } from '../lib/utils/tabs';
-import { useThemeState } from '../providers/reactqueryProvider';
-import { Logo, LogoIcon } from '../components/SideNavigationBar/SideNavBar';
-import { Sidebar, SidebarBody, SidebarLink } from '../lib/ui/SidebarComponent';
+import {
+  Sidebar,
+  SidebarBody,
+  SidebarLink,
+} from '@/app/lib/ui/SidebarComponent';
+import { cn } from '@/app/lib/utils/tailwindMerge';
+import { DashboardPermissionTabs } from '@/app/lib/utils/tabs';
+import { Logo, LogoIcon } from '../SideNavigationBar/SideNavBar';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
   const cachedTheme = useThemeState();
@@ -30,17 +32,22 @@ const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
         >
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             {open ? (
-              <Logo url="/promote" title={'PROMOTE'} />
+              <Logo
+                title={'DASHBOARD'}
+                url={`/dashboard/${session?.user.role?.toLowerCase()}`}
+              />
             ) : (
-              <LogoIcon url="/promote" />
+              <LogoIcon
+                url={`/dashboard/${session?.user.role?.toLowerCase()}`}
+              />
             )}
             <div className="mt-8 flex flex-col gap-2">
-              {permissions.map((link, idx) => (
+              {(session?.user?.permission ?? []).map((link, idx) => (
                 <SidebarLink
                   key={idx}
                   link={{
-                    href: `/promote/${link}`,
-                    icon: DashboardPermissionTabs[link as Permission],
+                    href: `/dashboard/${session?.user.role?.toLowerCase()}/${link}`,
+                    icon: DashboardPermissionTabs[link],
                     label: link.charAt(0).toUpperCase() + link.slice(1),
                   }}
                 />
@@ -56,7 +63,6 @@ const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
                   <Image
                     width={50}
                     height={50}
-                    // unoptimized
                     alt="Avatar"
                     src={session?.user.image as string}
                     className="h-7 w-7 flex-shrink-0 rounded-full"

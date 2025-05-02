@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
 
-import { NewListedRoom } from '@/app/types/types';
+import { ListedRoom } from '@/app/types/types';
 import { fetchNewRoomDetails } from '../../ServerAction';
 import NewRoomDetails from '../../../lib/ui/NewRoomDetails';
 import { decodeURLPlaceQuery } from '@/app/lib/utils/decodeURL';
@@ -23,7 +23,7 @@ const Room = () => {
   const queryClient = useQueryClient();
   const roomId = params?.id ? decodeURLPlaceQuery(params.id as string) : null;
 
-  const dataFromCache = queryClient.getQueryData<NewListedRoom>([
+  const dataFromCache = queryClient.getQueryData<ListedRoom>([
     'CategoryDetails',
     'room',
   ]);
@@ -32,7 +32,7 @@ const Room = () => {
     data: newRoomDetails,
     isLoading,
     error,
-  } = useQuery<NewListedRoom>({
+  } = useQuery<ListedRoom>({
     queryKey: ['CategoryDetails', 'room'],
     queryFn: () =>
       roomId
@@ -52,11 +52,11 @@ const Room = () => {
         <Suspense fallback={<div>Loading video...</div>}>
           <VideoPlayer videoUrl={newRoomDetails.videos} />
         </Suspense>
-        <NewRoomDetails roomCardDetails={newRoomDetails as NewListedRoom} />
+        <NewRoomDetails roomCardDetails={newRoomDetails as ListedRoom} />
       </div>
 
       <ResponsiveNewRoomDetails
-        roomCardDetails={newRoomDetails as NewListedRoom}
+        roomCardDetails={newRoomDetails as ListedRoom}
       />
 
       <div className="flex justify-center text-lg font-semibold p-1">

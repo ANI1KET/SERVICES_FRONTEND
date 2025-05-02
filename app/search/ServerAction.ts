@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { PAGE_SIZE } from '../lib/reusableConst';
 import axiosInstance from '../lib/utils/axiosInstance';
-import { NewListedRoom, QueryFilters } from '../types/types';
+import { ListedRoom, RoomFilters } from '../types/types';
 
 export const getCityLocations = async ({
   category,
@@ -17,8 +17,8 @@ export const getCityLocations = async ({
   category: string;
   decodedCity: string;
   decodedLocations: string[];
-  decodedURLQueryFilters: QueryFilters;
-}): Promise<NewListedRoom[]> => {
+  decodedURLQueryFilters: RoomFilters;
+}): Promise<ListedRoom[]> => {
   'use server';
 
   try {

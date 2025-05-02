@@ -3,10 +3,10 @@
 import { useCallback, useState } from 'react';
 
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import { removeRoom, renewPromotion } from '../ServerAction';
-import { Promotion, PromotionDeal } from '@/app/types/types';
+import { Promotion, PromotionDeal } from '@/app/promote/types';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { getExpirationStatus } from '@/app/lib/utils/timeCalculation';
+import { removeRoom, renewPromotion } from '../../promote/ServerAction';
 
 export const ListerPromotion: React.FC<{
   index: number;
@@ -19,7 +19,12 @@ export const ListerPromotion: React.FC<{
     totalEarned: number,
     roomPromotionId: string
   ) => {
-    const response = await removeRoom(totalEarned, roomPromotionId, promote.id);
+    const response = await removeRoom(
+      totalEarned,
+      promote.id,
+      roomPromotionId,
+      promote.promotionDealId
+    );
     if (!response) return;
 
     setPromotions((prev) => {
@@ -100,8 +105,8 @@ export const ListerPromotion: React.FC<{
 
 export const RoomPromotion: React.FC<{
   promotion: Promotion;
-  renewRoomPormotion: (roomPromotionId: string) => void;
   removeRoomPormotion: (totalEarned: number, roomPromotionId: string) => void;
+  renewRoomPormotion: (roomPromotionId: string) => void;
 }> = ({ promotion, renewRoomPormotion, removeRoomPormotion }) => {
   const cachedTheme = useThemeState();
   const { message, isExpired } = getExpirationStatus(promotion.expiresAt);

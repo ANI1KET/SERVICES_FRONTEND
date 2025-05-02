@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import LayoutComponent from './layoutComponent';
+import LayoutComponent from '../components/Promote/layoutComponent';
 
 export const metadata: Metadata = {
   title: 'SERVICES',

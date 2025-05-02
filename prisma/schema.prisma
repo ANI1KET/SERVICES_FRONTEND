@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  // output   = "./node_modules/@prisma/client"
 }
 
 datasource db {
@@ -78,6 +77,22 @@ model InterestedRoomsUsers {
   @@index([interestedRoomId])
 }
 
+model RoomPromotionDeals {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  totalEarned Float  @default(0)
+
+  // RELATIONSHIP
+  promoter    Promoter               @relation(name: "RoomPromotions", fields: [promoterId], references: [id], onDelete: Cascade)
+  promoterId  String                 @db.ObjectId
+  // RELATIONSHIP
+  agreement   RoomPromotionAgreement @relation(name: "AgreementDeals", fields: [agreementId], references: [id], onDelete: Cascade)
+  agreementId String                 @db.ObjectId
+  // RELATIONSHIP
+  promotions  RoomPromotion[]        @relation("PromotionRooms")
+
+  @@unique([promoterId, agreementId])
+}
+
 model Promoter {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
@@ -85,28 +100,28 @@ model Promoter {
   user           User                 @relation(fields: [userId], references: [id], name: "MyDetails", onDelete: Cascade)
   userId         String               @unique @db.ObjectId
   // RELATIONSHIP
-  promotionDeals PromotionAgreement[] @relation("PromoterAgreements")
+  promotionDeals RoomPromotionDeals[] @relation("RoomPromotions")
 }
 
-model PromotionAgreement {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
+model RoomPromotionAgreement {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
   pricePerClick Float
-  totalEarned   Float  @default(0)
+  totalEarned   Float   @default(0)
+  canPromote    Boolean @default(false)
 
   // RELATIONSHIP
-  promoter   Promoter        @relation("PromoterAgreements", fields: [promoterId], references: [id], onDelete: Cascade)
-  promoterId String          @db.ObjectId
+  lister     User                 @relation("ListerAgreements", fields: [listerId], references: [id], onDelete: Cascade)
+  listerId   String               @db.ObjectId
   // RELATIONSHIP
-  lister     User            @relation("ListerAgreements", fields: [listerId], references: [id], onDelete: Cascade)
-  listerId   String          @db.ObjectId
+  promotions RoomPromotion[]      @relation()
   // RELATIONSHIP
-  promotions RoomPromotion[] @relation("PromotionRooms")
+  promoter   RoomPromotionDeals[] @relation("AgreementDeals")
   // TIMESTAMPS
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
+  updatedAt  DateTime             @updatedAt
+  createdAt  DateTime             @default(now())
 
-  @@unique([promoterId, listerId])
-  @@index([createdAt])
+  @@unique([listerId])
+  @@index([updatedAt])
 }
 
 model RoomPromotion {
@@ -118,18 +133,22 @@ model RoomPromotion {
   totalEarned Float  @default(0)
 
   // RELATIONSHIPS
-  agreement   PromotionAgreement @relation(name: "PromotionRooms", fields: [agreementId], references: [id], onDelete: Cascade)
-  agreementId String             @db.ObjectId
+  promotionAgreement   RoomPromotionDeals     @relation(name: "PromotionRooms", fields: [promotionAgreementId], references: [id], onDelete: Cascade)
+  promotionAgreementId String                 @db.ObjectId
   // RELATIONSHIPS
-  room        Room               @relation(name: "PromotedRooms", fields: [roomId], references: [id], onDelete: Cascade)
-  roomId      String             @db.ObjectId
+  room                 Room                   @relation(name: "PromotedRooms", fields: [roomId], references: [id], onDelete: Cascade)
+  roomId               String                 @db.ObjectId
   // RELATIONSHIPS
-  clickEvents UserClick[]        @relation("UsersClick")
+  agreement            RoomPromotionAgreement @relation(fields: [agreementId], references: [id], onDelete: Cascade)
+  agreementId          String                 @db.ObjectId
+  // RELATIONSHIPS
+  clickEvents          UserClick[]            @relation("UsersClick")
 
   // TIMESTAMPS
   expiresAt DateTime
   createdAt DateTime @default(now())
 
+  @@unique([roomId, promotionAgreementId])
   // @@index([totalEarned])
   @@index([createdAt])
 }
@@ -152,46 +171,44 @@ model UserClick {
 }
 
 model User {
-  id               String  @id @default(auto()) @map("_id") @db.ObjectId
-  name             String
-  email            String  @unique
-  image            String?
-  number           String?
-  password         String?
-  toPromote        Boolean @default(false)
-  promoteRoomPrice Int?
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String  @unique
+  image    String?
+  number   String?
+  password String?
 
   // ENUM
   role       Role         @default(ADMIN)
   permission Permission[] @default([])
 
   // RELATIONSHIP
-  subscription    Subscription?          @relation(name: "Subscriber")
+  subscription    Subscription?            @relation(name: "Subscriber")
   // RELATIONSHIP
-  promoter        Promoter?              @relation("MyDetails")
+  promoter        Promoter?                @relation("MyDetails")
   // RELATIONSHIP
-  promotionDeals  PromotionAgreement[]   @relation("ListerAgreements")
+  promotionDeals  RoomPromotionAgreement[] @relation("ListerAgreements")
   // RELATIONSHIP
-  rooms           Room[]                 @relation("UserRooms")
-  roomReviews     RoomReview[]           @relation("UserRoomReviews")
+  rooms           Room[]                   @relation("UserRooms")
+  roomReviews     RoomReview[]             @relation("UserRoomReviews")
   // RELATIONSHIP
-  hostels         Hostel[]               @relation("UserHostels")
-  hostelReviews   HostelReview[]         @relation("UserHostelReviews")
+  hostels         Hostel[]                 @relation("UserHostels")
+  hostelReviews   HostelReview[]           @relation("UserHostelReviews")
   // RELATIONSHIP
-  properties      Property[]             @relation("UserPorperties")
+  properties      Property[]               @relation("UserPorperties")
   // RELATIONSHIP
-  vehicles        Vehicle[]              @relation("UserVehicles")
+  vehicles        Vehicle[]                @relation("UserVehicles")
   // RELATIONSHIP
-  reMarketItems   ReMarketItem[]         @relation("UserReMarketItems")
+  reMarketItems   ReMarketItem[]           @relation("UserReMarketItems")
   // RELATIONSHIP
-  interestedRooms InterestedRoomsUsers[] @relation("InterestedUsers")
+  interestedRooms InterestedRoomsUsers[]   @relation("InterestedUsers")
 
   // TIMESTAMPS
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([role])
-  @@index([createdAt])
+  @@index([updatedAt])
   @@index([permission])
   @@index([role, permission])
   @@map("Users")
@@ -217,15 +234,17 @@ model Room {
   city           String
   location       String
   roomtype       String
-  ownerContact   String
   primaryContact String
   available      Boolean  @default(true)
-  verified       Boolean  @default(false)
-  isActive       Boolean  @default(true)
   direction      String?
   videos         String?
   photos         String[]
   amenities      String[] @default([])
+  isActive       Boolean  @default(true)
+  // ONLY LISTER CAN VIEW
+  ownerContact   String
+  // ADMIN WORK
+  verified       Boolean  @default(false)
 
   // ENUM
   postedBy         Role                 @default(ADMIN)
@@ -248,7 +267,7 @@ model Room {
   @@index([city])
   @@index([listerId])
   @@index([isActive])
-  @@index([createdAt])
+  @@index([updatedAt])
   @@map("Rooms")
 }
 
@@ -273,6 +292,12 @@ model RoomReview {
   @@map("Room_Reviews")
 }
 
+// enum PropertyType {
+//   Hostel
+//   Apartment
+//   Commercial
+// }
+
 model Hostel {
   id               String   @id @default(auto()) @map("_id") @db.ObjectId
   name             String
@@ -292,7 +317,7 @@ model Hostel {
   services         String[] // Laundry, housekeeping, food, etc.
   securityFeatures String[] // CCTV, biometric access, security guard
   nearbyFacilities String[] // Hospitals, markets, transport, gym, etc.
-  images           String[]
+  photos           String[]
   isActive         Boolean  @default(true)
 
   // ENUM
@@ -308,7 +333,7 @@ model Hostel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([createdAt])
+  @@index([updatedAt])
   @@map("Hostels")
 }
 
@@ -329,31 +354,48 @@ model HostelReview {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
-  @@index([createdAt])
+  @@index([updatedAt])
   // @@index([roomId])
   @@map("Hostel_Reviews")
 }
 
-model Property {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  city         String
-  location     String
-  direction    String?
-  propertyType String // "Apartment", "House", "Land", "Commercial"
-  listingType  String // "Sale", "Rent"
-  area         Float? // Size in square meters or feet
-  bedrooms     Int? // Optional for land
-  bathrooms    Int? // Optional for land
-  furnished    Boolean?
-  amenities    String[] // Parking, Lift, Security, etc. (optional for land)
-  price        Float
-  videos       String?
-  images       String[]
-  isActive     Boolean  @default(true)
+enum PropertyType {
+  Land
+  House
+}
 
+model Property {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  city           String
+  area           String
+  location       String
+  video          String?
+  direction      String?
+  description    String?
+  price          Float
+  ownerContact   String
+  primaryContact String
+  photos         String[]
+  nearbyAreas    String[] // School, Hospital, Metro, Market, etc.
+  isActive       Boolean      @default(true)
+  // HOUSE
+  floors         Int?
+  bedrooms       Int?
+  kitchens       Int?
+  bathrooms      Int?
+  builtUpArea    String?
+  amenities      String[] // Parking, Lift, Power Backup, Security, etc.
+  // LAND
+  plotWidth      String?
+  plotLength     String?
+  // ONLY SELLER CAN VIEW
+  documents      String[]
+  // ADMIN WORK
+  verified       Boolean      @default(false)
   // ENUM
-  postedBy Role @default(ADMIN)
+  postedBy       Role
+  propertyType   PropertyType
 
   // RELATIONSHIP 
   seller   User   @relation(fields: [sellerId], references: [id], name: "UserPorperties", onDelete: Cascade)
@@ -363,7 +405,7 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([createdAt])
+  @@index([updatedAt])
   @@map("Properties")
 }
 
@@ -384,7 +426,7 @@ model Vehicle {
   seatingCapacity Int?
   price           Float?
   videos          String?
-  images          String[]
+  photos          String[]
   condition       String?
   available       Boolean  @default(true)
   isActive        Boolean  @default(true)
@@ -401,7 +443,7 @@ model Vehicle {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([createdAt])
+  @@index([updatedAt])
   @@map("Vehicles")
 }
 
@@ -421,7 +463,7 @@ model ReMarketItem {
   warrantyPeriod Int? // Warranty duration in months (if available)
   postedBy       Role     @default(ADMIN)
   videos         String?
-  images         String[]
+  photos         String[]
   isActive       Boolean  @default(true)
   available      Boolean  @default(true)
 
@@ -433,6 +475,6 @@ model ReMarketItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([createdAt])
+  @@index([updatedAt])
   @@map("ReMarketItems")
 }

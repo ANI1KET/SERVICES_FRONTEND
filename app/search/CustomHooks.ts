@@ -8,7 +8,7 @@ import {
 } from '../providers/reactqueryProvider';
 import { PAGE_SIZE } from '../lib/reusableConst';
 import { getCityLocations } from './ServerAction';
-import { QueryFilters, SearchQueries } from '../types/types';
+import { RoomFilters, RoomSearchQueries } from '../types/types';
 
 export const useInfiniteRoomQuery = () => {
   const cachedData = useSearchData();
@@ -23,7 +23,7 @@ export const useInfiniteRoomQuery = () => {
         offset: pageParam,
         decodedCity: cachedData.city,
         decodedLocations: cachedData.locations,
-        decodedURLQueryFilters: cachedData.filters as QueryFilters,
+        decodedURLQueryFilters: cachedData.filters as RoomFilters,
       });
     },
     getNextPageParam: (lastPage, allPages) => {
@@ -40,7 +40,7 @@ export const useInfiniteRoomQuery = () => {
 
 export const useFilterUpdater = () => {
   const updateFilters = useUpdateSearchFilters();
-  const pendingFiltersRef = useRef<Partial<SearchQueries['filters']>>({});
+  const pendingFiltersRef = useRef<Partial<RoomSearchQueries['filters']>>({});
 
   const throttledUpdateCache = useRef(
     throttle(
@@ -54,9 +54,9 @@ export const useFilterUpdater = () => {
   ).current;
 
   const updateFilter = useCallback(
-    <K extends keyof SearchQueries['filters']>(
+    <K extends keyof RoomSearchQueries['filters']>(
       key: K,
-      value: SearchQueries['filters'][K]
+      value: RoomSearchQueries['filters'][K]
     ) => {
       pendingFiltersRef.current = {
         ...pendingFiltersRef.current,

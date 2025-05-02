@@ -1,28 +1,28 @@
 import { FurnishingStatusEnum, Role } from '@prisma/client';
 
 export type RoomType = 'FLAT' | '1BHK' | '2BHK' | '3BHK' | '4BHK';
-export type Amenities = 'BIKE PARK' | 'CAR PARK' | 'WIFI' | '24/7 WATER';
+export type RoomAmenities = 'BIKE PARK' | 'CAR PARK' | 'WIFI' | '24/7 WATER';
 
-export type QueryFilters = {
+export type RoomFilters = {
   postedby: Role[];
+  verified?: boolean;
   roomtype: RoomType[];
-  amenities: Amenities[];
   price: number | number[];
   rating: number | number[];
+  amenities: RoomAmenities[];
   capacity: number | number[];
-  verified: boolean | undefined;
   furnishingstatus: FurnishingStatusEnum[];
 };
 
-export type SearchQuery = {
+export type RoomSearchQuery = {
   city: string;
   location: string;
-} & QueryFilters;
+} & RoomFilters;
 
-export type SearchQueries = {
+export type RoomSearchQueries = {
   city: string;
   locations: string[];
-  filters: QueryFilters;
+  filters: RoomFilters;
 };
 
 export type Room = {
@@ -34,14 +34,18 @@ export type Room = {
   location: string;
   bathroom: number;
   roomtype: string;
-  amenities: string[];
   mincapacity: number;
   maxcapacity: number;
   ownerContact: string;
   price: string | number;
   primaryContact: string;
   direction: string | null;
-  furnishingStatus: FurnishingStatus;
+  amenities: RoomAmenities[];
+  furnishingStatus: FurnishingStatusEnum;
+  // ENUM
+  postedBy: Role;
+  // RELATION
+  listerId: string;
 };
 
 export type RoomWithMedia = Room & {
@@ -54,19 +58,18 @@ export type RoomWithMediaUrl = Room & {
   videos: string | null;
 };
 
-export type NewListedRoom = RoomWithMediaUrl & {
+export type ListedRoom = RoomWithMediaUrl & {
   id: string;
   ratings: number;
-  listerId: string;
-  postedBy: string;
-  createdAt: string;
-  updatedAt: string;
   verified: boolean;
   available: boolean;
+  // DATE
+  createdAt: string;
+  updatedAt: string;
 };
 
-export type RoomData = NewListedRoom & {
-  user: {
+export type RoomData = ListedRoom & {
+  lister: {
     id: string;
     role: Role;
     name: string;
@@ -74,7 +77,7 @@ export type RoomData = NewListedRoom & {
     number: string;
     promoteRoomPrice: number;
   };
-  roomReviews: {
+  reviews: {
     id: string;
     rating: number;
     comment: string;
@@ -83,53 +86,136 @@ export type RoomData = NewListedRoom & {
   }[];
 };
 
-export type GroupedRooms = Record<string, NewListedRoom[]>;
-export type UserFromRoomData = Pick<RoomData, 'user'>['user'];
+//
+export type PropertyAmenities =
+  | 'CCTV'
+  | 'LIFT'
+  | 'GARDEN'
+  | 'CAR PARK'
+  | 'BIKE PARK'
+  | 'FIRE SAFETY'
+  | 'SOLAR PANELS'
+  | 'SWIMMING POOL';
 
-export type Promoter = {
-  id: string;
-  userId: string;
+export type PropertyNearByAreas =
+  | 'MALL'
+  | 'PARK'
+  | 'BANK'
+  | 'SCHOOL'
+  | 'MARKET'
+  | 'TEMPLE'
+  | 'CHURCH'
+  | 'MOSQUE'
+  | 'AIRPORT'
+  | 'COLLEGE'
+  | 'HOSPITAL'
+  | 'BUS STOP'
+  | 'FIRE STATION'
+  | 'POLICE STATION';
+
+export type PropertyArea =
+  | 'sqm'
+  | 'dam'
+  | 'sqft'
+  | 'acre'
+  | 'aana'
+  | 'dhur'
+  | 'bigha'
+  | 'paisa'
+  | 'ropani'
+  | 'kattha';
+
+export type PropertyPlotWidth = 'ft' | 'mt';
+export type PropertyPlotLength = 'ft' | 'mt';
+export type PropertyHouseArea = 'sqft' | 'sqm';
+
+// export type PropertyFilters = {
+//   postedby: Role[];
+//   verified?: boolean;
+//   price: number | number[];
+//   propertyType: PropertyType;
+//   amenities: PropertyAmenities[];
+//   nearbyAreas: PropertyNearByAreas[];
+// };
+
+// export type PropertySearchQuery = {
+//   city: string;
+//   location: string;
+// } & PropertyFilters;
+
+// export type PropertySearchQueries = {
+//   city: string;
+//   locations: string[];
+//   filters: PropertyFilters;
+// };
+
+export type BaseProperty = {
+  city: string;
+  title: string;
+  price: number;
+  location: string;
+  area: PropertyArea;
+  description: string;
+  ownerContact: string;
+  nearbyAreas: PropertyNearByAreas[];
+  // price: string | number;
+  primaryContact: string;
+  direction: string | null;
+  // ENUM
+  postedBy: Role;
+  // RELATION
+  sellerId: string;
 };
 
-export type PromotionDeal = {
-  id: string;
-  listerId: string;
-  promoterId: string;
-  totalEarned: number;
-  pricePerClick: number;
-  lister: {
-    name: string;
-    email: string;
-    number: string | null;
-  };
-  promotions: Promotion[];
+export type House = BaseProperty & {
+  floors: number;
+  bedrooms: number;
+  kitchens: number;
+  bathrooms: number;
+  amenities: PropertyAmenities[];
+  builtUpArea: PropertyHouseArea;
+
+  propertyType: 'House';
 };
 
-export type Promotion = {
+export type Land = BaseProperty & {
+  plotWidth: PropertyPlotWidth;
+  plotLength: PropertyPlotLength;
+
+  propertyType: 'Land';
+};
+
+export type Property = House | Land;
+
+export type PropertyWithMedia = Property & {
+  photos: File[];
+  documents: File[];
+  video: FileList | null;
+};
+
+export type PropertyWithMediaUrl = Property & {
+  photos: string[];
+  documents: string[];
+  video: string | null;
+};
+
+export type ListedProperty = PropertyWithMediaUrl & {
   id: string;
-  roomId: string;
-  clicks: number;
-  shortUrl: string;
-  expiresAt: string;
+  // isActive: boolean;
+  verified: boolean;
+  // DATE
   createdAt: string;
-  originalUrl: string;
-  agreementId: string;
-  totalEarned: number;
-  room: {
-    name: string;
-    city: string;
-    price: number;
-    location: string;
-  };
-  clickEvents: ClickEvent[];
+  updatedAt: string;
 };
 
-export type ClickEvent = {
-  ip: string;
-  timestamp: string;
-  deviceType: string;
-};
+// export type PropertyData = ListedProperty & {
+//   seller: {
+//     id: string;
+//     role: Role;
+//     name: string;
+//     email: string;
+//     number: string;
+//   };
+// };
 
-export type PromoterWithDeals = Promoter & {
-  promotionDeals: PromotionDeal[];
-};
+//

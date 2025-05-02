@@ -7,37 +7,42 @@ import {
   HydrationBoundary,
 } from '@tanstack/react-query';
 
-import {
-  GroupedRooms,
-  NewListedRoom,
-  UserFromRoomData,
-} from '@/app/types/types';
+import { getServerSession } from 'next-auth';
+import { ListedRoom } from '@/app/types/types';
+import { ListersRooms, RoomListers } from '../types';
 import { getPromotingDetails } from '../ServerAction';
-import RoomLayout from '../component/room/RoomLayout';
+import RoomLayout from '../../components/Promote/room/RoomLayout';
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 
 const Room = async () => {
   const queryClient = new QueryClient();
+  const session = await getServerSession(authOptions);
 
   try {
     const {
       listers,
       listerRooms,
-    }: { listers: UserFromRoomData[]; listerRooms: NewListedRoom[] } =
-      await getPromotingDetails({ offset: 0 });
+    }: {
+      listers: RoomListers[];
+      listerRooms: ListedRoom[];
+    } = await getPromotingDetails({
+      offset: 0,
+      userId: session?.user?.userId as string,
+    });
 
-    const listersRooms: GroupedRooms = listerRooms.reduce(
-      (acc: GroupedRooms, room: NewListedRoom) => {
+    const listersRooms: ListersRooms = listerRooms.reduce(
+      (acc: ListersRooms, room: ListedRoom) => {
         (acc[room.listerId] ||= []).push(room);
         return acc;
       },
       {}
     );
 
-    queryClient.setQueryData<InfiniteData<UserFromRoomData[]>>(['Listers'], {
+    queryClient.setQueryData<InfiniteData<RoomListers[]>>(['Listers'], {
       pageParams: [0],
       pages: [listers],
     });
-    queryClient.setQueryData<GroupedRooms>(['ListersRooms'], listersRooms);
+    queryClient.setQueryData<ListersRooms>(['ListersRooms'], listersRooms);
 
     const dehydratedState = dehydrate(queryClient);
 

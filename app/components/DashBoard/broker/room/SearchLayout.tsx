@@ -11,9 +11,9 @@ import {
 } from '@/app/dashboard/graphQL/roomQuery';
 import RoomLayoutCard from './roomLayoutCard';
 import SearchedLayout from './SearchedLayout';
+import { ListedRoom } from '@/app/types/types';
 import { LIMIT } from '@/app/lib/reusableConst';
 import { MenuItem, Select } from '@mui/material';
-import { NewListedRoom } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
@@ -41,10 +41,10 @@ const SearchLayout = ({ children }: { children: React.ReactNode }) => {
     getCityLocationRooms,
     { data: cityLocationRoomsData, loading, error, fetchMore },
   ] = useLazyQuery<{
-    cityLocationRooms: NewListedRoom[];
+    cityLocationRooms: ListedRoom[];
   }>(GET_CITY_LOCATION_ROOMS);
   const [getRoomData, { data: RoomData }] = useLazyQuery<{
-    room: NewListedRoom;
+    room: ListedRoom;
   }>(GET_ROOM, { fetchPolicy: 'no-cache' });
 
   useEffect(() => {

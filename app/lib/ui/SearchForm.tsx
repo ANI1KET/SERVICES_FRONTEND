@@ -3,7 +3,7 @@
 import Select from '@mui/material/Select';
 import { useRouter } from 'next/navigation';
 import MenuItem from '@mui/material/MenuItem';
-import { SearchQuery } from '@/app/types/types';
+import { RoomSearchQuery } from '@/app/types/types';
 import FormControl from '@mui/material/FormControl';
 import { useEffect, useState, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -12,7 +12,7 @@ import { useForm, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import {
   postedBy,
   roomType,
-  amenities,
+  roomAmenities,
   furnishingStatus,
 } from '../scalableComponents';
 import {
@@ -55,7 +55,7 @@ const SearchForm: React.FC = () => {
     // setError,
     // clearErrors,
     handleSubmit,
-  } = useForm<SearchQuery>({
+  } = useForm<RoomSearchQuery>({
     defaultValues: {
       city: '',
       location: '',
@@ -110,7 +110,7 @@ const SearchForm: React.FC = () => {
     );
   };
 
-  const onSubmit = (data: SearchQuery) => {
+  const onSubmit = (data: RoomSearchQuery) => {
     const { city, location } = data;
 
     if (!city) return;
@@ -483,8 +483,8 @@ const FilterLayout = ({
   isMobile: boolean;
   verified: boolean | undefined;
   cachedTheme: ThemeState | undefined;
-  setValue: UseFormSetValue<SearchQuery>;
-  register: UseFormRegister<SearchQuery>;
+  setValue: UseFormSetValue<RoomSearchQuery>;
+  register: UseFormRegister<RoomSearchQuery>;
 }) => {
   return (
     <div
@@ -502,30 +502,35 @@ const FilterLayout = ({
         <RatingSlider onChangeEnd={(value) => setValue('rating', value)} />
         <CapacitySlider onChangeEnd={(value) => setValue('capacity', value)} />
       </div>
-      <TickCheckboxGroup
+      <TickCheckboxGroup<RoomSearchQuery, 'amenities'>
+        id="amenities"
         label="Amenities"
-        options={amenities}
-        register={register('amenities')}
+        register={register}
+        options={roomAmenities}
       />
-      <TickCheckboxGroup
+      <TickCheckboxGroup<RoomSearchQuery, 'roomtype'>
+        id="roomtype"
         label="Room Type"
         options={roomType}
-        register={register('roomtype')}
+        register={register}
       />
-      <TickCheckboxGroup
+      <TickCheckboxGroup<RoomSearchQuery, 'furnishingstatus'>
+        register={register}
+        id="furnishingstatus"
         label="Furnishing Status"
         options={furnishingStatus}
-        register={register('furnishingstatus')}
       />
-      <TickCheckboxGroup
+      <TickCheckboxGroup<RoomSearchQuery, 'postedby'>
+        id="postedby"
         label="Posted By"
         options={postedBy}
-        register={register('postedby')}
+        register={register}
       />
-      <CheckedBox
+      <CheckedBox<RoomSearchQuery, 'verified'>
+        id="verified"
         label="Verified"
+        register={register}
         value={verified ?? false}
-        register={register('verified')}
         onChange={(e) => setValue('verified', e.target.checked)}
       />
     </div>

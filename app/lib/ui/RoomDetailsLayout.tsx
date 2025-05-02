@@ -10,14 +10,14 @@ import dynamic from 'next/dynamic';
 import { Suspense, useCallback, useEffect, useRef } from 'react';
 
 import {
-  useSearchData,
   useThemeState,
+  useSearchData,
 } from '@/app/providers/reactqueryProvider';
 import RoomDetails from './RoomDetails';
 import { PAGE_SIZE } from '../reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import NewRoomDetails from '@/app/lib/ui/NewRoomDetails';
-import { NewListedRoom, RoomData } from '@/app/types/types';
+import { ListedRoom, RoomData } from '@/app/types/types';
 import { fetchSelectedRoomDetails } from '@/app/(selected)/ServerAction';
 import ResponsiveNewRoomDetails from '@/app/lib/ui/ResponsiveNewRoomDetails';
 import { getCategoryDetails } from '@/app/components/HomeLayouts/LowerLayout/ServerAction';
@@ -64,7 +64,7 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
 
   const roomDetails = findMatchingRoom(cachedData, roomId);
 
-  const { data: fallbackRoomDetails } = useQuery<NewListedRoom>({
+  const { data: fallbackRoomDetails } = useQuery<ListedRoom>({
     queryKey: ['selectedRoom', roomId],
     queryFn: () => fetchSelectedRoomDetails(roomId),
     enabled: !roomDetails,
@@ -125,17 +125,17 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
     };
   }, [handleLoadMore]);
 
-  if (!finalRoomDetails) return null;
+  if (!finalRoomDetails) return <div>Room Not Found</div>;
   return (
     <div className="flex flex-col ">
       <div className="flex max-xsm:flex-col gap-1 p-2 relative max-xsm:p-0 max-xsm:gap-0 ">
         <Suspense fallback={<VideoSkeleton />}>
           <VideoPlayer videoUrl={finalRoomDetails.videos} />
         </Suspense>
-        <NewRoomDetails roomCardDetails={finalRoomDetails as NewListedRoom} />
+        <NewRoomDetails roomCardDetails={finalRoomDetails as ListedRoom} />
       </div>
       <ResponsiveNewRoomDetails
-        roomCardDetails={finalRoomDetails as NewListedRoom}
+        roomCardDetails={finalRoomDetails as ListedRoom}
       />
       <div
         className={cn(

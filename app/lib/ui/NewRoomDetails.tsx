@@ -1,20 +1,23 @@
 'use client';
 
 import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
-import { NewListedRoom } from '@/app/types/types';
+import { ListedRoom } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { timeAgo } from '../utils/timeCalculation';
+import { updateNumber } from '@/app/components/ServerAction';
+import { pushSavedRoom } from '@/app/(selected)/ServerAction';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { PriceIcon, FurnishIcon, CapacityIcon } from '@/app/lib/icon/svg';
-import { pushSavedRoom, updateNumber } from '@/app/(selected)/ServerAction';
 
 interface NewRoomCardProps {
-  roomCardDetails: NewListedRoom;
+  roomCardDetails: ListedRoom;
 }
 
 const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
+  const router = useRouter();
   const cacheTheme = useThemeState();
   const { data: session, update } = useSession();
 
@@ -138,7 +141,7 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
                   cacheTheme?.activeTextColor,
                   'text-sm p-[2px] rounded-lg cursor-pointer mr-1'
                 )}
-                onClick={(e) => (e.currentTarget.innerText = 'Login required')}
+                onClick={() => router.push('/auth/login')}
               >
                 Interest
               </button>

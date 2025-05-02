@@ -1,17 +1,32 @@
-import { Amenities, RoomType } from '../types/types';
-import { FurnishingStatusEnum, Permission, Role } from '@prisma/client';
+import {
+  RoomType,
+  PropertyArea,
+  RoomAmenities,
+  PropertyHouseArea,
+  PropertyAmenities,
+  PropertyPlotWidth,
+  PropertyPlotLength,
+  PropertyNearByAreas,
+} from '../types/types';
+import {
+  Role,
+  Permission,
+  PropertyType,
+  FurnishingStatusEnum,
+} from '@prisma/client';
 
 export const permissions: Permission[] = [
   'room',
-  'hostel',
-  'vehicle',
   'property',
+  'hostel',
   'reMarketItem',
+  'vehicle',
 ];
 export const roles: Role[] = ['OWNER', 'BROKER', 'USER'];
+export const postedBy: Role[] = ['OWNER', 'BROKER'];
 
-// FILTERS
-export const amenities: Amenities[] = [
+// ROOM FILTERS
+export const roomAmenities: RoomAmenities[] = [
   'WIFI',
   'CAR PARK',
   'BIKE PARK',
@@ -22,8 +37,51 @@ export const furnishingStatus: FurnishingStatusEnum[] = [
   'UNFURNISHED',
   'SEMIFURNISHED',
 ];
-export const postedBy: Role[] = ['OWNER', 'BROKER'];
 export const roomType: RoomType[] = ['1BHK', '2BHK', '3BHK', '4BHK', 'FLAT'];
+
+// PROPERTY FILTERS
+export const propertyAmenities: PropertyAmenities[] = [
+  'CCTV',
+  'LIFT',
+  'GARDEN',
+  'CAR PARK',
+  'BIKE PARK',
+  'FIRE SAFETY',
+  'SOLAR PANELS',
+  'SWIMMING POOL',
+];
+export const propertyNearByAreas: PropertyNearByAreas[] = [
+  'HOSPITAL',
+  'MARKET',
+  'SCHOOL',
+  'COLLEGE',
+  'BANK',
+  'MALL',
+  'PARK',
+  'TEMPLE',
+  'CHURCH',
+  'MOSQUE',
+  'AIRPORT',
+  'BUS STOP',
+  'FIRE STATION',
+  'POLICE STATION',
+];
+export const propertyArea: PropertyArea[] = [
+  'sqm',
+  'dam',
+  'sqft',
+  'acre',
+  'aana',
+  'dhur',
+  'bigha',
+  'paisa',
+  'ropani',
+  'kattha',
+];
+export const propertyType: PropertyType[] = ['House', 'Land'];
+export const propertyPlotWidth: PropertyPlotWidth[] = ['ft', 'mt'];
+export const propertyPlotLength: PropertyPlotLength[] = ['ft', 'mt'];
+export const propertyHouseArea: PropertyHouseArea[] = ['sqft', 'sqm'];
 
 // AUTHENTICATION
 

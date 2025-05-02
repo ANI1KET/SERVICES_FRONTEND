@@ -77,7 +77,6 @@ export async function GET(
       select: {
         id: true,
         expiresAt: true,
-        agreementId: true,
         originalUrl: true,
         agreement: { select: { pricePerClick: true } },
       },
@@ -90,12 +89,7 @@ export async function GET(
       );
     }
 
-    const {
-      agreement,
-      originalUrl,
-      agreementId,
-      id: promotionId,
-    } = roomPromotion;
+    const { agreement, originalUrl, id: promotionId } = roomPromotion;
     const { pricePerClick } = agreement;
 
     // Record click, earnings, and user metadata
@@ -105,11 +99,17 @@ export async function GET(
         data: {
           clicks: { increment: 1 },
           totalEarned: { increment: pricePerClick },
+          promotionAgreement: {
+            update: {
+              totalEarned: { increment: pricePerClick },
+            },
+          },
+          agreement: {
+            update: {
+              totalEarned: { increment: pricePerClick },
+            },
+          },
         },
-      }),
-      prisma.promotionAgreement.update({
-        where: { id: agreementId },
-        data: { totalEarned: { increment: pricePerClick } },
       }),
       prisma.userClick.create({
         data: {

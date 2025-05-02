@@ -1,42 +1,32 @@
 'use server';
 
 import axios from 'axios';
-import { cookies } from 'next/headers';
 
-import {
-  NewListedRoom,
-  UserFromRoomData,
-  PromoterWithDeals,
-} from '../types/types';
+import { ListedRoom } from '../types/types';
 import axiosInstance from '../lib/utils/axiosInstance';
 import { PROMOTE_PAGE_SIZE } from '../lib/reusableConst';
-
-const getSessionToken = async (): Promise<string | undefined> => {
-  const cookieStore = await cookies();
-  return (
-    cookieStore.get('__Secure-next-auth.session-token')?.value ||
-    cookieStore.get('next-auth.session-token')?.value
-  );
-};
+import { PromoterWithDeals, RoomListers } from './types';
+import { getAutheticationHeader } from '../components/ServerAction';
 
 export const getPromotingDetails = async ({
+  userId,
   offset = 0,
 }: {
+  userId: string;
   offset: number;
-}): Promise<{ listers: UserFromRoomData[]; listerRooms: NewListedRoom[] }> => {
+}): Promise<{
+  listers: RoomListers[];
+  listerRooms: ListedRoom[];
+}> => {
   'use server';
 
   try {
-    const sessionToken = await getSessionToken();
-    const response = await axiosInstance.get(`/promote/room`, {
+    const response = await axiosInstance.get(`/promote/room/${userId}`, {
       params: {
         offset,
         limit: PROMOTE_PAGE_SIZE,
       },
-      headers: {
-        Cookie: `next-auth.session-token=${sessionToken}`,
-        'Cache-Control': 'no-cache',
-      },
+      ...(await getAutheticationHeader()),
     });
 
     return response.data;
@@ -54,21 +44,17 @@ export const getListerRoomsDetails = async ({
 }: {
   offset: number;
   listerId: string;
-}): Promise<NewListedRoom[]> => {
+}): Promise<ListedRoom[]> => {
   'use server';
 
   try {
-    const sessionToken = await getSessionToken();
     const response = await axiosInstance.get(`/promote/listerrooms`, {
       params: {
         offset,
         listerId,
         limit: PROMOTE_PAGE_SIZE,
       },
-      headers: {
-        Cookie: `next-auth.session-token=${sessionToken}`,
-        'Cache-Control': 'no-cache',
-      },
+      ...(await getAutheticationHeader()),
     });
 
     return response.data;
@@ -80,37 +66,59 @@ export const getListerRoomsDetails = async ({
   }
 };
 
-export const addPromotion = async ({
+export const promoteRoom = async ({
   userId,
-  roomId,
-  listerId,
-  pricePerClick,
+  agreementId,
 }: {
   userId: string;
-  roomId: string;
-  listerId: string;
-  pricePerClick: number;
+  agreementId: string;
 }) => {
   // }): Promise<> => {
   'use server';
 
   try {
-    const sessionToken = await getSessionToken();
     const response = await axiosInstance.post(
-      `/promote/short`,
+      `/promote`,
       {
         userId,
+        agreementId,
+      },
+      await getAutheticationHeader()
+      // { ...(await getAutheticationHeader()) }
+    );
+
+    return response.data.promotionDealId;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data || error.message;
+    }
+    throw error;
+  }
+};
+
+export const addPromotion = async ({
+  roomId,
+  agreementId,
+  promotionDealId,
+}: {
+  roomId: string;
+  agreementId: string;
+  promotionDealId: string;
+}) => {
+  // }): Promise<> => {
+  'use server';
+
+  try {
+    const response = await axiosInstance.post(
+      `/promote/room`,
+      {
         roomId,
-        listerId,
-        pricePerClick,
+        agreementId,
+        promotionDealId,
         url: `${process.env.NEXTAUTH_URL}/room/${btoa(roomId)}`,
       },
-      {
-        headers: {
-          'Cache-Control': 'no-cache',
-          Cookie: `next-auth.session-token=${sessionToken}`,
-        },
-      }
+      await getAutheticationHeader()
+      // { ...(await getAutheticationHeader()) }
     );
 
     return response.data;
@@ -128,12 +136,8 @@ export const getPromoterDetails = async (
   'use server';
 
   try {
-    const sessionToken = await getSessionToken();
     const response = await axiosInstance.get(`/promote/${userId}`, {
-      headers: {
-        'Cache-Control': 'no-cache',
-        Cookie: `next-auth.session-token=${sessionToken}`,
-      },
+      ...(await getAutheticationHeader()),
     });
 
     return response.data;
@@ -149,25 +153,23 @@ export const getPromoterDetails = async (
 
 export const removeRoom = async (
   totalEarned: number,
+  agreementId: string,
   roomPromotionId: string,
-  listerPromotionId: string
+  promotionDealId: string
   // ) => {
 ): Promise<string> => {
   'use server';
 
   try {
-    const sessionToken = await getSessionToken();
     const response = await axiosInstance.delete(
       `/promote/remove/${roomPromotionId}`,
       {
         data: {
           totalEarned,
-          listerPromotionId,
+          agreementId,
+          promotionDealId,
         },
-        headers: {
-          'Cache-Control': 'no-cache',
-          Cookie: `next-auth.session-token=${sessionToken}`,
-        },
+        ...(await getAutheticationHeader()),
       }
     );
 
@@ -188,16 +190,11 @@ export const renewPromotion = async (
   'use server';
 
   try {
-    const sessionToken = await getSessionToken();
     const response = await axiosInstance.put(
       `/promote/renew/${roomPromotionId}`,
       {},
-      {
-        headers: {
-          'Cache-Control': 'no-cache',
-          Cookie: `next-auth.session-token=${sessionToken}`,
-        },
-      }
+      await getAutheticationHeader()
+      // { ...(await getAutheticationHeader()) }
     );
 
     return response.data.message;

@@ -1,12 +1,12 @@
 'use server';
 
-import { NewListedRoom } from '../types/types';
+import { ListedRoom } from '../types/types';
 import axiosInstance from '../lib/utils/axiosInstance';
 
 export async function fetchNewRoomDetails(
   category: string,
   roomId: string
-): Promise<NewListedRoom> {
+): Promise<ListedRoom> {
   'use server';
   try {
     const { data } = await axiosInstance.get(`/${category}/${roomId}`);

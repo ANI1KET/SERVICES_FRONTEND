@@ -8,11 +8,11 @@ import {
   deletedRoomIds,
 } from '@/app/providers/reactqueryProvider';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import { NewListedRoom } from '@/app/types/types';
+import { ListedRoom, RoomAmenities } from '@/app/types/types';
 import { DeleteRoom, UpdateRoom } from '@/app/dashboard/graphQL/roomQuery';
 
 const RoomLayoutCard: React.FC<{
-  room: NewListedRoom;
+  room: ListedRoom;
   setIsFilter?: React.Dispatch<
     React.SetStateAction<{
       cityLocation: boolean;
@@ -27,13 +27,13 @@ const RoomLayoutCard: React.FC<{
   const [updateRoom] = useMutation(UpdateRoom);
   const [deleteRoom] = useMutation(DeleteRoom);
   const [editedRooms, setEditedRooms] = useState<
-    Record<string, Partial<NewListedRoom>>
+    Record<string, Partial<ListedRoom>>
   >({});
 
   const handleChange = useCallback(
     (
       roomId: string,
-      field: keyof NewListedRoom,
+      field: keyof ListedRoom,
       value: number | string | boolean
     ) => {
       setEditedRooms((prev) => {
@@ -402,7 +402,8 @@ const RoomLayoutCard: React.FC<{
               setEditedRooms((prev) => {
                 const currentAmenities = prev[room.id]?.amenities ?? [];
                 const updatedAmenities = [...currentAmenities];
-                updatedAmenities[index] = e.target.value.toUpperCase();
+                updatedAmenities[index] =
+                  e.target.value.toUpperCase() as RoomAmenities;
 
                 return {
                   ...prev,
@@ -429,7 +430,7 @@ const RoomLayoutCard: React.FC<{
                 ...prev,
                 [room.id]: {
                   ...prev[room.id],
-                  amenities: [...currentAmenities, ''],
+                  amenities: [...currentAmenities, ''] as RoomAmenities[],
                 },
               };
             });

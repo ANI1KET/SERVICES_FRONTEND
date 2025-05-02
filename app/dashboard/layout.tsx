@@ -1,7 +1,7 @@
 // import type { Metadata } from 'next';
 
+import LayoutComponent from '../components/DashBoard/layoutComponent';
 import ApolloProviderWrapper from '../providers/ApolloProviderWrapper';
-import LayoutComponent from './layoutComponent';
 
 // export const metadata: Metadata = {
 //   title: 'ROOM RENTAL',

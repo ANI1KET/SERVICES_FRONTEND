@@ -3,17 +3,17 @@
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
+import { ListedRoom } from '@/app/types/types';
 import { LIMIT } from '@/app/lib/reusableConst';
-import { NewListedRoom } from '@/app/types/types';
 import { GET_LISTED_ROOMS } from '../../graphQL/userQuery';
-import MainLayout from '../../components/broker/room/MainLayout';
-import SearchLayout from '../../components/broker/room/SearchLayout';
+import MainLayout from '../../../components/DashBoard/broker/room/MainLayout';
+import SearchLayout from '../../../components/DashBoard/broker/room/SearchLayout';
 
 const BrokerRoomDashboard = () => {
   const session = useSession();
 
   const { data, loading, error, fetchMore } = useQuery<{
-    user: { rooms: NewListedRoom[] };
+    user: { rooms: ListedRoom[] };
   }>(GET_LISTED_ROOMS, {
     // fetchPolicy: 'cache-and-network',
     variables: { id: session.data?.user.userId, offset: 0, limit: LIMIT },

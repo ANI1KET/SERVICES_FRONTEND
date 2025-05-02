@@ -2,11 +2,10 @@
 
 import { Readable } from 'stream';
 import { google } from 'googleapis';
-import { Role } from '@prisma/client';
 import { v2 as cloudinary } from 'cloudinary';
 
 import prisma from '@/prisma/prismaClient';
-import { RoomWithMediaUrl } from '../types/types';
+import { PropertyWithMediaUrl, RoomWithMediaUrl } from '../types/types';
 
 // Configuration
 cloudinary.config({
@@ -15,14 +14,17 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const upload_Images = async (photos: File[]): Promise<string[]> => {
+export const upload_Images = async (
+  path: string,
+  photos: File[]
+): Promise<string[]> => {
   const uploadSingleImage = (photo: File): Promise<string> => {
     return new Promise(async (resolve, reject) => {
       try {
         const buffer = Buffer.from(await photo.arrayBuffer());
 
         const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'room', resource_type: 'image' },
+          { folder: `${path}`, resource_type: 'image' },
           (error, result) => {
             if (error) return reject(error);
             if (result?.secure_url) return resolve(result.secure_url);
@@ -300,15 +302,30 @@ export async function uploadChunkVideo({
   }
 }
 
-export async function SubmitRoomDetails(
-  formData: RoomWithMediaUrl & { postedBy: Role; listerId: string }
-) {
+export async function SubmitRoomDetails(formData: RoomWithMediaUrl) {
   'use server';
   try {
     const newRoomDetails = await prisma.room.create({
       data: {
         ...formData,
         price: parseFloat(formData.price as string),
+      },
+    });
+
+    return newRoomDetails;
+  } catch (error) {
+    throw new Error(error?.toString() || 'An unknown error occurred');
+  }
+}
+
+export async function SubmitPropertyDetails(formData: PropertyWithMediaUrl) {
+  'use server';
+  try {
+    const newRoomDetails = await prisma.property.create({
+      data: {
+        ...formData,
+        price: formData.price,
+        // price: parseFloat(formData.price as string),
       },
     });
 

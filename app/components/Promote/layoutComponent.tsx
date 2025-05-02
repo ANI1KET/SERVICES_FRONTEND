@@ -5,11 +5,16 @@ import { useState } from 'react';
 import { Permission } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 
-import { cn } from '../lib/utils/tailwindMerge';
-import { permissions } from '../lib/scalableComponents';
-import { DashboardPermissionTabs } from '../lib/utils/tabs';
-import { useThemeState } from '../providers/reactqueryProvider';
-import { Sidebar, SidebarBody, SidebarLink } from '../lib/ui/SidebarComponent';
+import {
+  Sidebar,
+  SidebarBody,
+  SidebarLink,
+} from '../../lib/ui/SidebarComponent';
+import { cn } from '../../lib/utils/tailwindMerge';
+import { permissions } from '../../lib/scalableComponents';
+import { DashboardPermissionTabs } from '../../lib/utils/tabs';
+import { Logo, LogoIcon } from '../SideNavigationBar/SideNavBar';
+import { useThemeState } from '../../providers/reactqueryProvider';
 
 const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
   const cachedTheme = useThemeState();
@@ -28,12 +33,17 @@ const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
           )}
         >
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-            <div className="flex flex-col gap-2">
+            {open ? (
+              <Logo url="/promote" title={'PROMOTE'} />
+            ) : (
+              <LogoIcon url="/promote" />
+            )}
+            <div className="mt-8 flex flex-col gap-2">
               {permissions.map((link, idx) => (
                 <SidebarLink
                   key={idx}
                   link={{
-                    href: `/interested/${link}`,
+                    href: `/promote/${link}`,
                     icon: DashboardPermissionTabs[link as Permission],
                     label: link.charAt(0).toUpperCase() + link.slice(1),
                   }}
