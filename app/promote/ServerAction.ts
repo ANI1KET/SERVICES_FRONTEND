@@ -152,10 +152,7 @@ export const getPromoterDetails = async (
 };
 
 export const removeRoom = async (
-  totalEarned: number,
-  agreementId: string,
-  roomPromotionId: string,
-  promotionDealId: string
+  roomPromotionId: string
   // ) => {
 ): Promise<string> => {
   'use server';
@@ -164,11 +161,6 @@ export const removeRoom = async (
     const response = await axiosInstance.delete(
       `/promote/remove/${roomPromotionId}`,
       {
-        data: {
-          totalEarned,
-          agreementId,
-          promotionDealId,
-        },
         ...(await getAutheticationHeader()),
       }
     );

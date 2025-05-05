@@ -3,12 +3,10 @@ import { useCallback, useState } from 'react';
 import { MenuItem, Select } from '@mui/material';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import {
-  useThemeState,
-  deletedRoomIds,
-} from '@/app/providers/reactqueryProvider';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { deletedRoomIds } from '@/app/dashboard/variables';
 import { ListedRoom, RoomAmenities } from '@/app/types/types';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { DeleteRoom, UpdateRoom } from '@/app/dashboard/graphQL/roomQuery';
 
 const RoomLayoutCard: React.FC<{

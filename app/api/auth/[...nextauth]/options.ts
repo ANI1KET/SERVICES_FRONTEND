@@ -141,6 +141,7 @@ export const authOptions: NextAuthOptions = {
           });
           user.role = userDetails.role;
           user.userId = userDetails.id;
+          user.number = userDetails.number as string;
           user.permission = userDetails.permission as Permission[];
 
           return true;

@@ -1,8 +1,10 @@
 'use client';
 
 import {
+  Control,
   PathValue,
   FieldPath,
+  Controller,
   FieldValues,
   FieldErrors,
   UseFormTrigger,
@@ -39,7 +41,7 @@ type InputFieldProps<T extends FieldValues, K extends FieldPath<T>> = {
   register: UseFormRegister<T>;
   // rules: RegisterOptions<T, K>;
   rules: StrictRegisterOptions<T, K>;
-  handleEnterPress: (
+  handleEnterPress?: (
     event: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
 };
@@ -276,7 +278,7 @@ type OptionType<T extends FieldValues, K extends FieldPath<T>> = PathValue<
   ? U
   : PathValue<T, K>;
 
-// SELECT Component
+// SELECT INPUT Component
 type SelectInputFieldProps<T extends FieldValues, K extends FieldPath<T>> = {
   id: K;
   label: string;
@@ -285,7 +287,7 @@ type SelectInputFieldProps<T extends FieldValues, K extends FieldPath<T>> = {
   options: OptionType<T, K>[];
   register: UseFormRegister<T>;
   rules: StrictRegisterOptions<T, K>;
-  handleEnterPress: React.KeyboardEventHandler<HTMLInputElement>;
+  handleEnterPress?: React.KeyboardEventHandler<HTMLInputElement>;
 };
 
 export const SelectInputField = <
@@ -365,6 +367,75 @@ export const SelectInputField = <
           )}
         />
       </div>
+
+      {errors[id] && (
+        <p className="text-red-500 text-sm mt-1">
+          {errors[id]?.message as string}
+        </p>
+      )}
+    </div>
+  );
+};
+
+// SELECT Component
+type SelectFieldProps<T extends FieldValues, K extends FieldPath<T>> = {
+  id: K;
+  label: string;
+  control: Control<T>;
+  errors: FieldErrors<T>;
+  options: OptionType<T, K>[];
+  rules: StrictRegisterOptions<T, K>;
+  handleEnterPress?: React.KeyboardEventHandler<HTMLInputElement>;
+};
+
+export const SelectField = <T extends FieldValues, K extends FieldPath<T>>({
+  id,
+  label,
+  rules,
+  errors,
+  control,
+  options,
+  handleEnterPress,
+}: SelectFieldProps<T, K>) => {
+  return (
+    <div className="">
+      <label htmlFor={`${String(id)}-num`} className="block font-medium">
+        {label}
+      </label>
+
+      <Controller
+        name={id}
+        rules={rules}
+        control={control}
+        render={({ field }) => (
+          <Autocomplete<OptionType<T, K>>
+            options={options}
+            value={field.value || null}
+            disableClearable={true as false}
+            onChange={(_, newValue) => field.onChange(newValue)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                inputRef={field.ref}
+                onKeyDown={handleEnterPress}
+                error={!!errors[id]}
+                slotProps={{
+                  root: {
+                    sx: {
+                      '& .MuiOutlinedInput-root': { height: '36px' },
+                      '& .MuiOutlinedInput-input': {
+                        height: 'auto',
+                        overflow: 'visible',
+                        textOverflow: 'clip',
+                      },
+                    },
+                  },
+                }}
+              />
+            )}
+          />
+        )}
+      />
 
       {errors[id] && (
         <p className="text-red-500 text-sm mt-1">

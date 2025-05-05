@@ -1,4 +1,5 @@
 import { Room } from '../types/types';
+import { Permission } from '@prisma/client';
 
 type CityRoomStats = {
   city: string;
@@ -33,3 +34,13 @@ export interface RoomData {
   };
   interestedBy: InterestedBy[];
 }
+
+interface Promotion {
+  price: number;
+  number?: string;
+  promoteCategory: Permission;
+}
+
+export type StartPromotion = Promotion;
+export type UpdatetPromotion = Omit<Promotion, 'number'>;
+export type DeletetPromotion = Omit<Promotion, 'number' | 'price'>;

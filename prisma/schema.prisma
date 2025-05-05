@@ -107,7 +107,7 @@ model RoomPromotionAgreement {
   id            String  @id @default(auto()) @map("_id") @db.ObjectId
   pricePerClick Float
   totalEarned   Float   @default(0)
-  canPromote    Boolean @default(false)
+  canPromote    Boolean @default(true)
 
   // RELATIONSHIP
   lister     User                 @relation("ListerAgreements", fields: [listerId], references: [id], onDelete: Cascade)

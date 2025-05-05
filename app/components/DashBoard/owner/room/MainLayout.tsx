@@ -11,14 +11,12 @@ import {
 import { useSession } from 'next-auth/react';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
-import {
-  useThemeState,
-  deletedRoomIds,
-} from '@/app/providers/reactqueryProvider';
 import RoomLayoutCard from './roomLayoutCard';
 import { ListedRoom } from '@/app/types/types';
 import { LIMIT } from '@/app/lib/reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { deletedRoomIds } from '@/app/dashboard/variables';
+import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 type ChildComponentProps = {
   data?: { user: { rooms: ListedRoom[] } };

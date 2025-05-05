@@ -240,7 +240,10 @@ const DetailComponent = memo(
 
     const [days, setDays] = useState<number>(1);
     const [rolePermission, setRolePermission] = useState<{
-      [key: string]: { role: string; permission: string };
+      [key: string]: {
+        //  role: string;
+        permission: string;
+      };
     }>({});
     const [permission, setPermission] = useState<{ [key: string]: string[] }>(
       {}
@@ -292,7 +295,7 @@ const DetailComponent = memo(
               userId: id,
               durationInDays: days,
               permission: permission,
-              role: rolePermission[id]?.role,
+              // role: rolePermission[id]?.role,
             },
           });
 
@@ -302,11 +305,11 @@ const DetailComponent = memo(
               permission() {
                 return [...permissions, permission];
               },
-              ...(rolePermission[id]?.role && {
-                role() {
-                  return rolePermission[id]?.role;
-                },
-              }),
+              // ...(rolePermission[id]?.role && {
+              //   role() {
+              //     return rolePermission[id]?.role;
+              //   },
+              // }),
             },
           });
         } catch (error) {
@@ -317,12 +320,12 @@ const DetailComponent = memo(
         }
       },
       [
-        client.cache,
         days,
-        rolePermission,
-        setPermission,
-        setRolePermission,
         updateUser,
+        client.cache,
+        setPermission,
+        rolePermission,
+        setRolePermission,
       ]
     );
 
@@ -353,7 +356,7 @@ const DetailComponent = memo(
         <div className="">{user.id}</div>
         <div className="">{user.email}</div>
         <div className="">
-          <Select
+          {/* <Select
             value={rolePermission[user.id]?.role ?? user.role}
             onChange={(e) =>
               setRolePermission((prevState) => ({
@@ -404,7 +407,8 @@ const DetailComponent = memo(
                 {role}
               </MenuItem>
             ))}
-          </Select>
+          </Select> */}
+          {user.role}
         </div>
         <div className="flex items-center">
           <p className="flex gap-1">

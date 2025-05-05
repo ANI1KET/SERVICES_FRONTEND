@@ -15,22 +15,13 @@ export const ListerPromotion: React.FC<{
   const cachedTheme = useThemeState();
   const [promotions, setPromotions] = useState(promote);
 
-  const removeRoomPormotion = async (
-    totalEarned: number,
-    roomPromotionId: string
-  ) => {
-    const response = await removeRoom(
-      totalEarned,
-      promote.id,
-      roomPromotionId,
-      promote.promotionDealId
-    );
+  const removeRoomPormotion = async (roomPromotionId: string) => {
+    const response = await removeRoom(roomPromotionId);
     if (!response) return;
 
     setPromotions((prev) => {
       return {
         ...prev,
-        totalEarned: prev.totalEarned - totalEarned,
         promotions: prev.promotions.filter(
           (promote) => promote.id !== roomPromotionId
         ),
@@ -68,24 +59,29 @@ export const ListerPromotion: React.FC<{
         )}
       >
         <div className="flex max-sm:flex-col justify-between max-sm:w-1/2">
-          <p className="max-sm:order-1 order-1 col-span-2  max-sm:col-span-1">
+          <p className="col-span-2 max-sm:col-span-1">
             👤 {promotions.lister.name}
           </p>
-          <p className="max-sm:order-3 order-2 col-span-2 max-sm:col-span-1">
+          <p className="col-span-2 max-sm:col-span-1">
             📞 {promotions.lister.number}
           </p>
-          <p className="max-sm:order-5 order-3 col-span-3 max-sm:col-span-1">
+          <p className="col-span-3 max-sm:col-span-1 break-words whitespace-normal">
             📧 {promotions.lister.email}
           </p>
         </div>
 
-        <div className="flex max-sm:flex-col justify-around max-sm:w-1/2">
-          <p className="max-sm:order-2 order-4 col-span-2 max-sm:col-span-1">
+        <hr className={cn(cachedTheme.borderColor)} />
+
+        <div
+          className={cn(
+            cachedTheme.borderColor,
+            'flex max-sm:flex-col justify-around max-sm:w-1/2 max-sm:border-l'
+          )}
+        >
+          <p className="col-span-2 max-sm:col-span-1">
             💰 {promotions.pricePerClick ?? 0} /visit
           </p>
-          <p className="max-sm:order-4 order-5 max-sm:col-span-1">
-            💵 {promotions.totalEarned ?? 0}
-          </p>
+          <p className="max-sm:col-span-1">💵 {promotions.totalEarned ?? 0}</p>
         </div>
       </div>
 
@@ -105,8 +101,8 @@ export const ListerPromotion: React.FC<{
 
 export const RoomPromotion: React.FC<{
   promotion: Promotion;
-  removeRoomPormotion: (totalEarned: number, roomPromotionId: string) => void;
   renewRoomPormotion: (roomPromotionId: string) => void;
+  removeRoomPormotion: (roomPromotionId: string) => void;
 }> = ({ promotion, renewRoomPormotion, removeRoomPormotion }) => {
   const cachedTheme = useThemeState();
   const { message, isExpired } = getExpirationStatus(promotion.expiresAt);
@@ -146,6 +142,7 @@ export const RoomPromotion: React.FC<{
       <p className="p-1">
         🌏 {promotion.room.location} ({promotion.room.city})
       </p>
+      <p className="pl-4">🕵️ {promotion.clicks} visited</p>
       <p className="pl-4">💸 {promotion.totalEarned} earned</p>
       <p className="pl-4 pb-2 flex justify-between items-center">
         ⏳ {message}
@@ -171,9 +168,7 @@ export const RoomPromotion: React.FC<{
             cachedTheme.activeBorderColor,
             'p-1 border rounded-lg hover:scale-105'
           )}
-          onClick={() =>
-            removeRoomPormotion(promotion.totalEarned, promotion.id)
-          }
+          onClick={() => removeRoomPormotion(promotion.id)}
         >
           Remove
         </button>

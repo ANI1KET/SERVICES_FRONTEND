@@ -101,7 +101,6 @@ const initialThemeState = {
 //   labelColor: '#86EFAC',
 // };
 
-export const deletedRoomIds = makeVar<Set<string>>(new Set());
 export const tabStateVar = makeVar<TabState>(initialTabState);
 export const themeVar = makeVar<ThemeState>(initialThemeState);
 export const searchDataVar = makeVar<RoomSearchQueries | undefined>(undefined);

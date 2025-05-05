@@ -6,7 +6,7 @@ import { RateLimiterMemory } from 'rate-limiter-flexible';
 // In-memory rate limiter for dev/local testing
 const rateLimiter = new RateLimiterMemory({
   points: 10, // max 10 requests
-  duration: 600, // per 60 seconds
+  duration: 3600, // per 1 hour
 });
 
 export async function GET(

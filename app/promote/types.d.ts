@@ -40,10 +40,10 @@ export type Promotion = {
     price: number;
     location: string;
   };
-  clickEvents: ClickEvent[];
+  visiters: Visiters[];
 };
 
-export type ClickEvent = {
+export type Visiters = {
   ip: string;
   timestamp: string;
   deviceType: string;
