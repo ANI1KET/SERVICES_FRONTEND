@@ -8,6 +8,7 @@ declare module 'next-auth' {
     role?: string;
     userId?: string;
     number?: string;
+    promoting?: Permission[];
     permission?: Permission[];
   }
   interface Session {
@@ -18,6 +19,7 @@ declare module 'next-auth' {
       number?: string;
       access_token?: string;
       refresh_token?: string;
+      promoting?: Permission[];
       permission?: Permission[];
     } & DefaultSession['user'];
   }

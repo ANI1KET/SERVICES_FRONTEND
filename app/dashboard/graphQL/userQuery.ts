@@ -56,9 +56,11 @@ export const DOWNGRADE_USER = gql(`
   mutation DowngradeUserPermission(
     $userId: ID!,
     $permission: Permission!
+    $promoting:[Permission]!
   ) {
     downgradePermission(
       userId: $userId,
+      promoting:$promoting,
       permission:$permission,
     ) {
       message
@@ -69,22 +71,15 @@ export const DOWNGRADE_USER = gql(`
 export const REMOVE_USER_SUBS = gql(`
   mutation DowngradeUserPermission(
     $userId: ID!,
+    $promoting:[Permission]!,
+    $permissions:[Permission]!
   ) {
     removeUserSubs(
       userId: $userId,
+      promoting:$promoting
+      permissions:$permissions
     ) {
       message
-    }
-  }
-`);
-
-export const GET_USER_BY_EMAIL_NUMBER = gql(`
-  query UserByEmailOrNumber($email:String,$number:String) {
-    userByEmailOrNumber(email:$email,number:$number) {
-      id
-      role
-      email
-      permission
     }
   }
 `);

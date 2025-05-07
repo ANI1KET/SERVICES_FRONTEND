@@ -24,6 +24,7 @@ export const GET_BORKER_OWNER_STATS = gql`
           id
           role
           email
+          promoting
           permission
         }
       }
@@ -33,9 +34,21 @@ export const GET_BORKER_OWNER_STATS = gql`
           id
           role
           email
+          promoting
           permission
         }
       }
     }
   }
 `;
+
+export const GET_USER_BY_EMAIL_NUMBER = gql(`
+  query UserByEmailOrNumber($email:String,$number:String) {
+    userByEmailOrNumber(email:$email,number:$number) {
+      id
+      role
+      email
+      permission
+    }
+  }
+`);

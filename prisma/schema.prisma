@@ -41,7 +41,7 @@ model Subscription {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  @@index([createdAt])
+  @@index([expiresAt])
   @@map("Subscriptions")
 }
 
@@ -181,6 +181,7 @@ model User {
   // ENUM
   role       Role         @default(ADMIN)
   permission Permission[] @default([])
+  promoting  Permission[] @default([])
 
   // RELATIONSHIP
   subscription    Subscription?            @relation(name: "Subscriber")

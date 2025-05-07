@@ -103,13 +103,15 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (isPasswordCorrect) {
-            const { id, email, name, number, role, permission } = user;
+            const { id, email, name, number, role, permission, promoting } =
+              user;
 
             return {
               id,
               name,
               role,
               email,
+              promoting,
               permission,
               number: number ?? undefined,
             };
@@ -141,8 +143,9 @@ export const authOptions: NextAuthOptions = {
           });
           user.role = userDetails.role;
           user.userId = userDetails.id;
+          user.promoting = userDetails.promoting;
+          user.permission = userDetails.permission;
           user.number = userDetails.number as string;
-          user.permission = userDetails.permission as Permission[];
 
           return true;
         } catch (error) {
@@ -172,6 +175,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.userId = user.userId;
         token.number = user.number;
+        token.promoting = user.promoting;
         token.permission = user.permission;
 
         // if (account?.provider === 'google') {
@@ -191,6 +195,7 @@ export const authOptions: NextAuthOptions = {
       session.user.id = token.id as string | undefined;
       session.user.number = token.number as string | undefined;
       session.user.userId = token.userId as string | undefined;
+      session.user.promoting = token.promoting as Permission[] | [];
       session.user.permission = token.permission as Permission[] | [];
       // session.user.refresh_token = token?.refresh_token;
       // session.user.access_token = token?.access_token;

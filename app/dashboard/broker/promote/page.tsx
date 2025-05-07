@@ -1,21 +1,20 @@
 'use client';
 
-import { Session } from 'next-auth';
 import { Permission } from '@prisma/client';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useMutation } from '@apollo/client';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 
 import {
   StartPromotion,
-  DeletetPromotion,
   UpdatetPromotion,
+  DeletetPromotion,
 } from '../../types';
 import {
   START_PROMOTION,
   UPDATE_PROMOTION,
   DELETE_PROMOTION,
-  GET_ACTIVE_PROMOTION,
 } from '../../graphQL/promotion';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
@@ -26,36 +25,47 @@ const Promote = () => {
 
   const { data: session, update } = useSession();
   const number = session?.user.number;
-  const userId = session?.user.userId as string;
   const permission = session?.user.permission;
+  const userId = session?.user.userId as string;
+  const promoting = session?.user.promoting as Permission[];
 
-  const { error, data: activePromotion } = useQuery<{
-    userPromotionStatus: Permission[];
-  }>(GET_ACTIVE_PROMOTION, {
-    variables: { listerId: userId },
-  });
-  const canPromote = (permission || []).filter(
-    (category) =>
-      category !== 'promote' &&
-      !activePromotion?.userPromotionStatus.includes(category)
-  );
+  const [canPromote, setCanPromote] = useState<Permission[]>([]);
+  const [activePromotion, setActivePromotion] = useState<Permission[]>([]);
+  useEffect(() => {
+    setActivePromotion(promoting);
+    setCanPromote(
+      (permission || []).filter(
+        (category) => category !== 'promote' && !promoting?.includes(category)
+      )
+    );
+  }, [session]);
 
-  const updateNumber = async (number: string) =>
+  const updateNumberOrPromoting = async (
+    promote: Permission,
+    number?: string
+  ) => {
     await update({
       ...session,
       user: {
         ...session?.user,
         number: number,
+        promoting: [...promoting, promote],
       },
     });
+  };
 
-  if (error) {
-    return (
-      <div className="w-full text-red-400 grid place-content-center">
-        Error Loading Promotion Data!
-      </div>
+  const downgradePromoting = async (promote: Permission) => {
+    const updatedPromoting = promoting.filter(
+      (permission) => permission != promote
     );
-  }
+    await update({
+      ...session,
+      user: {
+        ...session?.user,
+        promoting: updatedPromoting,
+      },
+    });
+  };
   return (
     <main
       className={cn(
@@ -66,26 +76,21 @@ const Promote = () => {
         'max-xsm:grid-cols-1 '
       )}
     >
-      <ActivePromotions
-        activePromotion={activePromotion?.userPromotionStatus as Permission[]}
-      />
+      <ActivePromotions activePromotion={activePromotion} />
 
       <AddLayout
         userId={userId}
         number={!!number}
         canPromote={canPromote}
-        updateNumber={updateNumber}
-        activePromotion={activePromotion?.userPromotionStatus as Permission[]}
+        updateNumberAndPromoting={updateNumberOrPromoting}
       />
 
-      <UpdateLayout
-        userId={userId}
-        activePromotion={activePromotion?.userPromotionStatus as Permission[]}
-      />
+      <UpdateLayout userId={userId} activePromotion={activePromotion} />
 
       <RemoveLayout
         userId={userId}
-        activePromotion={activePromotion?.userPromotionStatus as Permission[]}
+        activePromotion={activePromotion}
+        downgradePromoting={downgradePromoting}
       />
     </main>
   );
@@ -129,10 +134,11 @@ const AddLayout: React.FC<{
   userId: string;
   number: boolean;
   canPromote: Permission[];
-  activePromotion: Permission[];
-  updateNumber: (number: string) => Promise<Session | null>;
-}> = ({ activePromotion, updateNumber, number, userId, canPromote }) => {
-  const client = useApolloClient();
+  updateNumberAndPromoting: (
+    promote: Permission,
+    number?: string
+  ) => Promise<void>;
+}> = ({ number, userId, canPromote, updateNumberAndPromoting }) => {
   const cachedTheme = useThemeState();
   const [startPromotion] = useMutation(START_PROMOTION);
 
@@ -154,14 +160,7 @@ const AddLayout: React.FC<{
         category: data.promoteCategory,
       },
     });
-    client.cache.modify({
-      fields: {
-        userPromotionStatus() {
-          return [...activePromotion, data.promoteCategory];
-        },
-      },
-    });
-    if (data.number) updateNumber(data.number);
+    await updateNumberAndPromoting(data.promoteCategory, data.number);
 
     reset();
   };
@@ -188,7 +187,7 @@ const AddLayout: React.FC<{
         className={cn('flex flex-col gap-2 p-1 px-2')}
         onSubmit={handleSubmit(onSubmit)}
       >
-        {!number && (
+        {number && (
           <InputField<StartPromotion, 'number'>
             id="number"
             label="Number"
@@ -344,8 +343,8 @@ const UpdateLayout: React.FC<{
 const RemoveLayout: React.FC<{
   userId: string;
   activePromotion: Permission[];
-}> = ({ userId, activePromotion }) => {
-  const client = useApolloClient();
+  downgradePromoting: (promote: Permission) => Promise<void>;
+}> = ({ userId, activePromotion, downgradePromoting }) => {
   const cachedTheme = useThemeState();
   const [deletePromotion] = useMutation(DELETE_PROMOTION);
 
@@ -363,16 +362,7 @@ const RemoveLayout: React.FC<{
         category: data.promoteCategory,
       },
     });
-
-    client.cache.modify({
-      fields: {
-        userPromotionStatus() {
-          return activePromotion.filter(
-            (permission) => permission !== data.promoteCategory
-          );
-        },
-      },
-    });
+    await downgradePromoting(data.promoteCategory);
 
     reset();
   };

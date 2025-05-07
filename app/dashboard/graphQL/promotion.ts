@@ -1,11 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const GET_ACTIVE_PROMOTION = gql(`
-  query UserPromotionStatus($listerId: ID!) {
-    userPromotionStatus(listerId: $listerId)
-  }
-`);
-
 export const START_PROMOTION = gql(`
     mutation StartPromotion($listerId: ID!, $category: Permission!, $price: Int!,$number: String) {
       startPromotion(listerId: $listerId, category: $category, price: $price,number: $number) {

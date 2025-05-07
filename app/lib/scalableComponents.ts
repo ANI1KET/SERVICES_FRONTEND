@@ -17,10 +17,10 @@ import {
 
 export const permissions: Permission[] = [
   'room',
-  'property',
   'hostel',
-  'reMarketItem',
   'vehicle',
+  'property',
+  'reMarketItem',
 ];
 export const roles: Role[] = ['OWNER', 'BROKER', 'USER'];
 export const postedBy: Role[] = ['OWNER', 'BROKER'];
