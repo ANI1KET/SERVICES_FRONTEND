@@ -1,6 +1,6 @@
 'use server';
 
-import SearchForm from '../../../lib/ui/SearchForm';
+import SearchForm from '../../ReUsable/SearchForm';
 
 const LowerSearchBox: React.FC = () => {
   return <SearchForm />;

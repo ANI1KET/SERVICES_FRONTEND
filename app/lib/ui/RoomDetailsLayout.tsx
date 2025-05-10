@@ -11,7 +11,7 @@ import { Suspense, useCallback, useEffect, useRef } from 'react';
 
 import {
   useThemeState,
-  useSearchData,
+  useGetRoomSearchData,
 } from '@/app/providers/reactqueryProvider';
 import RoomDetails from './RoomDetails';
 import { PAGE_SIZE } from '../reusableConst';
@@ -48,8 +48,8 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
   roomId,
 }) => {
   const cacheTheme = useThemeState();
-  const searchData = useSearchData();
   const queryClient = useQueryClient();
+  const searchData = useGetRoomSearchData();
 
   const cachedData = city
     ? queryClient.getQueryData<InfiniteData<RoomData[]>>([`room${city}`])
@@ -57,8 +57,7 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
         if (!searchData) return undefined;
         return queryClient.getQueryData<InfiniteData<RoomData[]>>([
           'search/room',
-          searchData.city,
-          searchData.filters,
+          searchData,
         ]);
       })();
 
@@ -137,6 +136,7 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
       <ResponsiveNewRoomDetails
         roomCardDetails={finalRoomDetails as ListedRoom}
       />
+
       <div
         className={cn(
           cacheTheme?.textColor,
@@ -145,6 +145,7 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
       >
         Room Images
       </div>
+
       <ImageSlider imagesUrl={finalRoomDetails.photos as string[]} />
 
       <div className={'mt-5 '}>
@@ -156,6 +157,7 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
         >
           Similar Rooms in {finalRoomDetails.city}
         </p>
+
         <RoomDetails
           data={data?.pages}
           observerRef={observerRef}

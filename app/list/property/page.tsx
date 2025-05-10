@@ -29,7 +29,7 @@ import {
   CheckboxGroup,
   SelectInputField,
   OptionalInputField,
-} from '@/app//lib/ui/FormReusableComponent';
+} from '@/app/components/ReUsable/FormReusableComponent';
 import { upload_Video } from '../uploadUtils';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';

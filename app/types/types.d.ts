@@ -1,29 +1,10 @@
 import { FurnishingStatusEnum, Role } from '@prisma/client';
 
+export type CategoryCitiesLocations = Record<string, string[]>;
+
+// ROOM
 export type RoomType = 'FLAT' | '1BHK' | '2BHK' | '3BHK' | '4BHK';
 export type RoomAmenities = 'BIKE PARK' | 'CAR PARK' | 'WIFI' | '24/7 WATER';
-
-export type RoomFilters = {
-  postedby: Role[];
-  verified?: boolean;
-  roomtype: RoomType[];
-  price: number | number[];
-  rating: number | number[];
-  amenities: RoomAmenities[];
-  capacity: number | number[];
-  furnishingstatus: FurnishingStatusEnum[];
-};
-
-export type RoomSearchQuery = {
-  city: string;
-  location: string;
-} & RoomFilters;
-
-export type RoomSearchQueries = {
-  city: string;
-  locations: string[];
-  filters: RoomFilters;
-};
 
 export type Room = {
   name: string;
@@ -86,7 +67,7 @@ export type RoomData = ListedRoom & {
   }[];
 };
 
-//
+// PROPERTY
 export type PropertyAmenities =
   | 'CCTV'
   | 'LIFT'
@@ -129,36 +110,16 @@ export type PropertyPlotWidth = 'ft' | 'mt';
 export type PropertyPlotLength = 'ft' | 'mt';
 export type PropertyHouseArea = 'sqft' | 'sqm';
 
-// export type PropertyFilters = {
-//   postedby: Role[];
-//   verified?: boolean;
-//   price: number | number[];
-//   propertyType: PropertyType;
-//   amenities: PropertyAmenities[];
-//   nearbyAreas: PropertyNearByAreas[];
-// };
-
-// export type PropertySearchQuery = {
-//   city: string;
-//   location: string;
-// } & PropertyFilters;
-
-// export type PropertySearchQueries = {
-//   city: string;
-//   locations: string[];
-//   filters: PropertyFilters;
-// };
-
 export type BaseProperty = {
   city: string;
   title: string;
+  // price: string | number;
   price: number;
   location: string;
   area: PropertyArea;
   description: string;
   ownerContact: string;
   nearbyAreas: PropertyNearByAreas[];
-  // price: string | number;
   primaryContact: string;
   direction: string | null;
   // ENUM

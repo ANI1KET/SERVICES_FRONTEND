@@ -20,8 +20,8 @@ import {
   furnishingStatus,
 } from '@/app/lib/scalableComponents';
 import {
-  useSearchData,
   useThemeState,
+  useGetRoomSearchData,
 } from '@/app/providers/reactqueryProvider';
 import {
   PriceSlider,
@@ -29,14 +29,15 @@ import {
   CustomCheckbox,
   CapacitySlider,
   CustomCheckboxGroup,
-} from '../../../lib/ui/FormReusableComponent';
+} from '../../ReUsable/FormReusableComponent';
+import { RoomFilters } from '@/app/types/filters';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import CityLocationsData from './CityLocationsData';
-import { RoomType, RoomAmenities, RoomFilters } from '../../../types/types';
+import { RoomType, RoomAmenities } from '../../../types/types';
 
 const LoadMoreCityLocations = () => {
   const cacheTheme = useThemeState();
-  const searchData = useSearchData();
+  const searchData = useGetRoomSearchData();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteRoomQuery();
@@ -92,10 +93,7 @@ const LoadMoreCityLocations = () => {
           'h-[90vh] overflow-y-scroll sticky top-[8.5vh] xl:overflow-y-hidden xl:h-fit max-sm:top-1 flex flex-col gap-4 max-xsm:hidden p-1 border-2 rounded-xl '
         )}
       >
-        <FilterLayout
-          filters={searchData?.filters}
-          updateFilter={updateFilter}
-        />
+        <FilterLayout updateFilter={updateFilter} filters={searchData} />
       </div>
       <div className="">
         {memoizedPages?.[0]?.length === 0 ? (
@@ -138,10 +136,7 @@ const LoadMoreCityLocations = () => {
             'flex flex-col gap-1 w-full h-[50vh] col-span-9 border-2 rounded-t-2xl p-2 overflow-y-scroll'
           )}
         >
-          <FilterLayout
-            filters={searchData?.filters}
-            updateFilter={updateFilter}
-          />
+          <FilterLayout updateFilter={updateFilter} filters={searchData} />
         </div>
         <div
           className={cn(
@@ -203,6 +198,7 @@ const FilterLayout = ({
         defaultValue={filters?.price}
         onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
       />
+
       <div
         className={cn(
           'grid gap-4 mx-1',
@@ -215,6 +211,7 @@ const FilterLayout = ({
           defaultValue={filters?.rating}
           onChangeEnd={(ratingRange) => updateFilter('rating', ratingRange)}
         />
+
         <CapacitySlider
           defaultValue={filters?.capacity}
           onChangeEnd={(capacityValue) =>
@@ -222,6 +219,7 @@ const FilterLayout = ({
           }
         />
       </div>
+
       <CustomCheckboxGroup<RoomAmenities>
         label="Amenities"
         options={roomAmenities}
@@ -252,6 +250,7 @@ const FilterLayout = ({
           updateFilter('furnishingstatus', furnishingStatus)
         }
       />
+
       <CustomCheckbox
         label="Verified"
         defaultValue={filters?.verified as boolean}

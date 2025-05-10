@@ -16,7 +16,7 @@ import React, { useEffect, useState } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 
 import { TextField } from '@mui/material';
-import { cn } from '../utils/tailwindMerge';
+import { cn } from '../../lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 type StrictRegisterOptions<
@@ -446,6 +446,132 @@ export const SelectField = <T extends FieldValues, K extends FieldPath<T>>({
   );
 };
 
+// DEFAULT SELECT FIELD
+type DefaultSelectFieldProps<T extends FieldValues, K extends FieldPath<T>> = {
+  id: K;
+  control: Control<T>;
+  options: OptionType<T, K>[];
+  onChange: (value: OptionType<T, K> | null) => void;
+};
+
+export const DefaultSelectField = <
+  T extends FieldValues,
+  K extends FieldPath<T>
+>({
+  id,
+  control,
+  options,
+  onChange,
+}: DefaultSelectFieldProps<T, K>) => {
+  return (
+    <Controller
+      name={id}
+      control={control}
+      render={({ field }) => (
+        <Autocomplete<OptionType<T, K>>
+          options={options}
+          value={field.value || null}
+          disableClearable={true as false}
+          onChange={(_, newValue) => {
+            field.onChange(newValue);
+            onChange(newValue);
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputRef={field.ref}
+              slotProps={{
+                root: {
+                  sx: {
+                    '& .MuiOutlinedInput-root': {
+                      height: '36px',
+                      '& fieldset': {
+                        border: 'none',
+                      },
+                    },
+                    '& .MuiOutlinedInput-input': {
+                      height: 'auto',
+                      overflow: 'visible',
+                      textOverflow: 'clip',
+                    },
+                  },
+                },
+              }}
+            />
+          )}
+        />
+      )}
+    />
+  );
+};
+
+// MULTIPLE SELECT FIELD
+type MultipleSelectFieldProps<T extends FieldValues, K extends FieldPath<T>> = {
+  id: K;
+  disabled: boolean;
+  control: Control<T>;
+  options: OptionType<T, K>[];
+};
+
+export const MultipleSelectField = <
+  T extends FieldValues,
+  K extends FieldPath<T>
+>({
+  id,
+  control,
+  options,
+  disabled = false,
+}: MultipleSelectFieldProps<T, K>) => {
+  return (
+    <Controller
+      name={id}
+      control={control}
+      render={({ field }) => (
+        <Autocomplete
+          multiple
+          disableClearable
+          // popupIcon={null}
+          options={options}
+          disabled={disabled}
+          value={field.value || []}
+          isOptionEqualToValue={(opt, val) => opt === val}
+          onChange={(_, newValue) => field.onChange(newValue)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputRef={field.ref}
+              slotProps={{
+                root: {
+                  sx: {
+                    '& .MuiAutocomplete-inputRoot': {
+                      display: 'flex',
+                      overflowX: 'auto',
+                      scrollbarWidth: 'none',
+                      flexWrap: 'nowrap !important',
+                      '&::-webkit-scrollbar': {
+                        display: 'none',
+                      },
+                    },
+                    '& .MuiAutocomplete-tag': {
+                      flexShrink: 0,
+                    },
+                    '& .MuiOutlinedInput-root': {
+                      height: '36px',
+                      '& fieldset': {
+                        border: 'none',
+                      },
+                    },
+                  },
+                },
+              }}
+            />
+          )}
+        />
+      )}
+    />
+  );
+};
+
 // PlusCheckbox Group
 type TickCheckboxGroupProps<T extends FieldValues, K extends FieldPath<T>> = {
   id: K;
@@ -507,46 +633,45 @@ export const TickCheckboxGroup = <
 };
 
 // CheckedBoxProps Group
-type CheckedBoxProps<T extends FieldValues, K extends FieldPath<T>> = {
-  id: K;
+type CheckedBoxProps<T extends FieldValues> = {
+  id: FieldPath<T>;
   label: string;
-  register: UseFormRegister<T>;
-  value: NonNullable<PathValue<T, K>>;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  control: Control<T>;
 };
 
-export const CheckedBox = <T extends FieldValues, K extends FieldPath<T>>({
+export const CheckedBox = <T extends FieldValues>({
   id,
   label,
-  value,
-  register,
-  onChange,
-}: CheckedBoxProps<T, K>) => {
+  control,
+}: CheckedBoxProps<T>) => {
   const cachedTheme = useThemeState();
 
   return (
-    <div>
-      <label className="flex gap-2 font-medium cursor-pointer ">
-        {label}
-        <input
-          type="checkbox"
-          {...register(id)}
-          checked={value}
-          onChange={onChange}
-          className="hidden peer"
-        />
-        <span
-          className={cn(
-            cachedTheme?.borderColor,
-            cachedTheme?.peerCheckedBg,
-            cachedTheme?.peerCheckedText,
-            'font-bold px-1 border rounded-lg transition-colors duration-300'
-          )}
-        >
-          ✓
-        </span>
-      </label>
-    </div>
+    <Controller
+      name={id}
+      control={control}
+      render={({ field }) => (
+        <label className="flex gap-2 font-medium cursor-pointer">
+          {label}
+          <input
+            type="checkbox"
+            checked={!!field.value} // allows undefined initially
+            onChange={(e) => field.onChange(e.target.checked)}
+            className="hidden peer"
+          />
+          <span
+            className={cn(
+              cachedTheme?.borderColor,
+              cachedTheme?.peerCheckedBg,
+              cachedTheme?.peerCheckedText,
+              'font-bold px-1 border rounded-lg transition-colors duration-300'
+            )}
+          >
+            ✓
+          </span>
+        </label>
+      )}
+    />
   );
 };
 
@@ -707,8 +832,8 @@ export const CapacitySlider: React.FC<CapacitySliderProps> = ({
 type CustomCheckboxGroupProps<T> = {
   options: T[];
   label: string;
-  defaultValue: T[];
   className: string;
+  defaultValue?: T[];
   onChange: (selectedValues: T[]) => void;
 };
 
@@ -774,14 +899,14 @@ export const CustomCheckboxGroup = <T extends string>({
 // CheckedBoxProps Group
 type CustomCheckboxProps = {
   label: string;
-  defaultValue: boolean;
+  defaultValue?: boolean;
   onChange: (checked: boolean) => void;
 };
 
 export const CustomCheckbox = ({
   label,
-  defaultValue,
   onChange,
+  defaultValue,
 }: CustomCheckboxProps) => {
   const cachedTheme = useThemeState();
 

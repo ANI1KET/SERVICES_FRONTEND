@@ -294,7 +294,7 @@ const DetailComponent = memo(({ user }: { user: Lister }) => {
         },
       });
     },
-    [client.cache, downgradeUser]
+    [client.cache, user.promoting, downgradeUser]
   );
 
   const deleteUserSubs = useCallback(

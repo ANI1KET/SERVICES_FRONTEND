@@ -2,33 +2,34 @@
 
 import axios from 'axios';
 
+import { ListedRoom } from '../types/types';
+import { RoomFilters } from '../types/filters';
 import { PAGE_SIZE } from '../lib/reusableConst';
 import axiosInstance from '../lib/utils/axiosInstance';
-import { ListedRoom, RoomFilters } from '../types/types';
 
-export const getCityLocations = async ({
+export const getFilteredData = async ({
+  city,
+  filters,
   category,
+  locations,
   offset = 0,
-  decodedCity,
-  decodedLocations,
-  decodedURLQueryFilters,
 }: {
+  city: string;
   offset: number;
   category: string;
-  decodedCity: string;
-  decodedLocations: string[];
-  decodedURLQueryFilters: RoomFilters;
+  locations: string[];
+  filters: RoomFilters;
 }): Promise<ListedRoom[]> => {
   'use server';
 
   try {
-    const response = await axiosInstance.get(`/place/${category}`, {
+    const response = await axiosInstance.get(`/${category}/filter`, {
       params: {
+        city,
         offset,
+        filters,
+        locations,
         limit: PAGE_SIZE,
-        city: decodedCity,
-        locations: decodedLocations,
-        filters: decodedURLQueryFilters,
       },
       headers: { 'Cache-Control': 'no-cache' },
     });

@@ -3,10 +3,10 @@
 import { memo } from 'react';
 
 import { ListedRoom } from '@/app/types/types';
+import { cn } from '@/app/lib/utils/tailwindMerge';
 import { timeAgo } from '@/app/lib/utils/timeCalculation';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 import { PriceIcon, FurnishIcon, CapacityIcon } from '@/app/lib/icon/svg';
-import { cn } from '@/app/lib/utils/tailwindMerge';
 
 interface RoomDetailsProps {
   roomCardDetails: ListedRoom;

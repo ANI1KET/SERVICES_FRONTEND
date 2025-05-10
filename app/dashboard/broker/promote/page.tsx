@@ -18,7 +18,10 @@ import {
 } from '../../graphQL/promotion';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-import { InputField, SelectField } from '@/app/lib/ui/FormReusableComponent';
+import {
+  InputField,
+  SelectField,
+} from '@/app/components/ReUsable/FormReusableComponent';
 
 const Promote = () => {
   const cachedTheme = useThemeState();
@@ -38,7 +41,7 @@ const Promote = () => {
         (category) => category !== 'promote' && !promoting?.includes(category)
       )
     );
-  }, [session]);
+  }, [session, permission, promoting]);
 
   const updateNumberOrPromoting = async (
     promote: Permission,

@@ -1,43 +1,17 @@
 'use client';
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   getCategoryCityLocations,
   getCategoryCitiesLocations,
 } from './CategoryPlacesServerAction';
-import { CityData } from '@/app/providers/reactqueryProvider';
+import { RoomSearchQueries } from '@/app/types/filters';
 
 export function FetchCategoryCitiesLocations(category: string, city: string) {
-  const queryClient = useQueryClient();
-
   return useQuery({
-    queryKey: ['getCategoryCitiesLocations'],
-    queryFn: async () => {
-      const CitiesLocationsData = await getCategoryCitiesLocations(
-        city,
-        category
-      );
-
-      const newCacheData = queryClient.setQueryData(
-        ['getCategoryCitiesLocations'],
-        (cachedData: CityData | undefined) => {
-          if (!cachedData) {
-            return {
-              city: CitiesLocationsData.city,
-              [category]: CitiesLocationsData[category],
-            };
-          }
-
-          return {
-            ...cachedData,
-            [category]: CitiesLocationsData[category],
-          };
-        }
-      ) as CityData;
-
-      return newCacheData;
-    },
+    queryKey: [`${category}CitiesLocations`],
+    queryFn: async () => await getCategoryCitiesLocations(city, category),
     retry: 0,
     gcTime: Infinity,
     staleTime: Infinity,
@@ -47,52 +21,37 @@ export function FetchCategoryCitiesLocations(category: string, city: string) {
 }
 
 export function FetchCategoryCityLocations() {
-  let city: string, category: string;
   const queryClient = useQueryClient();
 
-  const query = useQuery({
-    queryKey: ['getCategoryCityLocations'],
-    queryFn: async () => {
-      const CityLocationsData = await getCategoryCityLocations({
-        city: city,
-        category: category,
-      });
+  const mutation = useMutation({
+    mutationFn: async ({
+      city,
+      category,
+    }: {
+      city: string;
+      category: string;
+    }) => {
+      const data = await getCategoryCityLocations({ city, category });
+
+      return {
+        city,
+        data,
+        category,
+      };
+    },
+    onSuccess: (result) => {
+      const { city, category, data } = result;
 
       queryClient.setQueryData(
-        ['getCategoryCitiesLocations'],
-        (cachedData: CityData) => {
-          return {
-            ...(cachedData as CityData),
-            city: city,
-            [category]: {
-              ...(cachedData?.[category] as Record<string, string[]>),
-              ...CityLocationsData,
-            },
-          };
-        }
-      ) as CityData;
-
-      // queryClient.removeQueries({
-      //   queryKey: ['getCategoryCityLocations'],
-      //   exact: true,
-      // });
-
-      // return CityLocationsData;
-      return null;
+        [`${category}CitiesLocations`],
+        (cachedData: RoomSearchQueries) => ({
+          ...cachedData,
+          [city]: data[city],
+        })
+      );
     },
     retry: 0,
-    gcTime: 0,
-    staleTime: 0,
-    enabled: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
   });
 
-  const reFetchCityLocations = (City: string, Category: string) => {
-    city = City;
-    category = Category;
-    query.refetch();
-  };
-
-  return { ...query, reFetchCityLocations };
+  return mutation;
 }

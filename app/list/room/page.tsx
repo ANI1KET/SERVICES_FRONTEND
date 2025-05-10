@@ -18,7 +18,7 @@ import {
   RadioGroup,
   CheckboxGroup,
   OptionalInputField,
-} from '@/app//lib/ui/FormReusableComponent';
+} from '@/app/components/ReUsable/FormReusableComponent';
 import { upload_Video } from '../uploadUtils';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import { SubmitRoomDetails, upload_Images } from '../ServerAction';

@@ -1,8 +1,8 @@
 'use client';
 
-import SearchForm from '@/app/lib/ui/SearchForm';
 import { categoryTabs } from '@/app/lib/utils/tabs';
 import CategoryTabs from '@/app/lib/ui/CategoryTabs';
+import SearchForm from '@/app/components/ReUsable/SearchForm';
 
 const SearchPanel = () => {
   return (

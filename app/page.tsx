@@ -7,11 +7,10 @@ import {
   HydrationBoundary,
 } from '@tanstack/react-query';
 
-import { RoomData } from './types/types';
-import { CityData } from './providers/reactqueryProvider';
 import UpperLayout from './components/HomeLayouts/UpperLayout';
 import LowerLayout from './components/HomeLayouts/LowerLayout';
 import MiddleLayout from './components/HomeLayouts/MiddleLayout';
+import { CategoryCitiesLocations, RoomData } from './types/types';
 import ListNavigation from './components/HomeLayouts/ListNavigation';
 import UpperSearchBox from './components/HomeLayouts/MiddleLayout/UpperSearchBox';
 import LowerSearchBox from './components/HomeLayouts/MiddleLayout/LowerSearchBox';
@@ -23,15 +22,21 @@ const Home = async () => {
   try {
     const {
       city,
-      result,
+      cityData,
       categoryDetails,
     }: {
       city: string;
-      result: CityData;
+      cityData: CategoryCitiesLocations;
       categoryDetails: RoomData[];
     } = await getCategoryCitiesLocationDetails({ category: 'room', offset: 0 });
 
-    queryClient.setQueryData<CityData>(['getCategoryCitiesLocations'], result);
+    queryClient.setQueryData<string>(['city'], city);
+
+    queryClient.setQueryData<CategoryCitiesLocations>(
+      ['roomCitiesLocations'],
+      cityData
+    );
+
     queryClient.setQueryData<InfiniteData<RoomData[]>>([`room${city}`], {
       pageParams: [0],
       pages: [categoryDetails],
@@ -49,10 +54,7 @@ const Home = async () => {
         upperComponent={<UpperSearchBox />}
         lowerComponent={<LowerSearchBox />}
         /> */}
-          <LowerLayout
-            city={city}
-            cities={result?.room as Record<string, string[]>}
-          />
+          <LowerLayout city={city} cities={cityData} />
         </HydrationBoundary>
       </main>
     );
@@ -60,7 +62,7 @@ const Home = async () => {
     console.error('Failed to load details:', error);
 
     return (
-      <div className="text-red-500 p-4">
+      <div className="w-full text-red-500 p-4 text-center">
         Failed to load data. Please try again later.
       </div>
     );

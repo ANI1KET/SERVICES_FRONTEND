@@ -1,10 +1,14 @@
 'use client';
 
+import {
+  QueryClient,
+  useQueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { makeVar, useReactiveVar } from '@apollo/client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { RoomSearchQueries } from '../types/types';
+import { RoomFilters, RoomSearchQueries } from '../types/filters';
 
 export interface TabState {
   [key: string]: string;
@@ -103,12 +107,7 @@ const initialThemeState = {
 
 export const tabStateVar = makeVar<TabState>(initialTabState);
 export const themeVar = makeVar<ThemeState>(initialThemeState);
-export const searchDataVar = makeVar<RoomSearchQueries | undefined>(undefined);
-
-export type CityData = {
-  city: string;
-  [key: string]: Record<string, string[]> | string;
-};
+export const searchRoomData = makeVar<RoomSearchQueries | undefined>(undefined);
 
 export default function ReactQueryProvider({
   children,
@@ -121,12 +120,31 @@ export default function ReactQueryProvider({
   // });
   const queryClient = new QueryClient();
 
+  queryClient.setQueryDefaults(['city'], {
+    enabled: false,
+    gcTime: Infinity,
+    staleTime: Infinity,
+  });
   return (
     <QueryClientProvider client={queryClient}>
       {children}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
+}
+
+export function useGetCity() {
+  const queryClient = useQueryClient();
+
+  return queryClient.getQueryData<string>(['city']);
+}
+
+export function useSetCity() {
+  const queryClient = useQueryClient();
+
+  return (city: string) => {
+    queryClient.setQueryData(['city'], city);
+  };
 }
 
 export function useTabState() {
@@ -154,44 +172,35 @@ export function useThemeState() {
   return useReactiveVar(themeVar);
 }
 
-export function useSearchData() {
-  return useReactiveVar(searchDataVar);
+export function useGetRoomSearchData() {
+  return useReactiveVar(searchRoomData);
 }
 
-export function useSetSearchData() {
-  return (
-    city: string,
-    locations: string[],
-    data: RoomSearchQueries['filters']
-  ) => {
-    searchDataVar({
+export function useSetRoomSearchData() {
+  return (city: string, locations: string[], data: RoomFilters) => {
+    searchRoomData({
       city,
       locations,
-      filters: {
-        price: data.price,
-        rating: data.rating,
-        capacity: data.capacity,
-        verified: data.verified || undefined,
-        postedby: data.postedby,
-        roomtype: data.roomtype,
-        amenities: data.amenities,
-        furnishingstatus: data.furnishingstatus,
-      },
+      price: data.price,
+      rating: data.rating,
+      capacity: data.capacity,
+      postedby: data.postedby,
+      roomtype: data.roomtype,
+      verified: data.verified,
+      amenities: data.amenities,
+      furnishingstatus: data.furnishingstatus,
     });
   };
 }
 
-export function useUpdateSearchFilters() {
-  return (filtersToApply: Partial<RoomSearchQueries['filters']>) => {
-    const prevData = searchDataVar();
+export function updateRoomSearchData() {
+  return (filtersToApply: Partial<RoomFilters>) => {
+    const prevData = searchRoomData();
     if (!prevData) return;
 
-    searchDataVar({
+    searchRoomData({
       ...prevData,
-      filters: {
-        ...prevData.filters,
-        ...filtersToApply,
-      },
+      ...filtersToApply,
     });
   };
 }

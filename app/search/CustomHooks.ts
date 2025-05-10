@@ -3,44 +3,46 @@ import { useCallback, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import {
-  useSearchData,
-  useUpdateSearchFilters,
+  useGetRoomSearchData,
+  updateRoomSearchData,
 } from '../providers/reactqueryProvider';
 import { PAGE_SIZE } from '../lib/reusableConst';
-import { getCityLocations } from './ServerAction';
-import { RoomFilters, RoomSearchQueries } from '../types/types';
+import { getFilteredData } from './ServerAction';
+import { RoomFilters, RoomSearchQueries } from '../types/filters';
 
 export const useInfiniteRoomQuery = () => {
-  const cachedData = useSearchData();
+  const cachedData = useGetRoomSearchData();
+  const { city, locations, ...filters } =
+    (cachedData as RoomSearchQueries) || {};
 
   return useInfiniteQuery({
-    queryKey: ['search/room', cachedData?.city, cachedData?.filters],
+    queryKey: ['search/room', cachedData],
     queryFn: ({ pageParam = 0 }) => {
       if (!cachedData) return [];
 
-      return getCityLocations({
+      return getFilteredData({
+        city,
+        locations,
         category: 'room',
+        filters: filters,
         offset: pageParam,
-        decodedCity: cachedData.city,
-        decodedLocations: cachedData.locations,
-        decodedURLQueryFilters: cachedData.filters as RoomFilters,
       });
     },
     getNextPageParam: (lastPage, allPages) => {
       const currentOffset = allPages.length * PAGE_SIZE;
       return lastPage.length === PAGE_SIZE ? currentOffset : undefined;
     },
-    gcTime: 5 * 60000,
     initialPageParam: 0,
-    staleTime: 5 * 60000,
+    gcTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   });
 };
 
 export const useFilterUpdater = () => {
-  const updateFilters = useUpdateSearchFilters();
-  const pendingFiltersRef = useRef<Partial<RoomSearchQueries['filters']>>({});
+  const updateFilters = updateRoomSearchData();
+  const pendingFiltersRef = useRef<Partial<RoomFilters>>({});
 
   const throttledUpdateCache = useRef(
     throttle(
@@ -54,10 +56,7 @@ export const useFilterUpdater = () => {
   ).current;
 
   const updateFilter = useCallback(
-    <K extends keyof RoomSearchQueries['filters']>(
-      key: K,
-      value: RoomSearchQueries['filters'][K]
-    ) => {
+    <K extends keyof RoomFilters>(key: K, value: RoomFilters[K]) => {
       pendingFiltersRef.current = {
         ...pendingFiltersRef.current,
         [key]: value,
