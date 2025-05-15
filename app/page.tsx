@@ -1,5 +1,5 @@
 // export const dynamic = 'force-dynamic';
-export const revalidate = 5 * 60;
+export const revalidate = 300;
 
 import {
   dehydrate,
