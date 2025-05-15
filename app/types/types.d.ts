@@ -96,15 +96,15 @@ export type PropertyNearByAreas =
 
 export type PropertyArea =
   | 'sqm'
-  | 'dam'
   | 'sqft'
   | 'acre'
   | 'aana'
   | 'dhur'
   | 'bigha'
-  | 'paisa'
-  | 'ropani'
   | 'kattha';
+// | 'dam'
+// | 'paisa'
+// | 'ropani'
 
 export type PropertyPlotWidth = 'ft' | 'mt';
 export type PropertyPlotLength = 'ft' | 'mt';
@@ -112,16 +112,16 @@ export type PropertyHouseArea = 'sqft' | 'sqm';
 
 export type BaseProperty = {
   city: string;
+  area: number;
   title: string;
   // price: string | number;
   price: number;
   location: string;
-  area: PropertyArea;
   description: string;
   ownerContact: string;
-  nearbyAreas: PropertyNearByAreas[];
   primaryContact: string;
   direction: string | null;
+  nearbyAreas: PropertyNearByAreas[];
   // ENUM
   postedBy: Role;
   // RELATION
@@ -133,15 +133,15 @@ export type House = BaseProperty & {
   bedrooms: number;
   kitchens: number;
   bathrooms: number;
+  builtUpArea: number;
   amenities: PropertyAmenities[];
-  builtUpArea: PropertyHouseArea;
 
   propertyType: 'House';
 };
 
 export type Land = BaseProperty & {
-  plotWidth: PropertyPlotWidth;
-  plotLength: PropertyPlotLength;
+  plotWidth: number;
+  plotLength: number;
 
   propertyType: 'Land';
 };
@@ -164,6 +164,7 @@ export type ListedProperty = PropertyWithMediaUrl & {
   id: string;
   // isActive: boolean;
   verified: boolean;
+  available: boolean;
   // DATE
   createdAt: string;
   updatedAt: string;

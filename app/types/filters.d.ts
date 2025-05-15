@@ -1,6 +1,14 @@
-import { FurnishingStatusEnum, Role } from '@prisma/client';
+import { FurnishingStatusEnum, PropertyType, Role } from '@prisma/client';
 
-import { RoomAmenities, RoomType } from './types';
+import {
+  RoomType,
+  PropertyArea,
+  RoomAmenities,
+  PropertyAmenities,
+  PropertyPlotWidth,
+  PropertyPlotLength,
+  PropertyNearByAreas,
+} from './types';
 
 // ROOM FILTERS
 export type RoomFilters = {
@@ -22,17 +30,20 @@ export type RoomSearchQueries = {
 // PROPERTY FILTERS
 export type PropertyFilters = {
   verified?: boolean;
+  area: number | number[];
   price: number | number[];
-  propertyType: PropertyType[];
+  propertyType: PropertyType;
+  // nearbyAreas: PropertyNearByAreas[];
+  // ROOM
+  floors: number | number[];
+  bedrooms: number | number[];
+  kitchens: number | number[];
+  bathrooms: number | number[];
+  builtUpArea: number | number[];
   amenities: PropertyAmenities[];
-  nearbyAreas: PropertyNearByAreas[];
-
-  bedrooms?: number | number[]; // For House
-  bathrooms?: number | number[]; // For House
-  kitchens?: number | number[]; // For House
-  floors?: number | number[]; // For House
-  plotwidth?: string | string[]; // For Land
-  plotlength?: string | string[]; // For Land
+  // LAND
+  plotWidth: number | number[];
+  plotLength: number | number[];
 };
 
 export type PropertySearchQueries = {

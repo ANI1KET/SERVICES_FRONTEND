@@ -269,6 +269,7 @@ model Room {
   @@index([listerId])
   @@index([isActive])
   @@index([updatedAt])
+  @@index([city, location])
   @@map("Rooms")
 }
 
@@ -367,16 +368,17 @@ enum PropertyType {
 
 model Property {
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  area           Int
+  price          Float
   title          String
   city           String
-  area           String
   location       String
+  available      String
+  ownerContact   String
+  primaryContact String
   video          String?
   direction      String?
   description    String?
-  price          Float
-  ownerContact   String
-  primaryContact String
   photos         String[]
   nearbyAreas    String[] // School, Hospital, Metro, Market, etc.
   isActive       Boolean      @default(true)
@@ -385,11 +387,11 @@ model Property {
   bedrooms       Int?
   kitchens       Int?
   bathrooms      Int?
-  builtUpArea    String?
+  builtUpArea    Int?
   amenities      String[] // Parking, Lift, Power Backup, Security, etc.
   // LAND
-  plotWidth      String?
-  plotLength     String?
+  plotWidth      Int?
+  plotLength     Int?
   // ONLY SELLER CAN VIEW
   documents      String[]
   // ADMIN WORK
@@ -406,7 +408,11 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([city])
+  @@index([sellerId])
+  @@index([isActive])
   @@index([updatedAt])
+  @@index([city, location])
   @@map("Properties")
 }
 

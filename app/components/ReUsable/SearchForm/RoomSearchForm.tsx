@@ -29,6 +29,7 @@ import {
   CheckedBox,
   PriceSlider,
   RatingSlider,
+  DynamicSlider,
   CapacitySlider,
   TickCheckboxGroup,
   DefaultSelectField,

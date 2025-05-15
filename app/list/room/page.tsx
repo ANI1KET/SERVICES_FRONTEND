@@ -48,10 +48,7 @@ const Room = () => {
   });
 
   const { mutate } = useMutation({
-    mutationFn: (data: RoomWithMediaUrl) =>
-      SubmitRoomDetails({
-        ...data,
-      }),
+    mutationFn: (data: RoomWithMediaUrl) => SubmitRoomDetails(data),
     onSuccess: (response) => {
       queryClient.setQueryData(['CategoryDetails', 'room'], response);
       reset();

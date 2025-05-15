@@ -8,7 +8,12 @@ import {
 import { makeVar, useReactiveVar } from '@apollo/client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { RoomFilters, RoomSearchQueries } from '../types/filters';
+import {
+  RoomFilters,
+  RoomSearchQueries,
+  PropertySearchQueries,
+  PropertyFilters,
+} from '../types/filters';
 
 export interface TabState {
   [key: string]: string;
@@ -108,6 +113,9 @@ const initialThemeState = {
 export const tabStateVar = makeVar<TabState>(initialTabState);
 export const themeVar = makeVar<ThemeState>(initialThemeState);
 export const searchRoomData = makeVar<RoomSearchQueries | undefined>(undefined);
+export const searchPropertyData = makeVar<PropertySearchQueries | undefined>(
+  undefined
+);
 
 export default function ReactQueryProvider({
   children,
@@ -172,6 +180,7 @@ export function useThemeState() {
   return useReactiveVar(themeVar);
 }
 
+// ROOM
 export function useGetRoomSearchData() {
   return useReactiveVar(searchRoomData);
 }
@@ -199,6 +208,37 @@ export function updateRoomSearchData() {
     if (!prevData) return;
 
     searchRoomData({
+      ...prevData,
+      ...filtersToApply,
+    });
+  };
+}
+
+// PROPERTY
+export function useGetPropertySearchData() {
+  return useReactiveVar(searchPropertyData);
+}
+
+export function useSetPropertySearchData() {
+  return (
+    city: string,
+    locations: string[],
+    data: Partial<PropertyFilters>
+  ) => {
+    searchPropertyData({
+      city,
+      locations,
+      ...(data as PropertyFilters),
+    });
+  };
+}
+
+export function updatePropertySearchData() {
+  return (filtersToApply: Partial<PropertyFilters>) => {
+    const prevData = searchPropertyData();
+    if (!prevData) return;
+
+    searchPropertyData({
       ...prevData,
       ...filtersToApply,
     });

@@ -3,9 +3,9 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { memo, Suspense, useMemo } from 'react';
 
-import { ListedRoom } from '@/app/types/types';
+import { ListedProperty } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import RoomDetailsLayout from './/RoomDetailsLayout';
+import PropertyDetailsLayout from './PropertyDetailsLayout';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 const ImageLoop = dynamic(() => import('../../../lib/ui/ImageLoop'), {
@@ -21,7 +21,7 @@ const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
 interface CityLocationsDataProps {
   category: string;
-  cityLocationsData: ListedRoom[];
+  cityLocationsData: ListedProperty[];
 }
 
 const CityLocationsData = memo(
@@ -29,15 +29,15 @@ const CityLocationsData = memo(
     const cachedTheme = useThemeState();
 
     const roomElements = useMemo(() => {
-      return cityLocationsData.map((roomDetails) => {
-        const encodedId = btoa(roomDetails.id);
-        // const encodedId = btoa(`${roomDetails.id},${roomDetails.city}`);
-        const memoizedPhotos = roomDetails.photos;
+      return cityLocationsData.map((propertyDetails) => {
+        const encodedId = btoa(propertyDetails.id);
+        // const encodedId = btoa(`${propertyDetails.id},${propertyDetails.city}`);
+        const memoizedPhotos = propertyDetails.photos;
 
         return (
-          <Link key={roomDetails.id} href={`/${category}/${encodedId}`}>
+          <Link key={propertyDetails.id} href={`/${category}/${encodedId}`}>
             <div className="w-full grid grid-cols-9 mb-5">
-              {roomDetails.videos ? (
+              {propertyDetails.video ? (
                 <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9 aspect-video">
                   <Suspense fallback={<VideoSkeleton />}>
                     <ReactPlayer
@@ -58,7 +58,7 @@ const CityLocationsData = memo(
                         },
                       }}
                       style={{ pointerEvents: 'none' }}
-                      url={roomDetails.videos}
+                      url={propertyDetails.video}
                     />
                   </Suspense>
                   <AutoScrollCarousel photos={memoizedPhotos} />
@@ -80,7 +80,7 @@ const CityLocationsData = memo(
                   'col-span-6 max-sm:col-span-5 max-xsm:col-span-9 p-1 border-2 rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl'
                 )}
               >
-                <RoomDetailsLayout roomCardDetails={roomDetails} />
+                <PropertyDetailsLayout propertyCardDetails={propertyDetails} />
               </div>
             </div>
           </Link>

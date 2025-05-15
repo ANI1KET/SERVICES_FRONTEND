@@ -1,3 +1,5 @@
+'use client';
+
 const Property = () => {
   return <div>Property</div>;
 };

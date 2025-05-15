@@ -1,6 +1,7 @@
 'use client';
 
 import RoomSearchForm from './SearchForm/RoomSearchForm';
+import PropertySearchForm from './SearchForm/PropertySearchForm';
 import { useGetCity, useTabState } from '@/app/providers/reactqueryProvider';
 
 const SearchForm = () => {
@@ -11,6 +12,7 @@ const SearchForm = () => {
 
   const CategoryFormLayout: Record<string, React.ReactNode> = {
     room: <RoomSearchForm category={category} city={city as string} />,
+    property: <PropertySearchForm category={category} city={city as string} />,
   };
   return CategoryFormLayout[category];
 };

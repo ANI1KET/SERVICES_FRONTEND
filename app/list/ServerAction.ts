@@ -304,6 +304,7 @@ export async function uploadChunkVideo({
 
 export async function SubmitRoomDetails(formData: RoomWithMediaUrl) {
   'use server';
+
   try {
     const newRoomDetails = await prisma.room.create({
       data: {
@@ -320,16 +321,16 @@ export async function SubmitRoomDetails(formData: RoomWithMediaUrl) {
 
 export async function SubmitPropertyDetails(formData: PropertyWithMediaUrl) {
   'use server';
+
   try {
-    const newRoomDetails = await prisma.property.create({
+    const newPropertyDetails = await prisma.property.create({
       data: {
         ...formData,
-        price: formData.price,
         // price: parseFloat(formData.price as string),
       },
     });
 
-    return newRoomDetails;
+    return newPropertyDetails;
   } catch (error) {
     throw new Error(error?.toString() || 'An unknown error occurred');
   }

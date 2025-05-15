@@ -7,41 +7,47 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import { FurnishingStatusEnum, Role } from '@prisma/client';
 
 import {
-  useRoomFilterUpdater,
-  useInfiniteRoomQuery,
+  PropertyArea,
+  PropertyPlotWidth,
+  PropertyAmenities,
+  PropertyHouseArea,
+  PropertyPlotLength,
+} from '@/app/types/types';
+import {
+  useInfinitePropertyQuery,
+  usePropertyFilterUpdater,
 } from '@/app/search/CustomHooks';
 import {
-  postedBy,
-  roomType,
-  roomAmenities,
-  furnishingStatus,
+  propertyArea,
+  propertyAmenities,
+  propertyHouseArea,
+  propertyPlotWidth,
+  propertyPlotLength,
 } from '@/app/lib/scalableComponents';
 import {
   useThemeState,
-  useGetRoomSearchData,
+  useGetPropertySearchData,
 } from '@/app/providers/reactqueryProvider';
 import {
   PriceSlider,
-  RatingSlider,
+  DynamicSlider,
   CustomCheckbox,
-  CapacitySlider,
+  SliderSelectOutput,
   CustomCheckboxGroup,
 } from '../../ReUsable/FormReusableComponent';
-import { RoomFilters } from '@/app/types/filters';
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import CityLocationsData from './CityLocationsData';
-import { RoomType, RoomAmenities } from '../../../types/types';
+import { PropertyFilters, PropertySearchQueries } from '@/app/types/filters';
 
 const LoadMoreCityLocations = () => {
   const cacheTheme = useThemeState();
-  const searchData = useGetRoomSearchData();
+  const searchData = useGetPropertySearchData();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteRoomQuery();
-  const updateFilter = useRoomFilterUpdater();
+    useInfinitePropertyQuery();
+  const updateFilter = usePropertyFilterUpdater();
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -93,10 +99,13 @@ const LoadMoreCityLocations = () => {
           'h-[90vh] overflow-y-scroll sticky top-[8.5vh] xl:overflow-y-hidden xl:h-fit max-sm:top-1 flex flex-col gap-4 max-xsm:hidden p-1 border-2 rounded-xl '
         )}
       >
-        <FilterLayout updateFilter={updateFilter} filters={searchData} />
+        <PropertyFilterLayout
+          updateFilter={updateFilter}
+          filters={searchData}
+        />
       </div>
       <div className="">
-        {memoizedPages?.[0]?.length === 0 ? (
+        {memoizedPages[0]?.length === 0 ? (
           <div className="flex justify-center items-center">No Rooms Found</div>
         ) : (
           memoizedPages.map((roomDetails, pageIndex) => (
@@ -136,7 +145,10 @@ const LoadMoreCityLocations = () => {
             'flex flex-col gap-1 w-full h-[50vh] col-span-9 border-2 rounded-t-2xl p-2 overflow-y-scroll'
           )}
         >
-          <FilterLayout updateFilter={updateFilter} filters={searchData} />
+          <PropertyFilterLayout
+            updateFilter={updateFilter}
+            filters={searchData}
+          />
         </div>
         <div
           className={cn(
@@ -182,80 +194,140 @@ const LoadMoreCityLocations = () => {
 
 export default LoadMoreCityLocations;
 
-const FilterLayout = ({
+const PropertyFilterLayout = ({
   filters,
   updateFilter,
 }: {
-  filters: RoomFilters | undefined;
-  updateFilter: <K extends keyof RoomFilters>(
+  filters: PropertyFilters | undefined;
+  updateFilter: <K extends keyof PropertyFilters>(
     key: K,
-    value: RoomFilters[K]
+    value: PropertyFilters[K]
   ) => void;
 }) => {
   return (
-    <React.Fragment>
+    <div>
       <PriceSlider
+        min={100000}
+        step={200000}
+        max={100000000}
         defaultValue={filters?.price}
         onChangeEnd={(priceRange) => updateFilter('price', priceRange)}
       />
 
-      <div
-        className={cn(
-          'grid gap-4 mx-1',
-          'xl:grid-cols-2 ',
-          'lg:grid-cols-1',
-          'max-sm:grid-cols-2 max-sm:mx-0'
-        )}
-      >
-        <RatingSlider
-          defaultValue={filters?.rating}
-          onChangeEnd={(ratingRange) => updateFilter('rating', ratingRange)}
-        />
+      <SliderSelectOutput<PropertySearchQueries, 'area', PropertyArea>
+        label="area"
+        sliderMin={1}
+        sliderStep={1}
+        sliderMax={1000}
+        options={propertyArea}
+        // defaultValue={filters?.area}
+        onChange={(area) => {
+          updateFilter('area', area);
+        }}
+      />
 
-        <CapacitySlider
-          defaultValue={filters?.capacity}
-          onChangeEnd={(capacityValue) =>
-            updateFilter('capacity', capacityValue)
-          }
-        />
-      </div>
+      {filters?.propertyType === 'House' && (
+        <>
+          <SliderSelectOutput<
+            PropertySearchQueries,
+            'builtUpArea',
+            PropertyHouseArea
+          >
+            sliderMin={1}
+            sliderStep={1}
+            sliderMax={1000}
+            label="builtUpArea"
+            options={propertyHouseArea}
+            // defaultValue={filters?.area}
+            onChange={(area) => {
+              updateFilter('area', area);
+            }}
+          />
 
-      <CustomCheckboxGroup<RoomAmenities>
-        label="Amenities"
-        options={roomAmenities}
-        defaultValue={filters?.amenities as RoomAmenities[]}
-        className="grid xl:grid-cols-3 grid-cols-2 "
-        onChange={(amenity) => updateFilter('amenities', amenity)}
-      />
-      <CustomCheckboxGroup<RoomType>
-        label="Room Type"
-        defaultValue={filters?.roomtype as RoomType[]}
-        options={roomType}
-        className="grid grid-cols-3 max-sm:grid-cols-2"
-        onChange={(roomType) => updateFilter('roomtype', roomType)}
-      />
-      <CustomCheckboxGroup<Role>
-        label="Posted By"
-        defaultValue={filters?.postedby as Role[]}
-        options={postedBy}
-        className="grid grid-cols-3 max-sm:grid-cols-2"
-        onChange={(postedBy) => updateFilter('postedby', postedBy)}
-      />
-      <CustomCheckboxGroup<FurnishingStatusEnum>
-        label="Furnishing Status"
-        defaultValue={filters?.furnishingstatus as FurnishingStatusEnum[]}
-        options={furnishingStatus}
-        className="grid xl:grid-cols-3 grid-cols-2 "
-        onChange={(furnishingStatus) =>
-          updateFilter('furnishingstatus', furnishingStatus)
-        }
-      />
+          <DynamicSlider
+            min={1}
+            step={1}
+            max={50}
+            label="Floors"
+            defaultValue={filters.floors}
+            onChangeEnd={(value) => updateFilter('floors', value)}
+          />
+          <DynamicSlider
+            min={1}
+            step={1}
+            max={100}
+            label="Bedrooms"
+            defaultValue={filters.bedrooms}
+            onChangeEnd={(value) => updateFilter('bedrooms', value)}
+          />
+          <DynamicSlider
+            min={1}
+            step={1}
+            max={20}
+            label="Kitchens"
+            defaultValue={filters.kitchens}
+            onChangeEnd={(value) => updateFilter('kitchens', value)}
+          />
+          <DynamicSlider
+            min={1}
+            step={1}
+            max={20}
+            label="Bathrooms"
+            defaultValue={filters.bathrooms}
+            onChangeEnd={(value) => updateFilter('bathrooms', value)}
+          />
+
+          <CustomCheckboxGroup<PropertyAmenities>
+            label="Amenities"
+            options={propertyAmenities}
+            defaultValue={filters?.amenities as PropertyAmenities[]}
+            className="grid xl:grid-cols-3 grid-cols-2 "
+            onChange={(amenity) => updateFilter('amenities', amenity)}
+          />
+        </>
+      )}
+
+      {filters?.propertyType === 'Land' && (
+        <>
+          <SliderSelectOutput<
+            PropertySearchQueries,
+            'plotWidth',
+            PropertyPlotWidth
+          >
+            sliderMin={5}
+            sliderStep={1}
+            sliderMax={100}
+            label="plotWidth"
+            options={propertyPlotWidth}
+            // defaultValue={filters?.area}
+            onChange={(width) => {
+              updateFilter('plotWidth', width);
+            }}
+          />
+
+          <SliderSelectOutput<
+            PropertySearchQueries,
+            'plotLength',
+            PropertyPlotLength
+          >
+            sliderMin={5}
+            sliderStep={1}
+            sliderMax={100}
+            label="plotLength"
+            options={propertyPlotLength}
+            // defaultValue={filters?.area}
+            onChange={(length) => {
+              updateFilter('plotLength', length);
+            }}
+          />
+        </>
+      )}
 
       <CustomCheckbox
         label="Verified"
         defaultValue={filters?.verified as boolean}
         onChange={(verify) => updateFilter('verified', verify)}
       />
-    </React.Fragment>
+    </div>
   );
 };

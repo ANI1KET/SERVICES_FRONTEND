@@ -12,10 +12,15 @@ import {
   RegisterOptions,
 } from 'react-hook-form';
 import Slider from '@mui/material/Slider';
+import TextField from '@mui/material/TextField';
 import React, { useEffect, useState } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 
-import { TextField } from '@mui/material';
+import {
+  AreaToSqft,
+  LengthToFt,
+  BuiltAreaToSqft,
+} from '@/app/lib/utils/PropertyListingConversion';
 import { cn } from '../../lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
@@ -138,6 +143,14 @@ export const OptionalInputField = <
     </div>
   );
 };
+
+//
+type OptionType<T extends FieldValues, K extends FieldPath<T>> = PathValue<
+  T,
+  K
+> extends Array<infer U>
+  ? U
+  : PathValue<T, K>;
 
 // Radio Group
 type RadioGroupProps<T extends FieldValues, K extends FieldPath<T>> = {
@@ -270,113 +283,6 @@ export const FileInput = <T extends FieldValues, K extends FieldPath<T>>({
   );
 };
 
-//
-type OptionType<T extends FieldValues, K extends FieldPath<T>> = PathValue<
-  T,
-  K
-> extends Array<infer U>
-  ? U
-  : PathValue<T, K>;
-
-// SELECT INPUT Component
-type SelectInputFieldProps<T extends FieldValues, K extends FieldPath<T>> = {
-  id: K;
-  label: string;
-  errors: FieldErrors<T>;
-  trigger: UseFormTrigger<T>;
-  options: OptionType<T, K>[];
-  register: UseFormRegister<T>;
-  rules: StrictRegisterOptions<T, K>;
-  handleEnterPress?: React.KeyboardEventHandler<HTMLInputElement>;
-};
-
-export const SelectInputField = <
-  T extends FieldValues,
-  K extends FieldPath<T>
->({
-  id,
-  label,
-  rules,
-  errors,
-  trigger,
-  options,
-  register,
-  handleEnterPress,
-}: SelectInputFieldProps<T, K>) => {
-  const [numPart, setNumPart] = useState('');
-  const [unitPart, setUnitPart] = useState<OptionType<T, K> | ''>('');
-
-  const { name, ref, onChange, onBlur } = register(
-    id,
-    rules as RegisterOptions<T, K>
-  );
-
-  useEffect(() => {
-    const fullValue = numPart && unitPart ? `${numPart}${unitPart}` : '';
-    onChange({ target: { name, value: fullValue } });
-  }, [name, numPart, unitPart, onChange]);
-
-  return (
-    <div className="">
-      <label htmlFor={`${String(id)}-num`} className="block font-medium">
-        {label}
-      </label>
-
-      <div className="flex w-1/3 ">
-        <input
-          id={`${String(id)}-num`}
-          type="number"
-          min={0}
-          step="any"
-          value={numPart}
-          onBlur={() => {
-            trigger(id);
-            onBlur({ target: { name } });
-          }}
-          onKeyDown={handleEnterPress}
-          className="w-24 p-1 border rounded "
-          onChange={(e) => setNumPart(e.target.value)}
-        />
-
-        <Autocomplete<OptionType<T, K>>
-          options={options}
-          value={unitPart || null}
-          disableClearable={true as false}
-          onChange={(_, newUnit) => setUnitPart(newUnit || '')}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              inputRef={ref}
-              error={!!errors[id]}
-              onKeyDown={handleEnterPress}
-              slotProps={{
-                root: {
-                  sx: {
-                    '& .MuiOutlinedInput-root': {
-                      height: '36px',
-                    },
-                    '& .MuiOutlinedInput-input': {
-                      height: 'auto',
-                      overflow: 'visible',
-                      textOverflow: 'clip',
-                    },
-                  },
-                },
-              }}
-            />
-          )}
-        />
-      </div>
-
-      {errors[id] && (
-        <p className="text-red-500 text-sm mt-1">
-          {errors[id]?.message as string}
-        </p>
-      )}
-    </div>
-  );
-};
-
 // SELECT Component
 type SelectFieldProps<T extends FieldValues, K extends FieldPath<T>> = {
   id: K;
@@ -451,7 +357,7 @@ type DefaultSelectFieldProps<T extends FieldValues, K extends FieldPath<T>> = {
   id: K;
   control: Control<T>;
   options: OptionType<T, K>[];
-  onChange: (value: OptionType<T, K> | null) => void;
+  onChange?: (value: OptionType<T, K> | null) => void;
 };
 
 export const DefaultSelectField = <
@@ -474,7 +380,7 @@ export const DefaultSelectField = <
           disableClearable={true as false}
           onChange={(_, newValue) => {
             field.onChange(newValue);
-            onChange(newValue);
+            if (onChange) onChange(newValue);
           }}
           renderInput={(params) => (
             <TextField
@@ -675,29 +581,37 @@ export const CheckedBox = <T extends FieldValues>({
   );
 };
 
-// Price Slider
-type PriceSliderProps = {
+// Dynamic Slider
+type DynamicSliderProps = {
+  min: number;
+  max: number;
+  step: number;
+  label: string;
   defaultValue?: number | number[];
   onChangeEnd: (value: number | number[]) => void;
 };
 
-export const PriceSlider: React.FC<PriceSliderProps> = ({
+export const DynamicSlider: React.FC<DynamicSliderProps> = ({
+  min,
+  max,
+  step,
+  label,
   onChangeEnd,
   defaultValue,
 }) => {
   const cachedTheme = useThemeState();
-  const [price, setPrice] = useState<number[] | number>(
-    defaultValue ?? [0, 10000]
+  const [range, setRange] = useState<number[] | number>(
+    defaultValue || [min, max]
   );
 
   return (
     <>
-      <label className="block font-medium">Price</label>
+      <label className="block font-medium">{label}</label>
       <Slider
-        min={0}
-        step={500}
-        max={100000}
-        value={price}
+        min={min}
+        max={max}
+        step={step}
+        value={range}
         sx={{
           color: 'black',
           width: '98%',
@@ -713,15 +627,76 @@ export const PriceSlider: React.FC<PriceSliderProps> = ({
           },
         }}
         valueLabelDisplay="auto"
-        getAriaLabel={() => 'Price'}
+        getAriaLabel={() => `${label}`}
         getAriaValueText={(value) => `${value}`}
         valueLabelFormat={(value) => `Rs.${value}`}
-        onChange={(_: Event, newValue: number | number[]) => setPrice(newValue)}
+        onChange={(_: Event, newValue: number | number[]) => setRange(newValue)}
         onChangeCommitted={(_, newValue: number | number[]) => {
           onChangeEnd(newValue);
         }}
       />
     </>
+  );
+};
+
+// Price Slider
+type PriceSliderProps = {
+  min?: number;
+  max?: number;
+  step?: number;
+  defaultValue?: number | number[];
+  onChangeEnd: (value: number | number[]) => void;
+};
+
+export const PriceSlider: React.FC<PriceSliderProps> = ({
+  min = 0,
+  step = 500,
+  onChangeEnd,
+  max = 100000,
+  defaultValue,
+}) => {
+  const cachedTheme = useThemeState();
+  const [price, setPrice] = useState<number[] | number>(
+    defaultValue ?? [min, max]
+  );
+
+  return (
+    <React.Fragment>
+      <label className="block font-medium">Price</label>
+
+      <div className="pl-2">
+        <Slider
+          min={min}
+          max={max}
+          step={step}
+          value={price}
+          sx={{
+            width: '98%',
+            color: 'black',
+            margin: 'auto',
+            '& .MuiSlider-thumb': {
+              backgroundColor: cachedTheme?.selectIcon,
+            },
+            '& .MuiSlider-track': {
+              backgroundColor: cachedTheme?.selectIcon,
+            },
+            '& .MuiSlider-rail': {
+              backgroundColor: cachedTheme?.sliderRailColor,
+            },
+          }}
+          valueLabelDisplay="auto"
+          getAriaLabel={() => 'Price'}
+          getAriaValueText={(value) => `${value}`}
+          valueLabelFormat={(value) => `Rs.${value}`}
+          onChange={(_: Event, newValue: number | number[]) =>
+            setPrice(newValue)
+          }
+          onChangeCommitted={(_, newValue: number | number[]) => {
+            onChangeEnd(newValue);
+          }}
+        />
+      </div>
+    </React.Fragment>
   );
 };
 
@@ -931,6 +906,334 @@ export const CustomCheckbox = ({
           ✓
         </span>
       </label>
+    </div>
+  );
+};
+
+//
+type PropertyUnitKey = 'area' | 'plotWidth' | 'plotLength' | 'builtUpArea';
+
+const PropertyUnitsFunction = {
+  area: AreaToSqft,
+  plotWidth: LengthToFt,
+  plotLength: LengthToFt,
+  builtUpArea: BuiltAreaToSqft,
+};
+
+// SELECT INPUT Component
+type SelectInputFieldProps<
+  T extends FieldValues,
+  K extends FieldPath<T>,
+  O extends string
+> = {
+  id: K;
+  options: O[];
+  label: string;
+  errors: FieldErrors<T>;
+  trigger: UseFormTrigger<T>;
+  register: UseFormRegister<T>;
+  rules: StrictRegisterOptions<T, K>;
+  handleEnterPress?: React.KeyboardEventHandler<HTMLInputElement>;
+};
+
+export const SelectInputField = <
+  T extends FieldValues,
+  K extends FieldPath<T>,
+  O extends string
+>({
+  id,
+  label,
+  rules,
+  errors,
+  trigger,
+  options,
+  register,
+  handleEnterPress,
+}: SelectInputFieldProps<T, K, O>) => {
+  const [numPart, setNumPart] = useState('');
+  const [unitPart, setUnitPart] = useState<O | ''>('');
+
+  const { name, ref, onChange, onBlur } = register(id, {
+    ...(rules as RegisterOptions<T, K>),
+    validate: () => {
+      if (!numPart) return 'Enter a number';
+      if (!unitPart) return 'Select a unit';
+      return true;
+    },
+  });
+
+  useEffect(() => {
+    if (numPart && unitPart) {
+      const unitValue = PropertyUnitsFunction[id as PropertyUnitKey](
+        parseFloat(numPart),
+        unitPart
+      );
+      onChange({ target: { name, value: unitValue } });
+    }
+  }, [name, numPart, unitPart, onChange]);
+
+  return (
+    <div className="">
+      <label htmlFor={`${String(id)}-num`} className="block font-medium">
+        {label}
+      </label>
+
+      <div className="flex w-1/3 ">
+        <input
+          min={1}
+          step={0.1}
+          type="number"
+          value={numPart}
+          onBlur={() => {
+            trigger(id);
+            onBlur({ target: { name } });
+          }}
+          id={`${String(id)}-num`}
+          onKeyDown={handleEnterPress}
+          className="w-24 p-1 border rounded "
+          onChange={(e) => setNumPart(e.target.value)}
+        />
+
+        <Autocomplete<O>
+          options={options}
+          value={unitPart || null}
+          disableClearable={true as false}
+          onChange={(_, newUnit) => setUnitPart(newUnit || '')}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputRef={ref}
+              error={!!errors[id]}
+              onKeyDown={handleEnterPress}
+              slotProps={{
+                root: {
+                  sx: {
+                    '& .MuiOutlinedInput-root': {
+                      height: '36px',
+                    },
+                    '& .MuiOutlinedInput-input': {
+                      height: 'auto',
+                      overflow: 'visible',
+                      textOverflow: 'clip',
+                    },
+                  },
+                },
+              }}
+            />
+          )}
+        />
+      </div>
+
+      {errors[id] && (
+        <p className="text-red-500 text-sm mt-1">
+          {errors[id]?.message as string}
+        </p>
+      )}
+    </div>
+  );
+};
+
+// SliderSelect
+type SliderSelectProps<
+  T extends FieldValues,
+  K extends FieldPath<T>,
+  O extends string
+> = {
+  id: K;
+  options: O[];
+  label: string;
+  sliderMin?: number;
+  sliderMax?: number;
+  sliderStep?: number;
+  register: UseFormRegister<T>;
+};
+
+export const SliderSelect = <
+  T extends FieldValues,
+  K extends FieldPath<T>,
+  O extends string
+>({
+  id,
+  label,
+  options,
+  register,
+  sliderMin = 1,
+  sliderStep = 1,
+  sliderMax = 10000,
+}: SliderSelectProps<T, K, O>) => {
+  const cachedTheme = useThemeState();
+  const [unitPart, setUnitPart] = useState<O | ''>('');
+  const [numPart, setNumPart] = useState<number>(sliderMin);
+
+  const { name, ref, onChange } = register(id);
+
+  useEffect(() => {
+    if (numPart && unitPart) {
+      const unitValue = PropertyUnitsFunction[id as PropertyUnitKey](
+        numPart,
+        unitPart
+      );
+      onChange({ target: { name, value: unitValue } });
+    } else {
+      onChange({ target: { name, value: undefined } });
+    }
+  }, [name, numPart, unitPart, onChange]);
+
+  return (
+    <div className="w-full">
+      <div className="flex items-center">
+        <label
+          htmlFor={String(id)}
+          className="w-0 font-medium whitespace-nowrap"
+        >
+          {label}
+        </label>
+
+        <div className="flex-1 flex justify-center">
+          <Autocomplete<O>
+            options={options}
+            value={unitPart || null}
+            disableClearable={true as false}
+            onChange={(_, newUnit) => setUnitPart(newUnit || '')}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                inputRef={ref}
+                placeholder="Unit"
+                sx={{
+                  width: 'auto',
+                  minWidth: '100px',
+                  '& .MuiOutlinedInput-root': {
+                    height: '25px',
+                  },
+                }}
+              />
+            )}
+          />
+        </div>
+      </div>
+
+      <Slider
+        min={sliderMin}
+        max={sliderMax}
+        value={numPart}
+        step={sliderStep}
+        valueLabelDisplay="auto"
+        sx={{
+          width: '100%',
+          color: 'black',
+          '& .MuiSlider-thumb': {
+            backgroundColor: cachedTheme?.selectIcon,
+          },
+          '& .MuiSlider-track': {
+            backgroundColor: cachedTheme?.selectIcon,
+          },
+          '& .MuiSlider-rail': {
+            backgroundColor: cachedTheme?.sliderRailColor,
+          },
+        }}
+        onChange={(_, value) => {
+          if (typeof value === 'number') setNumPart(value);
+        }}
+      />
+    </div>
+  );
+};
+
+// SliderSelect
+type SliderSelectOutputProps<
+  T extends FieldValues,
+  K extends FieldPath<T>,
+  O extends string
+> = {
+  label: K;
+  options: O[];
+  sliderMin: number;
+  sliderMax: number;
+  sliderStep: number;
+  // defaultValue?: number | number[];
+  onChange: (selectedValues: number) => void;
+};
+
+export const SliderSelectOutput = <
+  T extends FieldValues,
+  K extends FieldPath<T>,
+  O extends string
+>({
+  label,
+  options,
+  onChange,
+  sliderMax,
+  sliderMin,
+  sliderStep,
+}: SliderSelectOutputProps<T, K, O>) => {
+  const cachedTheme = useThemeState();
+  const [unitPart, setUnitPart] = useState<O | ''>('');
+  const [numPart, setNumPart] = useState<number>(sliderMin);
+
+  return (
+    <div className="w-full">
+      <div className="flex items-center">
+        <span className="w-0 font-medium whitespace-nowrap">
+          {label.charAt(0).toUpperCase() + label.slice(1)}
+        </span>
+
+        <div className="flex-1 flex justify-center">
+          <Autocomplete<O>
+            options={options}
+            value={unitPart || null}
+            disableClearable={true as false}
+            onChange={(_, newUnit) => setUnitPart(newUnit || '')}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Unit"
+                sx={{
+                  width: 'auto',
+                  minWidth: '100px',
+                  '& .MuiOutlinedInput-root': {
+                    height: '25px',
+                  },
+                }}
+              />
+            )}
+          />
+        </div>
+      </div>
+
+      <Slider
+        min={sliderMin}
+        max={sliderMax}
+        value={numPart}
+        step={sliderStep}
+        valueLabelDisplay="auto"
+        sx={{
+          width: '100%',
+          color: 'black',
+          '& .MuiSlider-thumb': {
+            backgroundColor: cachedTheme?.selectIcon,
+          },
+          '& .MuiSlider-track': {
+            backgroundColor: cachedTheme?.selectIcon,
+          },
+          '& .MuiSlider-rail': {
+            backgroundColor: cachedTheme?.sliderRailColor,
+          },
+        }}
+        onChange={(_, value) => {
+          if (typeof value === 'number') setNumPart(value);
+        }}
+        onChangeCommitted={(_, newValue: number | number[]) => {
+          if (unitPart) {
+            const unitValue = PropertyUnitsFunction[label as PropertyUnitKey](
+              newValue as number,
+              unitPart
+            );
+
+            onChange(unitValue);
+          }
+        }}
+      />
     </div>
   );
 };

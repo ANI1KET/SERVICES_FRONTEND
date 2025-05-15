@@ -68,15 +68,15 @@ export const propertyNearByAreas: PropertyNearByAreas[] = [
 ];
 export const propertyArea: PropertyArea[] = [
   'sqm',
-  'dam',
   'sqft',
   'acre',
   'aana',
   'dhur',
   'bigha',
-  'paisa',
-  'ropani',
   'kattha',
+  // 'dam',
+  // 'paisa',
+  // 'ropani',
 ];
 export const propertyType: PropertyType[] = ['House', 'Land'];
 export const propertyPlotWidth: PropertyPlotWidth[] = ['ft', 'mt'];

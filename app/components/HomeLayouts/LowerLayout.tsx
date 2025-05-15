@@ -3,9 +3,9 @@
 import { useCallback, useState } from 'react';
 
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import SearchPanel from './LowerLayout/SearchPanel';
 import CategoryCardLayout from './LowerLayout/CategoryCardLayout';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-import SearchPanel from '../BottomNavigationBar/PanelComponent/SearchPanel';
 
 const LowerLayout: React.FC<{
   city: string;
@@ -23,13 +23,13 @@ const LowerLayout: React.FC<{
       {/* <div className="w-[80vw] "> */}
       <div className=" ">
         {/* Rooms */}
-        <CategoryCardLayout
+        {/* <CategoryCardLayout
           city={city}
           route="room"
           title="Rooms"
           cities={cities}
           key={'RoomCities'}
-        />
+        /> */}
 
         {/* Hostels */}
         {/* <CategoryCardLayout route="hostel" title="Hostels" key={'HostelCities'} 

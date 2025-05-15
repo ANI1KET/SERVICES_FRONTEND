@@ -1,15 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { PropertyType, Role } from '@prisma/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import {
+  PropertyArea,
   PropertyPlotWidth,
   PropertyWithMedia,
+  PropertyHouseArea,
   PropertyPlotLength,
   PropertyWithMediaUrl,
 } from '@/app/types/types';
@@ -41,9 +43,6 @@ const Room = () => {
   const queryClient = useQueryClient();
   const { data: session, status } = useSession();
   const [isComplete, setIsComplete] = useState(false);
-  const [sharedUnit, setSharedUnit] = useState<
-    PropertyPlotLength | PropertyPlotWidth
-  >();
 
   const {
     reset,
@@ -63,14 +62,10 @@ const Room = () => {
     },
   });
   const listingType = watch('propertyType');
-  const plotWidthValue = watch('plotWidth');
-  const plotLengthValue = watch('plotLength');
 
   const { mutate } = useMutation({
-    mutationFn: (data: PropertyWithMediaUrl) =>
-      SubmitPropertyDetails({
-        ...data,
-      }),
+    mutationFn: async (data: PropertyWithMediaUrl) =>
+      SubmitPropertyDetails(data),
     onSuccess: (response) => {
       queryClient.setQueryData(['CategoryDetails', 'property'], response);
       reset();
@@ -157,14 +152,6 @@ const Room = () => {
     }
   };
 
-  useEffect(() => {
-    const match = (plotWidthValue || plotLengthValue || '').match(/[a-zA-Z]+/);
-    const unit = match?.[0] as
-      | undefined
-      | PropertyPlotWidth
-      | PropertyPlotLength;
-    setSharedUnit(unit);
-  }, [plotWidthValue, plotLengthValue]);
   return (
     <div className="ml-[12vw] w-[70vw] max-sm:w-full max-sm:ml-0">
       <h2
@@ -269,36 +256,31 @@ const Room = () => {
             step={0.01}
             label="Price"
             type="number"
+            errors={errors}
             trigger={trigger}
             register={register}
+            handleEnterPress={handleEnterPress}
             rules={{
               valueAsNumber: true,
               required: 'Enter the room rent price',
             }}
-            errors={errors}
-            handleEnterPress={handleEnterPress}
           />
 
-          <SelectInputField<PropertyWithMedia, 'area'>
+          <SelectInputField<PropertyWithMedia, 'area', PropertyArea>
             id="area"
-            label="Total Area"
-            register={register}
-            rules={{
-              validate: (val: string) =>
-                val && /\d/.test(val) && /[a-zA-Z]/.test(val)
-                  ? true
-                  : 'Enter total land area',
-            }}
+            rules={{}}
             errors={errors}
             trigger={trigger}
+            label="Total Area"
+            register={register}
             options={propertyArea}
             handleEnterPress={handleEnterPress}
           />
         </div>
 
         <RadioGroup<PropertyWithMedia, 'propertyType'>
-          id="propertyType"
           errors={errors}
+          id="propertyType"
           register={register}
           label="Property Type"
           options={propertyType}
@@ -308,43 +290,29 @@ const Room = () => {
 
         {listingType === PropertyType.Land && (
           <div className="grid max-xsm:grid-cols-1 max-sm:grid-cols-2 grid-cols-3 gap-1">
-            <SelectInputField<PropertyWithMedia, 'plotWidth'>
+            <SelectInputField<PropertyWithMedia, 'plotWidth', PropertyPlotWidth>
+              rules={{}}
               id="plotWidth"
-              label="Land Width"
-              register={register}
-              rules={{
-                validate: (val: string) =>
-                  val && /\d/.test(val) && /[a-zA-Z]/.test(val)
-                    ? true
-                    : 'Enter a plot width and select unit',
-              }}
               errors={errors}
               trigger={trigger}
-              options={
-                sharedUnit
-                  ? propertyPlotWidth.filter((opt) => opt === sharedUnit)
-                  : propertyPlotWidth
-              }
+              label="Land Width"
+              register={register}
+              options={propertyPlotWidth}
               handleEnterPress={handleEnterPress}
             />
 
-            <SelectInputField<PropertyWithMedia, 'plotLength'>
+            <SelectInputField<
+              PropertyWithMedia,
+              'plotLength',
+              PropertyPlotLength
+            >
+              rules={{}}
               id="plotLength"
-              label="Land Length"
-              register={register}
-              rules={{
-                validate: (val: string) =>
-                  val && /\d/.test(val) && /[a-zA-Z]/.test(val)
-                    ? true
-                    : 'Enter a plot length and select unit',
-              }}
               errors={errors}
               trigger={trigger}
-              options={
-                sharedUnit
-                  ? propertyPlotLength.filter((opt) => opt === sharedUnit)
-                  : propertyPlotLength
-              }
+              label="Land Length"
+              register={register}
+              options={propertyPlotLength}
               handleEnterPress={handleEnterPress}
             />
           </div>
@@ -353,16 +321,15 @@ const Room = () => {
         {listingType === PropertyType.House && (
           <>
             <div className="grid max-xsm:grid-cols-1 max-sm:grid-cols-2 grid-cols-3 gap-1">
-              <SelectInputField<PropertyWithMedia, 'builtUpArea'>
+              <SelectInputField<
+                PropertyWithMedia,
+                'builtUpArea',
+                PropertyHouseArea
+              >
+                rules={{}}
                 id="builtUpArea"
                 label="Built Area"
                 register={register}
-                rules={{
-                  validate: (val: string) =>
-                    val && /\d/.test(val) && /[a-zA-Z]/.test(val)
-                      ? true
-                      : 'Enter House Built Area',
-                }}
                 errors={errors}
                 trigger={trigger}
                 options={propertyHouseArea}
