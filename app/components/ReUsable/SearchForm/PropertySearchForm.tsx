@@ -143,7 +143,7 @@ const PropertySearchForm: React.FC<{
       unregister(['plotWidth', 'plotLength']);
       setValue('amenities', []);
     }
-  }, [selectedpropertyType, unregister]);
+  }, [setValue, selectedpropertyType, unregister]);
   return (
     <form
       className="grid grid-cols-9 gap-1 w-full h-1/2 max-sm:h-full relative"

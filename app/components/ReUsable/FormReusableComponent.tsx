@@ -19,7 +19,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import {
   AreaToSqft,
   LengthToFt,
+  SqftToArea,
+  FtToLength,
   BuiltAreaToSqft,
+  SqftToBuiltArea,
 } from '@/app/lib/utils/PropertyListingConversion';
 import { cn } from '../../lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
@@ -970,7 +973,7 @@ export const SelectInputField = <
       );
       onChange({ target: { name, value: unitValue } });
     }
-  }, [name, numPart, unitPart, onChange]);
+  }, [id, name, numPart, unitPart, onChange]);
 
   return (
     <div className="">
@@ -1077,7 +1080,7 @@ export const SliderSelect = <
     } else {
       onChange({ target: { name, value: undefined } });
     }
-  }, [name, numPart, unitPart, onChange]);
+  }, [id, name, numPart, unitPart, onChange]);
 
   return (
     <div className="w-full">
@@ -1233,6 +1236,80 @@ export const SliderSelectOutput = <
             onChange(unitValue);
           }
         }}
+      />
+    </div>
+  );
+};
+
+//
+const PropertyUnitsMethod = {
+  area: SqftToArea,
+  plotWidth: FtToLength,
+  plotLength: FtToLength,
+  builtUpArea: SqftToBuiltArea,
+};
+
+const UnitPart = {
+  area: 'sqft',
+  plotWidth: 'ft',
+  plotLength: 'ft',
+  builtUpArea: 'sqft',
+};
+
+// SelectCoversion
+type SelectCoversionProps<O extends string> = {
+  options: O[];
+  value: number;
+  label: PropertyUnitKey;
+};
+
+export const SelectCoversion = <O extends string>({
+  label,
+  value,
+  options,
+}: SelectCoversionProps<O>) => {
+  const [convertedValue, setConvertedValue] = useState(value);
+  const [unitPart, setUnitPart] = useState<O | ''>(UnitPart[label] as O);
+
+  const convertValue = (unitValue: string) => {
+    const convertedValue = PropertyUnitsMethod[label](value, unitValue);
+    setConvertedValue(convertedValue);
+  };
+  return (
+    <div className="flex items-center">
+      {convertedValue}
+
+      <Autocomplete<O>
+        options={options}
+        value={unitPart || null}
+        disableClearable={true as false}
+        onChange={(_, newUnit) => {
+          const unitValue = newUnit || '';
+          setUnitPart(unitValue);
+          convertValue(unitValue);
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            placeholder="Unit"
+            sx={{
+              width: 'auto',
+              minWidth: '100px',
+              '& .MuiOutlinedInput-root': {
+                height: '30px',
+              },
+              '& fieldset': {
+                border: 'none',
+              },
+              '&:hover fieldset': {
+                border: 'none',
+              },
+              '&.Mui-focused fieldset': {
+                border: 'none',
+              },
+            }}
+          />
+        )}
       />
     </div>
   );

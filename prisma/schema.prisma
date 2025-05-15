@@ -373,7 +373,6 @@ model Property {
   title          String
   city           String
   location       String
-  available      String
   ownerContact   String
   primaryContact String
   video          String?
@@ -381,6 +380,7 @@ model Property {
   description    String?
   photos         String[]
   nearbyAreas    String[] // School, Hospital, Metro, Market, etc.
+  available      Boolean      @default(true)
   isActive       Boolean      @default(true)
   // HOUSE
   floors         Int?

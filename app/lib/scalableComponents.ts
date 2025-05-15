@@ -83,6 +83,25 @@ export const propertyPlotWidth: PropertyPlotWidth[] = ['ft', 'mt'];
 export const propertyPlotLength: PropertyPlotLength[] = ['ft', 'mt'];
 export const propertyHouseArea: PropertyHouseArea[] = ['sqft', 'sqm'];
 
+export const AREA_CONVERSION_TO_SQFT: Record<PropertyArea, number> = {
+  sqft: 1,
+  acre: 43560,
+  sqm: 10.7639,
+  aana: 342.25,
+  dhur: 182.25,
+  bigha: 27225,
+  kattha: 1361.25,
+};
+export const BUILT_AREA_CONVERSION_TO_SQFT: Record<PropertyHouseArea, number> =
+  {
+    sqft: 1,
+    sqm: 10.7639,
+  };
+export const LENGTH_CONVERSION_TO_SQFT: Record<PropertyPlotWidth, number> = {
+  ft: 1,
+  mt: 3.28,
+};
+
 // AUTHENTICATION
 
 // AUTHORIZATION

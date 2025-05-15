@@ -35,10 +35,13 @@ const CityLocationsData = memo(
         const memoizedPhotos = propertyDetails.photos;
 
         return (
-          <Link key={propertyDetails.id} href={`/${category}/${encodedId}`}>
-            <div className="w-full grid grid-cols-9 mb-5">
-              {propertyDetails.video ? (
-                <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9 aspect-video">
+          <div
+            key={propertyDetails.id}
+            className="w-full grid grid-cols-9 mb-5"
+          >
+            {propertyDetails.video ? (
+              <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9 aspect-video">
+                <Link href={`/${category}/${encodedId}`}>
                   <Suspense fallback={<VideoSkeleton />}>
                     <ReactPlayer
                       loop
@@ -57,33 +60,35 @@ const CityLocationsData = memo(
                           },
                         },
                       }}
-                      style={{ pointerEvents: 'none' }}
                       url={propertyDetails.video}
+                      style={{ pointerEvents: 'none' }}
                     />
                   </Suspense>
                   <AutoScrollCarousel photos={memoizedPhotos} />
-                </div>
-              ) : (
-                <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9">
+                </Link>
+              </div>
+            ) : (
+              <div className="col-span-3 max-sm:col-span-4 max-xsm:col-span-9">
+                <Link href={`/${category}/${encodedId}`}>
                   <div className="relative aspect-square max-xsm:aspect-video">
                     <Suspense fallback={<ImageSkeleton />}>
                       <ImageLoop images={memoizedPhotos} />
                     </Suspense>
                   </div>
-                </div>
-              )}
-              <div
-                className={cn(
-                  cachedTheme?.bg,
-                  cachedTheme?.textColor,
-                  cachedTheme?.borderColor,
-                  'col-span-6 max-sm:col-span-5 max-xsm:col-span-9 p-1 border-2 rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl'
-                )}
-              >
-                <PropertyDetailsLayout propertyCardDetails={propertyDetails} />
+                </Link>
               </div>
+            )}
+            <div
+              className={cn(
+                cachedTheme?.bg,
+                cachedTheme?.textColor,
+                cachedTheme?.borderColor,
+                'col-span-6 max-sm:col-span-5 max-xsm:col-span-9 p-1 border-2 rounded-r-xl max-xsm:rounded-tr-none max-xsm:rounded-b-xl'
+              )}
+            >
+              <PropertyDetailsLayout propertyCardDetails={propertyDetails} />
             </div>
-          </Link>
+          </div>
         );
       });
     }, [cityLocationsData, category, cachedTheme]);

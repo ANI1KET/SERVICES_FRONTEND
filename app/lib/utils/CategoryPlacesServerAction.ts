@@ -14,32 +14,52 @@ export async function getCategoryCitiesLocationDetails({
   offset: number;
   category: string;
 }) {
-  'use server';
+  const url = `${process.env.BASE_URL}/api/place/data/${category}?offset=${offset}&limit=${PAGE_SIZE}`;
 
-  // const cookieStore = await cookies();
-  // console.log('1 ', cookieStore);
-  // const requestHeaders = await headers();
-  // console.log(Object.fromEntries(requestHeaders));
+  const res = await fetch(url, {
+    next: { revalidate: 5 * 60 },
+  });
 
-  try {
-    const response = await axiosInstance.get(`/place/data/${category}`, {
-      params: {
-        offset,
-        limit: PAGE_SIZE,
-      },
-      headers: {
-        'Cache-Control': 'no-cache',
-      },
-    });
-
-    return response.data;
-  } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      throw error.response?.data?.error;
-    }
-    throw error;
+  if (!res.ok) {
+    throw new Error('Failed to fetch data');
   }
+
+  return res.json();
 }
+
+// export async function getCategoryCitiesLocationDetails({
+//   category,
+//   offset = 0,
+// }: {
+//   offset: number;
+//   category: string;
+// }) {
+//   'use server';
+
+//   // const cookieStore = await cookies();
+//   // console.log('1 ', cookieStore);
+//   // const requestHeaders = await headers();
+//   // console.log(Object.fromEntries(requestHeaders));
+
+//   try {
+//     const response = await axiosInstance.get(`/place/data/${category}`, {
+//       params: {
+//         offset,
+//         limit: PAGE_SIZE,
+//       },
+//       headers: {
+//         'Cache-Control': 'no-cache',
+//       },
+//     });
+
+//     return response.data;
+//   } catch (error: unknown) {
+//     if (error instanceof AxiosError) {
+//       throw error.response?.data?.error;
+//     }
+//     throw error;
+//   }
+// }
 
 export async function getCategoryCitiesLocations(
   city: string,

@@ -111,7 +111,7 @@ const LoadMoreCityLocations = () => {
           memoizedPages.map((roomDetails, pageIndex) => (
             <CityLocationsData
               key={pageIndex}
-              category="room"
+              category="property"
               cityLocationsData={roomDetails}
             />
           ))
@@ -205,7 +205,7 @@ const PropertyFilterLayout = ({
   ) => void;
 }) => {
   return (
-    <div>
+    <>
       <PriceSlider
         min={100000}
         step={200000}
@@ -328,6 +328,6 @@ const PropertyFilterLayout = ({
         defaultValue={filters?.verified as boolean}
         onChange={(verify) => updateFilter('verified', verify)}
       />
-    </div>
+    </>
   );
 };

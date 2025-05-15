@@ -1,14 +1,6 @@
 import { FurnishingStatusEnum, PropertyType, Role } from '@prisma/client';
 
-import {
-  RoomType,
-  PropertyArea,
-  RoomAmenities,
-  PropertyAmenities,
-  PropertyPlotWidth,
-  PropertyPlotLength,
-  PropertyNearByAreas,
-} from './types';
+import { RoomType, RoomAmenities, PropertyAmenities } from './types';
 
 // ROOM FILTERS
 export type RoomFilters = {

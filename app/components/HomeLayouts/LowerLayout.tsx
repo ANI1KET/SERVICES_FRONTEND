@@ -23,13 +23,13 @@ const LowerLayout: React.FC<{
       {/* <div className="w-[80vw] "> */}
       <div className=" ">
         {/* Rooms */}
-        {/* <CategoryCardLayout
+        <CategoryCardLayout
           city={city}
           route="room"
           title="Rooms"
           cities={cities}
           key={'RoomCities'}
-        /> */}
+        />
 
         {/* Hostels */}
         {/* <CategoryCardLayout route="hostel" title="Hostels" key={'HostelCities'} 

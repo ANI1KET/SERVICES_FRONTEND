@@ -1,4 +1,5 @@
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic';
+export const revalidate = 5 * 60;
 
 import {
   dehydrate,
@@ -26,8 +27,8 @@ const Home = async () => {
       categoryDetails,
     }: {
       city: string;
-      cityData: CategoryCitiesLocations;
       categoryDetails: RoomData[];
+      cityData: CategoryCitiesLocations;
     } = await getCategoryCitiesLocationDetails({ category: 'room', offset: 0 });
 
     queryClient.setQueryData<string>(['city'], city);
