@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useState, useRef, useMemo } from 'react';
 
-import { ArrowLeftIcon, ArrowRightIcon, CrossIcon } from '../icon/svg';
+import { ArrowLeftIcon, ArrowRightIcon, CrossIcon } from '../../lib/icon/svg';
 
 interface ImageSliderProps {
   imagesUrl: string[];

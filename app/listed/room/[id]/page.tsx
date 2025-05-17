@@ -6,17 +6,23 @@ import { useParams } from 'next/navigation';
 
 import { ListedRoom } from '@/app/types/types';
 import { fetchNewRoomDetails } from '../../ServerAction';
-import NewRoomDetails from '../../../lib/ui/NewRoomDetails';
 import { decodeURLPlaceQuery } from '@/app/lib/utils/decodeURL';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import ResponsiveNewRoomDetails from '../../../lib/ui/ResponsiveNewRoomDetails';
+import NewRoomDetails from '@/app/components/ReUsable/NewRoomDetails';
+import ResponsiveNewRoomDetails from '@/app/components/ReUsable/ResponsiveRoomDetails';
 
-const VideoPlayer = dynamic(() => import('@/app/lib/ui/VideoPlayer'), {
-  ssr: false,
-});
-const ImageSlider = dynamic(() => import('@/app/lib/ui/ImageSlider'), {
-  ssr: false,
-});
+const VideoPlayer = dynamic(
+  () => import('@/app/components/ReUsable/VideoPlayer'),
+  {
+    ssr: false,
+  }
+);
+const ImageSlider = dynamic(
+  () => import('@/app/components/ReUsable/ImageSlider'),
+  {
+    ssr: false,
+  }
+);
 
 const Room = () => {
   const params = useParams();
@@ -29,15 +35,13 @@ const Room = () => {
   ]);
 
   const {
-    data: newRoomDetails,
-    isLoading,
     error,
+    isLoading,
+    data: newRoomDetails,
   } = useQuery<ListedRoom>({
     queryKey: ['CategoryDetails', 'room'],
     queryFn: () =>
-      roomId
-        ? fetchNewRoomDetails('room', roomId)
-        : Promise.reject('No room ID'),
+      roomId ? fetchNewRoomDetails(roomId) : Promise.reject('No room ID'),
     enabled: !!roomId && !dataFromCache,
     staleTime: 1000 * 60 * 10,
     initialData: dataFromCache,
@@ -52,12 +56,10 @@ const Room = () => {
         <Suspense fallback={<div>Loading video...</div>}>
           <VideoPlayer videoUrl={newRoomDetails.videos} />
         </Suspense>
-        <NewRoomDetails roomCardDetails={newRoomDetails as ListedRoom} />
+        <NewRoomDetails roomCardDetails={newRoomDetails} />
       </div>
 
-      <ResponsiveNewRoomDetails
-        roomCardDetails={newRoomDetails as ListedRoom}
-      />
+      <ResponsiveNewRoomDetails roomCardDetails={newRoomDetails} />
 
       <div className="flex justify-center text-lg font-semibold p-1">
         Room Images
@@ -69,9 +71,3 @@ const Room = () => {
 };
 
 export default Room;
-
-//   const images: string[] = [
-//     'https://drive.google.com/uc?export=view&id=1VM97XOiPOQ9IE-0V-XeFDXmAdWNzHUHs',
-//     //       'https://drive.google.com/uc?id=1AU27PtVetlQ0pZaRz9TEJ9YaTSenSOuL',
-//     // //     'https://drive.google.com/thumbnail?id=1AU27PtVetlQ0pZaRz9TEJ9YaTSenSOuL',
-//   ];

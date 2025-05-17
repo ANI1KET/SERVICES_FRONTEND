@@ -170,14 +170,14 @@ export type ListedProperty = PropertyWithMediaUrl & {
   updatedAt: string;
 };
 
-// export type PropertyData = ListedProperty & {
-//   seller: {
-//     id: string;
-//     role: Role;
-//     name: string;
-//     email: string;
-//     number: string;
-//   };
-// };
+export type PropertyData = ListedProperty & {
+  seller: {
+    id: string;
+    role: Role;
+    name: string;
+    email: string;
+    number: string;
+  };
+};
 
 //

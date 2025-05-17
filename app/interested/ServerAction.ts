@@ -28,3 +28,21 @@ export async function deleteInterestedRoom(roomId: string): Promise<string> {
     throw new Error(error?.toString() || 'An unknown error occurred');
   }
 }
+
+export async function deleteInterestedProperty(
+  propertyId: string
+): Promise<string> {
+  'use server';
+
+  try {
+    const { data } = await axiosInstance.delete(
+      `/interestedproperties/delete`,
+      {
+        data: { propertyId },
+      }
+    );
+    return data.message;
+  } catch (error) {
+    throw new Error(error?.toString() || 'An unknown error occurred');
+  }
+}

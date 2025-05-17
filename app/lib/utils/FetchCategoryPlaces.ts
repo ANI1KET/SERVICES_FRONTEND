@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   getCategoryCityLocations,
   getCategoryCitiesLocations,
-} from './CategoryPlacesServerAction';
+} from '@/app/components/ServerAction';
 import { RoomSearchQueries } from '@/app/types/filters';
 
 export function FetchCategoryCitiesLocations(category: string, city: string) {

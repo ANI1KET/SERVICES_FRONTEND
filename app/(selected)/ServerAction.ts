@@ -1,7 +1,7 @@
 'use server';
 
-import { ListedRoom } from '../types/types';
 import axiosInstance from '../lib/utils/axiosInstance';
+import { ListedProperty, ListedRoom } from '../types/types';
 import { getAutheticationHeader } from '../components/ServerAction';
 
 export const pushSavedRoom = async ({
@@ -17,11 +17,40 @@ export const pushSavedRoom = async ({
 
   try {
     const { data } = await axiosInstance.post(
-      `/interestedrooms/create`,
+      `/interestedrooms/add`,
       {
         userId,
         roomId,
         listerId,
+      },
+      await getAutheticationHeader()
+      // { ...(await getAutheticationHeader()) }
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error?.toString() || 'An unknown error occurred');
+  }
+};
+
+export const pushSavedProperty = async ({
+  userId,
+  listerId,
+  propertyId,
+}: {
+  userId: string;
+  listerId: string;
+  propertyId: string;
+}) => {
+  'use server';
+
+  try {
+    const { data } = await axiosInstance.post(
+      `/interestedproperties/add`,
+      {
+        userId,
+        listerId,
+        propertyId,
       },
       await getAutheticationHeader()
       // { ...(await getAutheticationHeader()) }
@@ -40,6 +69,19 @@ export const fetchSelectedRoomDetails = async (
 
   try {
     const { data } = await axiosInstance.get(`/room/${roomId}`);
+    return data;
+  } catch (error) {
+    throw new Error(error?.toString() || 'An unknown error occurred');
+  }
+};
+
+export const fetchSelectedPropertyDetails = async (
+  propertyId: string
+): Promise<ListedProperty> => {
+  'use server';
+
+  try {
+    const { data } = await axiosInstance.get(`/property/${propertyId}`);
     return data;
   } catch (error) {
     throw new Error(error?.toString() || 'An unknown error occurred');

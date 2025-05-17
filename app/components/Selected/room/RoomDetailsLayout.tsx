@@ -13,21 +13,27 @@ import {
   useThemeState,
   useGetRoomSearchData,
 } from '@/app/providers/reactqueryProvider';
-import RoomDetails from './RoomDetails';
-import { PAGE_SIZE } from '../reusableConst';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import NewRoomDetails from '@/app/lib/ui/NewRoomDetails';
+import RoomDetails from '../../ReUsable/RoomDetails';
+import { PAGE_SIZE } from '../../../lib/reusableConst';
 import { ListedRoom, RoomData } from '@/app/types/types';
+import NewRoomDetails from '@/app/components/ReUsable/NewRoomDetails';
 import { fetchSelectedRoomDetails } from '@/app/(selected)/ServerAction';
-import ResponsiveNewRoomDetails from '@/app/lib/ui/ResponsiveNewRoomDetails';
+import ResponsiveNewRoomDetails from '@/app/components/ReUsable/ResponsiveRoomDetails';
 import { getCategoryDetails } from '@/app/components/HomeLayouts/LowerLayout/ServerAction';
 
-const VideoPlayer = dynamic(() => import('@/app/lib/ui/VideoPlayer'), {
-  ssr: false,
-});
-const ImageSlider = dynamic(() => import('@/app/lib/ui/ImageSlider'), {
-  ssr: false,
-});
+const VideoPlayer = dynamic(
+  () => import('@/app/components/ReUsable/VideoPlayer'),
+  {
+    ssr: false,
+  }
+);
+const ImageSlider = dynamic(
+  () => import('@/app/components/ReUsable/ImageSlider'),
+  {
+    ssr: false,
+  }
+);
 
 const findMatchingRoom = (
   cachedData: { pages: RoomData[][] } | undefined,
@@ -63,7 +69,7 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
 
   const roomDetails = findMatchingRoom(cachedData, roomId);
 
-  const { data: fallbackRoomDetails } = useQuery<ListedRoom>({
+  const { data: fallbackRoomDetails, isFetching } = useQuery<ListedRoom>({
     queryKey: ['selectedRoom', roomId],
     queryFn: () => fetchSelectedRoomDetails(roomId),
     enabled: !roomDetails,
@@ -124,7 +130,23 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
     };
   }, [handleLoadMore]);
 
-  if (!finalRoomDetails) return <div>Room Not Found</div>;
+  if (isFetching)
+    return (
+      <div className="w-full flex justify-center items-center">
+        <div
+          className={cn(
+            cacheTheme?.activeBg,
+            'w-8 h-8 border-4 border-t-transparent rounded-full animate-spin'
+          )}
+        ></div>
+      </div>
+    );
+  if (!finalRoomDetails)
+    return (
+      <div className="w-full flex justify-center items-center">
+        Room Not Found
+      </div>
+    );
   return (
     <div className="flex flex-col ">
       <div className="flex max-xsm:flex-col gap-1 p-2 relative max-xsm:p-0 max-xsm:gap-0 ">
@@ -159,10 +181,10 @@ const RoomDetailsLayout: React.FC<{ city?: string; roomId: string }> = ({
         </p>
 
         <RoomDetails
-          data={data?.pages}
           observerRef={observerRef}
           city={finalRoomDetails.city as string}
           isFetchingNextPage={isFetchingNextPage}
+          data={data?.pages as RoomData[][] | undefined}
         />
       </div>
     </div>

@@ -1,15 +1,16 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
+import { PropertyData } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import RoomDetails from '@/app/lib/ui/RoomDetails';
-import { getCategoryDetails } from './ServerAction';
 import { PAGE_SIZE } from '@/app/lib/reusableConst';
+import { getCategoryDetails } from './ServerAction';
+import PropertyDetails from '../../ReUsable/PropertyDetails';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
-const CategoryCardLayout: React.FC<{
+const PropertyCardLayout: React.FC<{
   city: string;
   title: string;
   route: string;
@@ -60,7 +61,7 @@ const CategoryCardLayout: React.FC<{
   //   };
   // }, []);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } =
     useInfiniteQuery({
       queryKey: [`${route}${City}`],
       queryFn: ({ pageParam = 0 }) =>
@@ -110,6 +111,7 @@ const CategoryCardLayout: React.FC<{
       if (target) observer.unobserve(target);
     };
   }, [handleLoadMore]);
+
   return (
     <div className="w-full ">
       <p
@@ -142,14 +144,35 @@ const CategoryCardLayout: React.FC<{
           ))}
       </div>
 
-      <RoomDetails
-        city={City}
-        data={data?.pages}
-        observerRef={observerRef}
-        isFetchingNextPage={isFetchingNextPage}
-      />
+      {isFetching ? (
+        <div className="h-[80vh] bg-gray-200 animate-pulse rounded-b-lg flex items-center justify-center">
+          <div
+            className={cn(
+              'w-full h-full grid grid-rows-2 gap-1 rounded-b-md',
+              'xl:grid-cols-4',
+              'md:grid-cols-3',
+              'max-sm:grid-cols-2',
+              'max-xsm:grid-cols-1'
+            )}
+          >
+            {Array.from({ length: 8 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="bg-gray-400 rounded w-full h-full"
+              ></div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <PropertyDetails
+          city={City}
+          observerRef={observerRef}
+          isFetchingNextPage={isFetchingNextPage}
+          data={data?.pages as PropertyData[][] | undefined}
+        />
+      )}
     </div>
   );
 };
 
-export default CategoryCardLayout;
+export default PropertyCardLayout;

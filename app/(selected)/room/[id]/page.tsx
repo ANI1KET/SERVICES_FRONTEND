@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 
-import RoomDetailsLayout from '../../../lib/ui/RoomDetailsLayout';
+import RoomDetailsLayout from '../../../components/Selected/room/RoomDetailsLayout';
 
 const decodeURLPlaceQuery = (query: string): Record<string, string> => {
   try {
@@ -29,9 +29,5 @@ export default async function SelectedRoom({
 
   const city = roomDetails.city;
   const roomId = roomDetails.id;
-  return (
-    <>
-      <RoomDetailsLayout city={city} roomId={roomId}></RoomDetailsLayout>
-    </>
-  );
+  return <RoomDetailsLayout city={city} roomId={roomId}></RoomDetailsLayout>;
 }

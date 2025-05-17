@@ -6,6 +6,7 @@ import {
   PropertyArea,
   ListedProperty,
   PropertyPlotWidth,
+  PropertyHouseArea,
   PropertyPlotLength,
 } from '@/app/types/types';
 import {
@@ -114,7 +115,7 @@ const PropertyDetailsLayout: React.FC<PropertyDetailsProps> = memo(
                 <HouseAreaIcon />
                 BuiltUpArea
               </span>
-              <SelectCoversion<PropertyArea>
+              <SelectCoversion<PropertyHouseArea>
                 label="builtUpArea"
                 options={propertyHouseArea}
                 value={propertyCardDetails.builtUpArea}

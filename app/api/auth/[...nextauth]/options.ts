@@ -115,9 +115,9 @@ export const authOptions: NextAuthOptions = {
               permission,
               number: number ?? undefined,
             };
-          } else {
-            throw new Error('Incoorect Email or Password');
           }
+
+          throw new Error('Incoorect Email or Password');
         } catch (error: unknown) {
           if (error instanceof Error) {
             throw new Error(error.message);

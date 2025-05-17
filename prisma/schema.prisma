@@ -45,6 +45,63 @@ model Subscription {
   @@map("Subscriptions")
 }
 
+model User {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String  @unique
+  image    String?
+  number   String?
+  password String?
+
+  // ENUM
+  role       Role         @default(ADMIN)
+  permission Permission[] @default([])
+  promoting  Permission[] @default([])
+
+  // RELATIONSHIP
+  subscription         Subscription?               @relation(name: "Subscriber")
+  // RELATIONSHIP
+  promoter             Promoter?                   @relation("MyDetails")
+  // RELATIONSHIP
+  promotionDeals       RoomPromotionAgreement[]    @relation("ListerAgreements")
+  // RELATIONSHIP
+  rooms                Room[]                      @relation("UserRooms")
+  roomReviews          RoomReview[]                @relation("UserRoomReviews")
+  // RELATIONSHIP
+  hostels              Hostel[]                    @relation("UserHostels")
+  hostelReviews        HostelReview[]              @relation("UserHostelReviews")
+  // RELATIONSHIP
+  properties           Property[]                  @relation("UserPorperties")
+  // RELATIONSHIP
+  vehicles             Vehicle[]                   @relation("UserVehicles")
+  // RELATIONSHIP
+  reMarketItems        ReMarketItem[]              @relation("UserReMarketItems")
+  // RELATIONSHIP
+  interestedRooms      InterestedRoomsUsers[]      @relation("InterestedUsers")
+  // RELATIONSHIP
+  interestedProperties InterestedPropertiesUsers[] @relation("InterestedUsers")
+
+  // TIMESTAMPS
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+  @@index([updatedAt])
+  @@index([permission])
+  @@index([role, permission])
+  @@map("Users")
+}
+
+model Promoter {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // RELATIONSHIP
+  user           User                 @relation(fields: [userId], references: [id], name: "MyDetails", onDelete: Cascade)
+  userId         String               @unique @db.ObjectId
+  // RELATIONSHIP
+  promotionDeals RoomPromotionDeals[] @relation("RoomPromotions")
+}
+
 model InterestedRooms {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   listerId String
@@ -91,16 +148,6 @@ model RoomPromotionDeals {
   promotions  RoomPromotion[]        @relation("PromotionRooms")
 
   @@unique([promoterId, agreementId])
-}
-
-model Promoter {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-
-  // RELATIONSHIP
-  user           User                 @relation(fields: [userId], references: [id], name: "MyDetails", onDelete: Cascade)
-  userId         String               @unique @db.ObjectId
-  // RELATIONSHIP
-  promotionDeals RoomPromotionDeals[] @relation("RoomPromotions")
 }
 
 model RoomPromotionAgreement {
@@ -168,51 +215,6 @@ model UserClick {
   @@index([roomPromotionId])
   @@index([timestamp])
   @@map("ClickEvents")
-}
-
-model User {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  email    String  @unique
-  image    String?
-  number   String?
-  password String?
-
-  // ENUM
-  role       Role         @default(ADMIN)
-  permission Permission[] @default([])
-  promoting  Permission[] @default([])
-
-  // RELATIONSHIP
-  subscription    Subscription?            @relation(name: "Subscriber")
-  // RELATIONSHIP
-  promoter        Promoter?                @relation("MyDetails")
-  // RELATIONSHIP
-  promotionDeals  RoomPromotionAgreement[] @relation("ListerAgreements")
-  // RELATIONSHIP
-  rooms           Room[]                   @relation("UserRooms")
-  roomReviews     RoomReview[]             @relation("UserRoomReviews")
-  // RELATIONSHIP
-  hostels         Hostel[]                 @relation("UserHostels")
-  hostelReviews   HostelReview[]           @relation("UserHostelReviews")
-  // RELATIONSHIP
-  properties      Property[]               @relation("UserPorperties")
-  // RELATIONSHIP
-  vehicles        Vehicle[]                @relation("UserVehicles")
-  // RELATIONSHIP
-  reMarketItems   ReMarketItem[]           @relation("UserReMarketItems")
-  // RELATIONSHIP
-  interestedRooms InterestedRoomsUsers[]   @relation("InterestedUsers")
-
-  // TIMESTAMPS
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([role])
-  @@index([updatedAt])
-  @@index([permission])
-  @@index([role, permission])
-  @@map("Users")
 }
 
 enum FurnishingStatusEnum {
@@ -361,6 +363,38 @@ model HostelReview {
   @@map("Hostel_Reviews")
 }
 
+model InterestedProperties {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  listerId String
+
+  // RELATIONSHIP
+  propertyId   String                      @unique @db.ObjectId
+  property     Property                    @relation(fields: [propertyId], references: [id], name: "PropertyInterested", onDelete: Cascade)
+  // RELATIONSHIP
+  interestedBy InterestedPropertiesUsers[] @relation("InterestedProperties")
+
+  @@index([listerId])
+}
+
+model InterestedPropertiesUsers {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // RELATIONSHIP
+  user                 User                 @relation(name: "InterestedUsers", fields: [userId], references: [id], onDelete: Cascade)
+  userId               String               @db.ObjectId
+  // RELATIONSHIP
+  interestedProperty   InterestedProperties @relation(name: "InterestedProperties", fields: [interestedPropertyId], references: [id], onDelete: Cascade)
+  interestedPropertyId String               @db.ObjectId
+
+  // TIMESTAMPS
+  createdAt DateTime @default(now())
+
+  @@unique([userId, interestedPropertyId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([interestedPropertyId])
+}
+
 enum PropertyType {
   Land
   House
@@ -401,8 +435,10 @@ model Property {
   propertyType   PropertyType
 
   // RELATIONSHIP 
-  seller   User   @relation(fields: [sellerId], references: [id], name: "UserPorperties", onDelete: Cascade)
-  sellerId String @db.ObjectId
+  seller             User                  @relation(fields: [sellerId], references: [id], name: "UserPorperties", onDelete: Cascade)
+  sellerId           String                @db.ObjectId
+  // RELATIONSHIP
+  interestedProperty InterestedProperties? @relation(name: "PropertyInterested")
 
   // TIMESTAMPS
   createdAt DateTime @default(now())

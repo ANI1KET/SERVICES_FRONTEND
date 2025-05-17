@@ -2,15 +2,15 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { MutableRefObject, Suspense } from 'react';
 
-import { cn } from '../utils/tailwindMerge';
 import { RoomData } from '@/app/types/types';
-import { CapacityIcon, FurnishIcon, PriceIcon } from '../icon/svg';
+import { cn } from '../../lib/utils/tailwindMerge';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
+import { CapacityIcon, FurnishIcon, PriceIcon } from '../../lib/icon/svg';
 
-const ImageLoop = dynamic(() => import('@/app/lib/ui/ImageLoop'), {
+const ReactPlayer = dynamic(() => import('react-player/lazy'), {
   ssr: false,
 });
-const ReactPlayer = dynamic(() => import('react-player/lazy'), {
+const ImageLoop = dynamic(() => import('@/app/components/ReUsable/ImageLoop'), {
   ssr: false,
 });
 
@@ -118,7 +118,7 @@ const RoomDetails = ({
                   {item.available ? (
                     <span className="truncate">Available </span>
                   ) : (
-                    <span className="truncate">Unavailable</span>
+                    <span className="truncate">Sold</span>
                   )}
                 </p>
                 <p

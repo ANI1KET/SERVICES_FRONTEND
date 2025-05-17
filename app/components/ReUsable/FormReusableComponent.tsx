@@ -1260,6 +1260,7 @@ const UnitPart = {
 type SelectCoversionProps<O extends string> = {
   options: O[];
   value: number;
+  maxWidth?: string;
   label: PropertyUnitKey;
 };
 
@@ -1267,6 +1268,7 @@ export const SelectCoversion = <O extends string>({
   label,
   value,
   options,
+  maxWidth,
 }: SelectCoversionProps<O>) => {
   const [convertedValue, setConvertedValue] = useState(value);
   const [unitPart, setUnitPart] = useState<O | ''>(UnitPart[label] as O);
@@ -1279,38 +1281,40 @@ export const SelectCoversion = <O extends string>({
     <div className="flex items-center">
       {convertedValue}
 
-      <Autocomplete<O>
-        options={options}
-        value={unitPart || null}
-        disableClearable={true as false}
-        onChange={(_, newUnit) => {
-          const unitValue = newUnit || '';
-          setUnitPart(unitValue);
-          convertValue(unitValue);
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder="Unit"
-            sx={{
-              width: 'auto',
-              minWidth: '100px',
-              '& .MuiOutlinedInput-root': {
-                height: '30px',
-              },
-              '& fieldset': {
-                border: 'none',
-              },
-              '&:hover fieldset': {
-                border: 'none',
-              },
-              '&.Mui-focused fieldset': {
-                border: 'none',
-              },
-            }}
-          />
-        )}
-      />
+      <div onClick={(e) => e.stopPropagation()}>
+        <Autocomplete<O>
+          options={options}
+          value={unitPart || null}
+          disableClearable={true as false}
+          onChange={(_, newUnit) => {
+            const unitValue = newUnit || '';
+            setUnitPart(unitValue);
+            convertValue(unitValue);
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder="Unit"
+              sx={{
+                width: 'auto',
+                maxWidth: maxWidth ?? '100px',
+                '& .MuiOutlinedInput-root': {
+                  height: '30px',
+                },
+                '& fieldset': {
+                  border: 'none',
+                },
+                '&:hover fieldset': {
+                  border: 'none',
+                },
+                '&.Mui-focused fieldset': {
+                  border: 'none',
+                },
+              }}
+            />
+          )}
+        />
+      </div>
     </div>
   );
 };

@@ -4,22 +4,44 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
-import { ListedRoom } from '@/app/types/types';
+import {
+  PropertyArea,
+  ListedProperty,
+  PropertyPlotWidth,
+  PropertyHouseArea,
+  PropertyPlotLength,
+} from '@/app/types/types';
+import {
+  PriceIcon,
+  PlotSizeIcon,
+  HouseAreaIcon,
+  PropertyAreaIcon,
+} from '@/app/lib/icon/svg';
+import {
+  propertyArea,
+  propertyPlotWidth,
+  propertyHouseArea,
+  propertyPlotLength,
+} from '@/app/lib/scalableComponents';
 import { cn } from '@/app/lib/utils/tailwindMerge';
-import { timeAgo } from '../utils/timeCalculation';
+import { SelectCoversion } from './FormReusableComponent';
 import { updateNumber } from '@/app/components/ServerAction';
 import { pushSavedRoom } from '@/app/(selected)/ServerAction';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
-import { PriceIcon, FurnishIcon, CapacityIcon } from '@/app/lib/icon/svg';
 
 interface NewRoomCardProps {
-  roomCardDetails: ListedRoom;
+  propertyCardDetails: ListedProperty;
 }
 
-const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
+const NewPropertyDetails: React.FC<NewRoomCardProps> = ({
+  propertyCardDetails,
+}) => {
   const router = useRouter();
   const cacheTheme = useThemeState();
   const { data: session, update } = useSession();
+
+  const formatCount = (count: number, word: string) =>
+    `${count} ${word}${count === 1 ? '' : 's'}`;
 
   const showNumberInputPopup = async () => {
     const { value } = await Swal.fire({
@@ -82,7 +104,7 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
 
           <p className="text-sm col-span-2 text-right ">
             {session ? (
-              session?.user.permission?.includes('room') ? null : (
+              session?.user.permission?.includes('property') ? null : (
                 <button
                   className={cn(
                     'text-sm p-[2px] rounded-lg cursor-pointer mr-1',
@@ -98,21 +120,21 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
                       target.innerText = 'Interested';
 
                       const existingRooms = JSON.parse(
-                        localStorage.getItem('InterestedRooms') || '[]'
+                        localStorage.getItem('InterestedProperties') || '[]'
                       );
-                      if (existingRooms.includes(roomCardDetails.id)) {
+                      if (existingRooms.includes(propertyCardDetails.id)) {
                         return;
                       }
 
                       await pushSavedRoom({
-                        roomId: roomCardDetails.id,
-                        listerId: roomCardDetails.listerId,
+                        roomId: propertyCardDetails.id,
                         userId: session.user.userId as string,
+                        listerId: propertyCardDetails.sellerId,
                       });
 
-                      existingRooms.push(roomCardDetails.id);
+                      existingRooms.push(propertyCardDetails.id);
                       localStorage.setItem(
-                        'InterestedRooms',
+                        'InterestedProperties',
                         JSON.stringify(existingRooms)
                       );
 
@@ -148,7 +170,7 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
             )}
 
             <button
-              title={`${btoa(roomCardDetails.id)}`}
+              title={`${btoa(propertyCardDetails.id)}`}
               className={cn(
                 cacheTheme?.activeBg,
                 cacheTheme?.activeTextColor,
@@ -158,7 +180,7 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
                 const target = e.currentTarget;
                 const originalText = target.innerText;
                 navigator.clipboard
-                  .writeText(btoa(roomCardDetails.id))
+                  .writeText(btoa(propertyCardDetails.id))
                   .then(() => {
                     target.innerText = 'Copied';
                   })
@@ -174,7 +196,7 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
             >
               Copy Id
             </button>
-            {roomCardDetails.verified && (
+            {propertyCardDetails.verified && (
               <span
                 className={cn(
                   cacheTheme?.activeBg,
@@ -190,24 +212,27 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
                 'text-sm p-[2px] rounded-lg',
                 cacheTheme?.activeBg,
                 cacheTheme?.activeTextColor,
-                roomCardDetails.available ? '' : 'text-red-500'
+                propertyCardDetails.available ? '' : 'text-red-500'
               )}
             >
-              {roomCardDetails.available ? 'Available' : 'Not Available'}
+              {propertyCardDetails.available ? 'Available' : 'Sold'}
             </span>
           </p>
 
           <p className="col-span-3 ">
-            {`${roomCardDetails.city}, ${roomCardDetails.location}`}
-            {roomCardDetails?.direction && ` ( ${roomCardDetails?.direction} )`}
+            {`${propertyCardDetails.city}, ${propertyCardDetails.location}`}
+            {propertyCardDetails?.direction &&
+              ` ( ${propertyCardDetails?.direction} )`}
           </p>
         </div>
+
         <hr
           className={cn(
             cacheTheme?.borderColor,
             'hidden max-xsm:block col-span-2'
           )}
         />
+
         <div
           className={cn(
             cacheTheme?.borderColor,
@@ -215,85 +240,129 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
           )}
         >
           <p className="flex items-center gap-2 text-sm">📞 Contact</p>
-          <p>{`+977-${roomCardDetails.primaryContact}`}</p>
+          <p>{`+977-${propertyCardDetails.primaryContact}`}</p>
         </div>
         <div className="hidden max-xsm:block break-words">
           <p className="flex items-center gap-2 text-sm">
             <PriceIcon />
             Price
           </p>
-          <p>{`Rs.${roomCardDetails.price}`}/month</p>
+          <p>Rs.{propertyCardDetails.price}</p>
         </div>
+
         <hr
           className={cn(
             cacheTheme?.borderColor,
             'hidden max-xsm:block col-span-2'
           )}
         />
+
         {/*  */}
+
         <div className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
           <p className="flex items-center gap-2 text-sm">🏷️ Name</p>
-          <p>{roomCardDetails.name}</p>
+          <p>{propertyCardDetails.title}</p>
         </div>
         <div className="break-words">
           <p className="flex items-center gap-2 text-sm">👤 Posted By</p>
-          <p>{`${roomCardDetails.postedBy}`}</p>
+          <p>{propertyCardDetails.postedBy}</p>
         </div>
+
         <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
+
         <div className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
           <p className="flex items-center gap-2 text-sm">
-            <CapacityIcon />
-            Capacity
+            {propertyCardDetails.propertyType === 'House' ? '🏠 ' : '🌄 '}Type
           </p>
-          <p>{`${roomCardDetails.mincapacity}-${roomCardDetails.maxcapacity}`}</p>
+          <p>
+            {propertyCardDetails.propertyType === 'House' ? 'House' : 'Land'}
+          </p>
         </div>
         <div className="break-words">
           <p className="flex items-center gap-2 text-sm">
-            <FurnishIcon />
-            Furinshing
+            <PropertyAreaIcon /> Area
           </p>
-          <p>{`${roomCardDetails.furnishingStatus}`}</p>
+          <SelectCoversion<PropertyArea>
+            label="area"
+            maxWidth="100px"
+            options={propertyArea}
+            value={propertyCardDetails.area}
+          />
         </div>
-        <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
-        <div className={cn(cacheTheme?.borderColor, 'border-r break-words')}>
-          <p className="flex items-center gap-2 text-sm">🏘️ Room Type</p>
-          <p>{`${roomCardDetails.roomtype} `}</p>
-          <p className="max-xsm:block hidden">
-            {(() => {
-              let details = '';
-              const appendDetail = (count: number, singular: string) => {
-                if (count > 0) {
-                  if (details) details += ', ';
-                  details += `${count} ${singular}${count > 1 ? 's' : ''}`;
-                }
-              };
 
-              appendDetail(roomCardDetails.bedroom, 'Bedroom');
-              appendDetail(roomCardDetails.hall, 'Hall');
-              appendDetail(roomCardDetails.kitchen, 'Kitchen');
-              appendDetail(roomCardDetails.bathroom, 'Bathroom');
-
-              return details ? `(${details})` : '';
-            })()}
-          </p>
-        </div>
-        <div className="break-words ">
-          <p className="flex items-center gap-2 text-sm">📅 Updated On</p>
-          <p>{timeAgo(roomCardDetails.updatedAt)}</p>
-          {/* <span>{new Date(roomCardDetails.updatedAt).toDateString()}</span> */}
-        </div>
         <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
+
+        {propertyCardDetails.propertyType === 'House' ? (
+          <>
+            <div
+              className={cn(cacheTheme?.borderColor, 'border-r break-words')}
+            >
+              <p className="flex items-center gap-2 text-sm">
+                <HouseAreaIcon />
+                BuiltUpArea
+              </p>
+              <SelectCoversion<PropertyHouseArea>
+                maxWidth="100px"
+                label="builtUpArea"
+                options={propertyHouseArea}
+                value={propertyCardDetails.builtUpArea}
+              />
+            </div>
+
+            <div className="break-words ">
+              🏠 {formatCount(propertyCardDetails.floors, 'floor')},
+              {formatCount(propertyCardDetails.bedrooms, 'bedroom')},
+              {formatCount(propertyCardDetails.kitchens, 'kitchen')},
+              {formatCount(propertyCardDetails.bathrooms, 'bathroom')}
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              className={cn(cacheTheme?.borderColor, 'border-r break-words')}
+            >
+              <p className="flex items-center gap-2 text-sm">
+                <PlotSizeIcon />
+                Plot Width
+              </p>
+              <SelectCoversion<PropertyPlotWidth>
+                maxWidth="100px"
+                label="plotWidth"
+                options={propertyPlotWidth}
+                value={propertyCardDetails.plotWidth}
+              />
+            </div>
+
+            <div className="break-words ">
+              <p className="flex items-center gap-2 text-sm">
+                <PlotSizeIcon />
+                Plot Width
+              </p>
+              <SelectCoversion<PropertyPlotLength>
+                maxWidth="100px"
+                label="plotWidth"
+                options={propertyPlotLength}
+                value={propertyCardDetails.plotLength}
+              />
+            </div>
+          </>
+        )}
+
+        <hr className={cn(cacheTheme?.borderColor, 'col-span-2')} />
+
         {/*  */}
+
         <div className="hidden max-xsm:block col-span-2 ">
           <p className="flex justify-center items-center gap-2 text-base font-semibold">
-            Amenities
+            Nearby Areas
           </p>
-          {roomCardDetails.amenities && (
+          {propertyCardDetails.nearbyAreas && (
             <p className="col-span-2 break-words">
-              {roomCardDetails.amenities.join(', ')}
+              {propertyCardDetails.nearbyAreas.join(', ')}
             </p>
           )}
         </div>
+
         <hr
           className={cn(
             cacheTheme?.borderColor,
@@ -305,4 +374,4 @@ const NewRoomDetails: React.FC<NewRoomCardProps> = ({ roomCardDetails }) => {
   );
 };
 
-export default NewRoomDetails;
+export default NewPropertyDetails;

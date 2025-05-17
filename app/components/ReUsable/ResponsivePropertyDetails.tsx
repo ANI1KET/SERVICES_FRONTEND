@@ -5,18 +5,18 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 import { PriceIcon } from '@/app/lib/icon/svg';
-import { ListedRoom } from '@/app/types/types';
 import { cn } from '@/app/lib/utils/tailwindMerge';
+import { ListedProperty } from '@/app/types/types';
 import { updateNumber } from '@/app/components/ServerAction';
-import { pushSavedRoom } from '@/app/(selected)/ServerAction';
+import { pushSavedProperty } from '@/app/(selected)/ServerAction';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
-interface NewRoomCardProps {
-  roomCardDetails: ListedRoom;
+interface PropertyCardProps {
+  propertyCardDetails: ListedProperty;
 }
 
-const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
-  roomCardDetails,
+const ResponsivePropertyDetails: React.FC<PropertyCardProps> = ({
+  propertyCardDetails,
 }) => {
   const router = useRouter();
   const cacheTheme = useThemeState();
@@ -38,14 +38,14 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
       confirmButtonText: 'Done',
       cancelButtonText: 'Cancel',
       customClass: {
-        popup: 'rounded-xl shadow-lg',
-        title: cn(cacheTheme?.textColor, 'text-lg font-bold'),
-        confirmButton: cn(cacheTheme?.bg, cacheTheme?.textColor, 'rounded-lg'),
         cancelButton: cn(
           'rounded-lg',
           cacheTheme?.activeBg,
           cacheTheme?.activeTextColor
         ),
+        popup: 'rounded-xl shadow-lg',
+        title: cn(cacheTheme?.textColor, 'text-lg font-bold'),
+        confirmButton: cn(cacheTheme?.bg, cacheTheme?.textColor, 'rounded-lg'),
       },
       inputValidator: (value) => {
         return /^\d{10}$/.test(value)
@@ -73,7 +73,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
     <>
       <div className="text-right m-2 max-xsm:hidden">
         {session ? (
-          session?.user.permission?.includes('room') ? null : (
+          session?.user.permission?.includes('property') ? null : (
             <button
               className={cn(
                 'text-sm p-[2px] rounded-lg cursor-pointer mr-1',
@@ -88,23 +88,23 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
                   if (!session.user.number) showNumberInputPopup();
                   target.innerText = 'Interested';
 
-                  const existingRooms = JSON.parse(
-                    localStorage.getItem('InterestedRooms') || '[]'
+                  const existingProperties = JSON.parse(
+                    localStorage.getItem('InterestedProperties') || '[]'
                   );
-                  if (existingRooms.includes(roomCardDetails.id)) {
+                  if (existingProperties.includes(propertyCardDetails.id)) {
                     return;
                   }
 
-                  await pushSavedRoom({
-                    roomId: roomCardDetails.id,
-                    listerId: roomCardDetails.listerId,
+                  await pushSavedProperty({
+                    propertyId: propertyCardDetails.id,
                     userId: session.user.userId as string,
+                    listerId: propertyCardDetails.sellerId,
                   });
 
-                  existingRooms.push(roomCardDetails.id);
+                  existingProperties.push(propertyCardDetails.id);
                   localStorage.setItem(
-                    'InterestedRooms',
-                    JSON.stringify(existingRooms)
+                    'InterestedProperties',
+                    JSON.stringify(existingProperties)
                   );
 
                   target.innerText = originalText;
@@ -139,7 +139,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
         )}
 
         <button
-          title={`${btoa(roomCardDetails.id)}`}
+          title={`${btoa(propertyCardDetails.id)}`}
           className={cn(
             cacheTheme?.activeBg,
             cacheTheme?.activeTextColor,
@@ -149,7 +149,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
             const target = e.currentTarget;
             const originalText = target.innerText;
             navigator.clipboard
-              .writeText(btoa(roomCardDetails.id))
+              .writeText(btoa(propertyCardDetails.id))
               .then(() => {
                 target.innerText = 'Copied';
               })
@@ -183,8 +183,7 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
         >
           <span className="text-lg font-semibold flex items-center gap-1">
             <PriceIcon size={16} />
-            Rs.{`${roomCardDetails?.price}`}
-            <span className="text-sm ">/month</span>
+            Rs.{`${propertyCardDetails.price}`}
             <span
               className={cn(
                 'text-sm p-[2px] rounded-lg text-right ml-auto',
@@ -192,15 +191,16 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
                 cacheTheme?.activeTextColor
               )}
             >
-              {roomCardDetails.available ? '✅ Available' : '❌ Not Available'}
+              {propertyCardDetails.available ? '✅ Available' : '❌ Sold'}
             </span>
           </span>
         </p>
 
         <span className="text-lg col-span-4 flex items-center gap-1 ">
-          📌 {`${roomCardDetails?.city}, ${roomCardDetails?.location}`}
-          {roomCardDetails?.direction && ` ( ${roomCardDetails?.direction} )`}
-          {roomCardDetails?.verified && (
+          📌 {`${propertyCardDetails?.city}, ${propertyCardDetails?.location}`}
+          {propertyCardDetails?.direction &&
+            ` ( ${propertyCardDetails?.direction} )`}
+          {propertyCardDetails?.verified && (
             <span
               className={cn(
                 cacheTheme?.activeBg,
@@ -219,36 +219,29 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
             'col-span-2 border-r mr-2 font-semibold flex items-center gap-1 ml-2 '
           )}
         >
-          📞 {`+977-${roomCardDetails?.primaryContact}`}
+          📞 {`+977-${propertyCardDetails?.primaryContact}`}
         </span>
 
-        <span className="col-span-4 flex items-center gap-2 ">
-          🏘️ {`${roomCardDetails?.roomtype}`} for Rent{' '}
-          {(() => {
-            let details = '';
-            const appendDetail = (count: number, singular: string) => {
-              if (count > 0) {
-                if (details) details += ', ';
-                details += `${count} ${singular}${count > 1 ? 's' : ''}`;
-              }
-            };
-
-            appendDetail(roomCardDetails.bedroom, 'Bedroom');
-            appendDetail(roomCardDetails.hall, 'Hall');
-            appendDetail(roomCardDetails.kitchen, 'Kitchen');
-            appendDetail(roomCardDetails.bathroom, 'Bathroom');
-
-            return details ? `(${details})` : '';
-          })()}
-        </span>
+        {propertyCardDetails.propertyType === 'House' ? (
+          <p className="flex items-center col-span-4 gap-2">
+            Amenities:
+            {propertyCardDetails.amenities && (
+              <span className="col-span-2 break-words">
+                {propertyCardDetails.amenities.join(', ')}
+              </span>
+            )}
+          </p>
+        ) : null}
 
         <hr className={cn(cacheTheme?.borderColor, 'col-span-6 border-1 ')} />
 
         <p className="flex items-center col-span-6 gap-2 ml-2">
-          <span className="text-lg font-semibold col-span-1 ">Amenities:</span>
-          {roomCardDetails?.amenities && (
+          <span className="text-lg font-semibold col-span-1 ">
+            Nearby Areas:
+          </span>
+          {propertyCardDetails?.nearbyAreas && (
             <span className="col-span-2 break-words">
-              {roomCardDetails?.amenities.join(', ')}
+              {propertyCardDetails.nearbyAreas.join(', ')}
             </span>
           )}
         </p>
@@ -257,4 +250,4 @@ const ResponsiveNewRoomDetails: React.FC<NewRoomCardProps> = ({
   );
 };
 
-export default ResponsiveNewRoomDetails;
+export default ResponsivePropertyDetails;

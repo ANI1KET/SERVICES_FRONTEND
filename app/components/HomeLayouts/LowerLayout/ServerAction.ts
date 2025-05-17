@@ -1,8 +1,8 @@
 'use server';
 
-import { RoomData } from '@/app/types/types';
 import { PAGE_SIZE } from '@/app/lib/reusableConst';
 import axiosInstance from '@/app/lib/utils/axiosInstance';
+import { PropertyData, RoomData } from '@/app/types/types';
 
 export const getCategoryDetails = async ({
   city,
@@ -12,7 +12,7 @@ export const getCategoryDetails = async ({
   city: string;
   offset: number;
   category: string;
-}): Promise<RoomData[]> => {
+}): Promise<RoomData[] | PropertyData[]> => {
   'use server';
 
   if (!category) throw new Error('Category is required.');

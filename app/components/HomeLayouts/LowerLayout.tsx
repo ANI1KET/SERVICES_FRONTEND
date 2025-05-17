@@ -4,13 +4,15 @@ import { useCallback, useState } from 'react';
 
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import SearchPanel from './LowerLayout/SearchPanel';
-import CategoryCardLayout from './LowerLayout/CategoryCardLayout';
+import RoomCardLayout from './LowerLayout/RoomCardLayout';
+import PropertyCardLayout from './LowerLayout/PropertyCardLayout';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
 const LowerLayout: React.FC<{
   city: string;
-  cities: Record<string, string[]>;
-}> = ({ city, cities }) => {
+  roomCitiesLocations: Record<string, string[]>;
+  propertyCitiesLocations: Record<string, string[]>;
+}> = ({ city, roomCitiesLocations, propertyCitiesLocations }) => {
   const cachedTheme = useThemeState();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
@@ -21,23 +23,26 @@ const LowerLayout: React.FC<{
     // <section className="max-sm:pt-[0] pt-[8vh] flex flex-row">
     <section className="max-sm:pt-[0] pt-[8vh] ">
       {/* <div className="w-[80vw] "> */}
-      <div className=" ">
+      <div className="flex flex-col gap-6">
         {/* Rooms */}
-        <CategoryCardLayout
+        <RoomCardLayout
           city={city}
           route="room"
           title="Rooms"
-          cities={cities}
           key={'RoomCities'}
+          cities={roomCitiesLocations}
+        />
+
+        {/* Properties */}
+        <PropertyCardLayout
+          city={city}
+          route="property"
+          title="Properties"
+          key={'PropertyCities'}
+          cities={propertyCitiesLocations}
         />
 
         {/* Hostels */}
-        {/* <CategoryCardLayout route="hostel" title="Hostels" key={'HostelCities'} 
-          city={CitiesLocations?.city as string}
-          cities={CitiesLocations?.['hostel'] as { [key: string]: string[] }}
-          /> */}
-
-        {/* Properties */}
         {/* <CategoryCardLayout route="property" title="Properties" key={'PorpertyCities'} 
           city={CitiesLocations?.city as string}
           cities={CitiesLocations?.['property'] as { [key: string]: string[] }}

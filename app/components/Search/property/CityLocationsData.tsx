@@ -8,7 +8,7 @@ import { cn } from '@/app/lib/utils/tailwindMerge';
 import PropertyDetailsLayout from './PropertyDetailsLayout';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
 
-const ImageLoop = dynamic(() => import('../../../lib/ui/ImageLoop'), {
+const ImageLoop = dynamic(() => import('../../ReUsable/ImageLoop'), {
   ssr: false,
 });
 const AutoScrollCarousel = dynamic(

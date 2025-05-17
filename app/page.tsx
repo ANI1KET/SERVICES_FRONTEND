@@ -11,11 +11,11 @@ import {
 import UpperLayout from './components/HomeLayouts/UpperLayout';
 import LowerLayout from './components/HomeLayouts/LowerLayout';
 import MiddleLayout from './components/HomeLayouts/MiddleLayout';
-import { CategoryCitiesLocations, RoomData } from './types/types';
 import ListNavigation from './components/HomeLayouts/ListNavigation';
+import { getCategoryCitiesLocationDetails } from './components/ServerAction';
+import { CategoryCitiesLocations, PropertyData, RoomData } from './types/types';
 import UpperSearchBox from './components/HomeLayouts/MiddleLayout/UpperSearchBox';
 import LowerSearchBox from './components/HomeLayouts/MiddleLayout/LowerSearchBox';
-import { getCategoryCitiesLocationDetails } from './lib/utils/CategoryPlacesServerAction';
 
 const Home = async () => {
   const queryClient = new QueryClient();
@@ -23,25 +23,37 @@ const Home = async () => {
   try {
     const {
       city,
-      cityData,
-      categoryDetails,
+      roomCityDetails,
+      roomCitiesLocations,
+      propertyCityDetails,
+      propertyCitiesLocations,
     }: {
       city: string;
-      categoryDetails: RoomData[];
-      cityData: CategoryCitiesLocations;
-    } = await getCategoryCitiesLocationDetails({ category: 'room', offset: 0 });
+      roomCityDetails: RoomData[];
+      propertyCityDetails: PropertyData[];
+      roomCitiesLocations: CategoryCitiesLocations;
+      propertyCitiesLocations: CategoryCitiesLocations;
+    } = await getCategoryCitiesLocationDetails();
 
     queryClient.setQueryData<string>(['city'], city);
 
     queryClient.setQueryData<CategoryCitiesLocations>(
       ['roomCitiesLocations'],
-      cityData
+      roomCitiesLocations
     );
 
     queryClient.setQueryData<InfiniteData<RoomData[]>>([`room${city}`], {
       pageParams: [0],
-      pages: [categoryDetails],
+      pages: [roomCityDetails],
     });
+
+    queryClient.setQueryData<InfiniteData<PropertyData[]>>(
+      [`property${city}`],
+      {
+        pageParams: [0],
+        pages: [propertyCityDetails],
+      }
+    );
     return (
       <main>
         <HydrationBoundary state={dehydrate(queryClient)}>
@@ -55,7 +67,11 @@ const Home = async () => {
         upperComponent={<UpperSearchBox />}
         lowerComponent={<LowerSearchBox />}
         /> */}
-          <LowerLayout city={city} cities={cityData} />
+          <LowerLayout
+            city={city}
+            roomCitiesLocations={roomCitiesLocations}
+            propertyCitiesLocations={propertyCitiesLocations}
+          />
         </HydrationBoundary>
       </main>
     );

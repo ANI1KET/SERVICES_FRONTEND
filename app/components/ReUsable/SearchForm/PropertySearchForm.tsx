@@ -201,8 +201,8 @@ const PropertySearchForm: React.FC<{
           }
           onChange={(City) => {
             const city = City as string;
+            set_city(city);
             if (CitiesLocations?.[city].length === 0) {
-              set_city(city);
               reFetchCityLocations({ city, category });
             }
           }}
