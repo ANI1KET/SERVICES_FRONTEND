@@ -7,21 +7,15 @@ import {
   InfiniteData,
   HydrationBoundary,
 } from '@tanstack/react-query';
-import dynamic from 'next/dynamic';
 
 import UpperLayout from './components/HomeLayouts/UpperLayout';
-// import LowerLayout from './components/HomeLayouts/LowerLayout';
+import LowerLayout from './components/HomeLayouts/LowerLayout';
 import MiddleLayout from './components/HomeLayouts/MiddleLayout';
 import ListNavigation from './components/HomeLayouts/ListNavigation';
 import { getCategoryCitiesLocationDetails } from './components/ServerAction';
 import { CategoryCitiesLocations, PropertyData, RoomData } from './types/types';
 import UpperSearchBox from './components/HomeLayouts/MiddleLayout/UpperSearchBox';
 import LowerSearchBox from './components/HomeLayouts/MiddleLayout/LowerSearchBox';
-
-const LowerLayout = dynamic(
-  () => import('./components/HomeLayouts/LowerLayout'),
-  { ssr: false }
-);
 
 const Home = async () => {
   const queryClient = new QueryClient();

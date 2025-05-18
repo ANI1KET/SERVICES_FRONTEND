@@ -1,12 +1,19 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useCallback, useState } from 'react';
 
 import { cn } from '@/app/lib/utils/tailwindMerge';
 import SearchPanel from './LowerLayout/SearchPanel';
-import RoomCardLayout from './LowerLayout/RoomCardLayout';
-import PropertyCardLayout from './LowerLayout/PropertyCardLayout';
 import { useThemeState } from '@/app/providers/reactqueryProvider';
+
+const PropertyCardLayout = dynamic(
+  () => import('./LowerLayout/PropertyCardLayout'),
+  { ssr: false }
+);
+const RoomCardLayout = dynamic(() => import('./LowerLayout/RoomCardLayout'), {
+  ssr: false,
+});
 
 const LowerLayout: React.FC<{
   city: string;
