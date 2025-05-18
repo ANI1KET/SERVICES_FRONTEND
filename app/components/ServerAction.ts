@@ -2,9 +2,9 @@
 
 import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
+import { unstable_cache } from 'next/cache';
 import { PAGE_SIZE } from '../lib/reusableConst';
 import axiosInstance from '../lib/utils/axiosInstance';
-import { unstable_cache, unstable_cacheTag } from 'next/cache';
 
 export const getAutheticationHeader = async (): Promise<
   { headers: { Cookie: string; 'Cache-Control': string } } | undefined
@@ -23,8 +23,6 @@ export const getAutheticationHeader = async (): Promise<
 };
 
 export async function fetchCategoryCitiesLocationDetails() {
-  unstable_cacheTag('category-city-location-details');
-
   const url = `${process.env.BASE_URL}/api/place/data?limit=${PAGE_SIZE}`;
 
   const res = await fetch(url, {
