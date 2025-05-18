@@ -44,10 +44,10 @@ const RoomSearchForm: React.FC<{
   category: string;
 }> = ({ category, city }) => {
   const router = useRouter();
+  const set_city = useSetCity();
   const cachedTheme = useThemeState();
   const { isMobile } = useBreakpoint();
   const roomSearchData = useSetRoomSearchData();
-  const set_city = useSetCity();
 
   const { control, register, setValue, watch, handleSubmit } =
     useForm<RoomSearchQueries>({

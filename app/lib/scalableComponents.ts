@@ -1,4 +1,11 @@
 import {
+  Role,
+  Permission,
+  PropertyType,
+  FurnishingStatusEnum,
+} from '@prisma/client';
+
+import {
   RoomType,
   PropertyArea,
   RoomAmenities,
@@ -8,12 +15,6 @@ import {
   PropertyPlotLength,
   PropertyNearByAreas,
 } from '../types/types';
-import {
-  Role,
-  Permission,
-  PropertyType,
-  FurnishingStatusEnum,
-} from '@prisma/client';
 
 export const permissions: Permission[] = [
   'room',

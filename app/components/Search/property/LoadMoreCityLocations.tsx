@@ -106,7 +106,9 @@ const LoadMoreCityLocations = () => {
       </div>
       <div className="">
         {memoizedPages[0]?.length === 0 ? (
-          <div className="flex justify-center items-center">No Rooms Found</div>
+          <div className="flex justify-center items-center">
+            No Properties Found
+          </div>
         ) : (
           memoizedPages.map((roomDetails, pageIndex) => (
             <CityLocationsData
