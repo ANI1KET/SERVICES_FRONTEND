@@ -90,7 +90,7 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!user) {
-            throw new Error('No user found with this email');
+            throw new Error('User not found, Create your account.');
           }
 
           if (!user.password) {

@@ -2,7 +2,6 @@
 
 import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
-import { unstable_cache } from 'next/cache';
 import { PAGE_SIZE } from '../lib/reusableConst';
 import axiosInstance from '../lib/utils/axiosInstance';
 
@@ -22,7 +21,8 @@ export const getAutheticationHeader = async (): Promise<
   };
 };
 
-export async function fetchCategoryCitiesLocationDetails() {
+// export async function fetchCategoryCitiesLocationDetails() {
+export async function getCategoryCitiesLocationDetails() {
   const url = `${process.env.BASE_URL}/api/place/data?limit=${PAGE_SIZE}`;
 
   const res = await fetch(url, {
@@ -36,14 +36,14 @@ export async function fetchCategoryCitiesLocationDetails() {
   return res.json();
 }
 
-export const getCategoryCitiesLocationDetails = unstable_cache(
-  fetchCategoryCitiesLocationDetails,
-  ['category-city-location-details'],
-  {
-    revalidate: 300,
-    tags: ['category-city-location-details'],
-  }
-);
+// export const getCategoryCitiesLocationDetails = unstable_cache(
+//   fetchCategoryCitiesLocationDetails,
+//   ['category-city-location-details'],
+//   {
+//     revalidate: 300,
+//     tags: ['category-city-location-details'],
+//   }
+// );
 
 // export async function getCategoryCitiesLocationDetails() {
 //   'use server';
